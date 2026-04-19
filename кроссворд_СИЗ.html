@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Кроссворд — Средства индивидуальной защиты</title>
+<link href="https://fonts.googleapis.com/css2?family=Geologica:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green: #007760;
+  --green-mid: #00756E;
+  --green-light: #E8F5F3;
+  --green-pale: #F2FAF8;
+  --border: #c5e0db;
+  --text: #1a2e2b;
+  --muted: #4a6660;
+  --white: #ffffff;
+  --cell-size: 36px;
+  --cell-size-sm: 28px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Geologica', sans-serif;
+  background: var(--green-pale);
+  color: var(--text);
+  padding: 20px 12px 40px;
+}
+.wrap { max-width: 900px; margin: 0 auto; }
+
+header {
+  background: var(--green);
+  border-radius: 14px;
+  padding: 20px 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 16px rgba(0,119,96,.12);
+}
+header h1 { color: #fff; font-size: 1.15rem; font-weight: 700; margin-bottom: 4px; }
+header p  { color: rgba(255,255,255,.72); font-size: .82rem; font-weight: 300; }
+
+.main { display: flex; gap: 20px; flex-wrap: wrap; }
+
+/* GRID */
+.grid-wrap {
+  background: var(--white);
+  border-radius: 14px;
+  border: 1.5px solid var(--border);
+  padding: 16px;
+  box-shadow: 0 2px 12px rgba(0,119,96,.08);
+  overflow-x: auto;
+  flex: 0 0 auto;
+}
+.grid {
+  display: grid;
+  gap: 2px;
+  width: max-content;
+}
+.cell {
+  width: var(--cell-size);
+  height: var(--cell-size);
+  position: relative;
+}
+.cell.empty { background: transparent; }
+.cell.active {
+  background: var(--white);
+  border: 1.5px solid #9dcec8;
+  border-radius: 3px;
+}
+.cell.active input {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  border: none; background: transparent;
+  text-align: center;
+  font-family: 'Geologica', sans-serif;
+  font-size: .95rem; font-weight: 600;
+  color: var(--text);
+  text-transform: uppercase;
+  cursor: pointer;
+  outline: none;
+  caret-color: transparent;
+  padding: 0;
+}
+.cell.active input:focus { background: #e3f5f2; }
+.cell.correct { background: #d4ede9 !important; border-color: var(--green) !important; }
+.cell.correct input { color: var(--green); }
+.cell.wrong   { background: #fde8e8 !important; border-color: #e05555 !important; }
+.cell.wrong input   { color: #c0392b; }
+.cell.done    { background: var(--green-light) !important; border-color: var(--green) !important; }
+.cell.done input    { color: var(--muted); text-decoration: line-through; }
+
+.cell-num {
+  position: absolute;
+  top: 1px; left: 2px;
+  font-size: .52rem;
+  font-weight: 700;
+  color: var(--green);
+  line-height: 1;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* CLUES */
+.clues {
+  flex: 1 1 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.clues-block {
+  background: var(--white);
+  border-radius: 14px;
+  border: 1.5px solid var(--border);
+  padding: 14px 16px;
+  box-shadow: 0 2px 12px rgba(0,119,96,.06);
+}
+.clues-block h3 {
+  font-size: .72rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .1em;
+  color: var(--green-mid);
+  margin-bottom: 10px;
+}
+.clue {
+  display: flex; gap: 8px;
+  padding: 7px 8px;
+  border-radius: 8px;
+  margin-bottom: 4px;
+  cursor: pointer;
+  transition: background .15s;
+  align-items: flex-start;
+}
+.clue:hover { background: var(--green-pale); }
+.clue.active-clue { background: var(--green-light); }
+.clue.solved { opacity: .5; }
+.clue-num {
+  font-size: .78rem; font-weight: 700;
+  color: var(--green);
+  min-width: 18px;
+  flex-shrink: 0;
+  padding-top: 1px;
+}
+.clue-text { font-size: .82rem; line-height: 1.45; color: var(--text); }
+
+/* BUTTONS */
+.btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+.btn {
+  padding: 9px 18px;
+  border: none; border-radius: 8px;
+  font-family: 'Geologica', sans-serif;
+  font-size: .82rem; font-weight: 600;
+  cursor: pointer; transition: .15s;
+}
+.btn-check { background: var(--green); color: #fff; }
+.btn-check:hover { background: #005f4c; }
+.btn-reset { background: var(--green-light); color: var(--green); border: 1.5px solid var(--border); }
+.btn-reset:hover { background: var(--border); }
+
+/* STATUS */
+.status {
+  margin-top: 12px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: .85rem; font-weight: 500;
+  display: none;
+}
+.status.info  { background: var(--green-light); color: var(--green); display: block; }
+.status.win   { background: #d4ede9; color: #005f4c; display: block; font-weight: 700; }
+.status.error { background: #fde8e8; color: #c0392b; display: block; }
+
+@media (max-width: 600px) {
+  :root { --cell-size: var(--cell-size-sm); }
+  .main { flex-direction: column; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>Кроссворд — Средства индивидуальной защиты</h1>
+  <p>Введите ответы, нажмите «Проверить» — правильные буквы подсветятся зелёным, неверные — красным.</p>
+</header>
+
+<div class="main">
+  <div class="grid-wrap">
+    <div class="grid" id="grid"></div>
+    <div class="btn-row">
+      <button class="btn btn-check" onclick="checkAll()">Проверить</button>
+      <button class="btn btn-reset" onclick="resetAll()">Сбросить</button>
+    </div>
+    <div class="status" id="status"></div>
+  </div>
+
+  <div class="clues">
+    <div class="clues-block">
+      <h3>По горизонтали</h3>
+      <div id="clues-h"></div>
+    </div>
+    <div class="clues-block">
+      <h3>По вертикали</h3>
+      <div id="clues-v"></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+// ── DATA ─────────────────────────────────────────────────────────────
+const WORDS = [
+  // word, dir, row, col, clue_num, clue_text
+  ['КАРТОЧКА',    'H', 4, 0, '2', 'ТИП документа учёта, куда вносят данные о выдаче работнику СИЗ, а также об их сдаче'],
+  ['ДЛИТЕЛЬНОЕ',  'H', 1, 2, '4', 'ТАКОЕ ношение защитных очков обеспечивает только оптический класс 1'],
+  ['ТИННИТУС',    'H', 2, 0, '9', 'ТАК называется звон или шум в ушах без внешнего акустического стимула'],
+  ['РАЦИЯ',       'H', 9,11, '6', 'ЭТО устройство может быть встроено в один из видов СИЗ органа слуха для коммуникации'],
+  ['ВОСЕМЬ',      'H', 8,10,'10', 'СТОЛЬКО часов можно находиться в рабочей зоне, где уровень шума равен 80 дБ'],
+  ['ВХОДНОЙ',     'H', 8, 2,'11', 'ТАКОЙ контроль проводят при поступлении новых партий СИЗ'],
+  ['КАСКА',       'V', 3, 1, '1', 'ОНА защищает голову работника при падении конструкций и инструмента'],
+  ['КАСКЕТКА',    'V', 4, 0, '2', 'ЭТО средство защиты защищает голову работника, смягчая удары о неподвижные предметы'],
+  ['ОДНОРАЗОВЫЕ', 'V', 0, 2, '3', 'ТАКИЕ вкладыши нельзя мыть и повторно использовать'],
+  ['НАУШНИКИ',    'V', 1, 9, '5', 'ОНИ защищают уши от воздействия производственного шума'],
+  ['РЕСПИРАТОР',  'V', 0,11, '6', 'ЭТОТ вид СИЗ органов дыхания позволяет дышать воздухом из рабочей зоны, очищенным от аэрозолей или вредных газов'],
+  ['ЗИМНИЙ',      'V', 2,10, '7', 'ТАКОЙ сезон требует ношения спецодежды с достаточными теплоизолирующими свойствами'],
+  ['БЕРУШИ',      'V', 2,13, '8', 'ТАК ещё называют противошумные вкладыши'],
+];
+
+// Build grid dimensions
+let ROWS = 0, COLS = 0;
+WORDS.forEach(([w,d,r,c]) => {
+  if (d==='H') { ROWS = Math.max(ROWS, r+1); COLS = Math.max(COLS, c+w.length); }
+  else         { ROWS = Math.max(ROWS, r+w.length); COLS = Math.max(COLS, c+1); }
+});
+
+// Build answer map: "row,col" -> letter
+const answerMap = {};
+// Which cells get a clue number
+const numberMap = {};
+// word membership: "row,col" -> [{wordIdx, posInWord}]
+const cellWords = {};
+
+WORDS.forEach((wd, wi) => {
+  const [word, dir, row, col, num] = wd;
+  // clue number at start cell
+  const key = `${row},${col}`;
+  if (!numberMap[key]) numberMap[key] = new Set();
+  numberMap[key].add(num);
+  for (let i = 0; i < word.length; i++) {
+    const r = dir==='H' ? row   : row+i;
+    const c = dir==='H' ? col+i : col;
+    const k = `${r},${c}`;
+    answerMap[k] = word[i];
+    if (!cellWords[k]) cellWords[k] = [];
+    cellWords[k].push({wi, pos:i});
+  }
+});
+
+// ── BUILD HTML GRID ───────────────────────────────────────────────────
+const gridEl = document.getElementById('grid');
+gridEl.style.gridTemplateColumns = `repeat(${COLS}, var(--cell-size))`;
+gridEl.style.gridTemplateRows    = `repeat(${ROWS}, var(--cell-size))`;
+
+const inputs = {}; // "row,col" -> input element
+
+for (let r = 0; r < ROWS; r++) {
+  for (let c = 0; c < COLS; c++) {
+    const k = `${r},${c}`;
+    const cell = document.createElement('div');
+    cell.className = answerMap[k] ? 'cell active' : 'cell empty';
+    cell.id = 'cell-'+k;
+
+    if (answerMap[k]) {
+      if (numberMap[k]) {
+        const nums = [...numberMap[k]].join('/');
+        const span = document.createElement('span');
+        span.className = 'cell-num';
+        span.textContent = nums;
+        cell.appendChild(span);
+      }
+      const inp = document.createElement('input');
+      inp.type = 'text';
+      inp.maxLength = 1;
+      inp.dataset.key = k;
+      inp.addEventListener('input', onInput);
+      inp.addEventListener('keydown', onKeydown);
+      inp.addEventListener('focus', onFocus);
+      cell.appendChild(inp);
+      inputs[k] = inp;
+    }
+    gridEl.appendChild(cell);
+  }
+}
+
+// ── BUILD CLUES ────────────────────────────────────────────────────────
+function buildClues(dir, containerId) {
+  const el = document.getElementById(containerId);
+  WORDS.filter(w => w[1]===dir)
+    .sort((a,b) => parseInt(a[4])-parseInt(b[4]) || a[4].localeCompare(b[4]))
+    .forEach((wd, _, arr) => {
+      const [word,d,row,col,num,text] = wd;
+      const div = document.createElement('div');
+      div.className = 'clue';
+      div.dataset.word = word;
+      div.dataset.dir  = d;
+      div.dataset.row  = row;
+      div.dataset.col  = col;
+      div.innerHTML = `<span class="clue-num">${num}</span><span class="clue-text">${text}</span>`;
+      div.addEventListener('click', () => focusWord(row, col, d));
+      el.appendChild(div);
+    });
+}
+buildClues('H','clues-h');
+buildClues('V','clues-v');
+
+// ── NAVIGATION ─────────────────────────────────────────────────────────
+let currentDir = 'H';
+let currentWord = null; // {wi, cells:[keys]}
+
+function getWordCells(wi) {
+  const [word,dir,row,col] = WORDS[wi];
+  const keys = [];
+  for (let i=0;i<word.length;i++) {
+    keys.push(dir==='H' ? `${row},${col+i}` : `${row+i},${col}`);
+  }
+  return keys;
+}
+
+function focusWord(row, col, dir) {
+  const k = `${row},${col}`;
+  // find word starting here with given dir
+  const wi = WORDS.findIndex(w => w[2]===row && w[3]===col && w[1]===dir);
+  if (wi < 0) return;
+  currentWord = {wi, cells: getWordCells(wi)};
+  currentDir = dir;
+  highlightWord();
+  if (inputs[k]) inputs[k].focus();
+}
+
+function highlightWord() {
+  // remove highlights
+  document.querySelectorAll('.cell.active').forEach(el => {
+    if (!el.classList.contains('correct') && !el.classList.contains('wrong') && !el.classList.contains('done'))
+      el.style.background = '';
+  });
+  document.querySelectorAll('.clue').forEach(el => el.classList.remove('active-clue'));
+
+  if (!currentWord) return;
+  // highlight cells
+  currentWord.cells.forEach(k => {
+    const cell = document.getElementById('cell-'+k);
+    if (cell && !cell.classList.contains('correct') && !cell.classList.contains('wrong'))
+      cell.style.background = '#e3f5f2';
+  });
+  // highlight clue
+  const [,,row,col,,] = WORDS[currentWord.wi];
+  document.querySelectorAll('.clue').forEach(el => {
+    if (parseInt(el.dataset.row)===row && parseInt(el.dataset.col)===col && el.dataset.dir===WORDS[currentWord.wi][1])
+      el.classList.add('active-clue');
+  });
+}
+
+function onFocus(e) {
+  const k = e.target.dataset.key;
+  const [r,c] = k.split(',').map(Number);
+  // find which word this cell belongs to that matches currentDir
+  const match = cellWords[k]?.find(({wi}) => WORDS[wi][1] === currentDir);
+  if (match) {
+    currentWord = {wi: match.wi, cells: getWordCells(match.wi)};
+  } else {
+    // toggle direction
+    const other = cellWords[k]?.find(({wi}) => WORDS[wi][1] !== currentDir);
+    if (other) {
+      currentDir = WORDS[other.wi][1];
+      currentWord = {wi: other.wi, cells: getWordCells(other.wi)};
+    }
+  }
+  highlightWord();
+}
+
+function onInput(e) {
+  const inp = e.target;
+  const val = inp.value.toUpperCase().replace(/[^А-ЯЁ]/g,'');
+  inp.value = val ? val[val.length-1] : '';
+  // clear color overrides on cell
+  const cell = document.getElementById('cell-'+inp.dataset.key);
+  cell.classList.remove('correct','wrong','done');
+  cell.style.background = '#e3f5f2';
+  if (inp.value) moveNext(inp.dataset.key);
+}
+
+function onKeydown(e) {
+  const k = e.target.dataset.key;
+  const [r,c] = k.split(',').map(Number);
+  if (e.key==='Backspace' && !e.target.value) {
+    e.preventDefault();
+    movePrev(k);
+  }
+  if (e.key==='ArrowRight') { e.preventDefault(); moveToCell(r, c+1); }
+  if (e.key==='ArrowLeft')  { e.preventDefault(); moveToCell(r, c-1); }
+  if (e.key==='ArrowDown')  { e.preventDefault(); moveToCell(r+1, c); }
+  if (e.key==='ArrowUp')    { e.preventDefault(); moveToCell(r-1, c); }
+  if (e.key==='Tab') {
+    e.preventDefault();
+    cycleWord(e.shiftKey ? -1 : 1);
+  }
+}
+
+function moveNext(k) {
+  if (!currentWord) return;
+  const idx = currentWord.cells.indexOf(k);
+  if (idx < currentWord.cells.length-1) {
+    const nextKey = currentWord.cells[idx+1];
+    if (inputs[nextKey]) inputs[nextKey].focus();
+  }
+}
+function movePrev(k) {
+  if (!currentWord) return;
+  const idx = currentWord.cells.indexOf(k);
+  if (idx > 0) {
+    const prevKey = currentWord.cells[idx-1];
+    if (inputs[prevKey]) inputs[prevKey].focus();
+  }
+}
+function moveToCell(r, c) {
+  const k = `${r},${c}`;
+  if (inputs[k]) inputs[k].focus();
+}
+function cycleWord(delta) {
+  if (!currentWord) return;
+  const nextIdx = (currentWord.wi + delta + WORDS.length) % WORDS.length;
+  const [word,dir,row,col] = WORDS[nextIdx];
+  currentDir = dir;
+  currentWord = {wi: nextIdx, cells: getWordCells(nextIdx)};
+  highlightWord();
+  if (inputs[`${row},${col}`]) inputs[`${row},${col}`].focus();
+}
+
+// ── CHECK / RESET ──────────────────────────────────────────────────────
+function checkAll() {
+  let total = 0, correct = 0, filled = 0;
+  Object.entries(inputs).forEach(([k, inp]) => {
+    total++;
+    const val = inp.value.toUpperCase();
+    const cell = document.getElementById('cell-'+k);
+    cell.classList.remove('correct','wrong','done');
+    cell.style.background = '';
+    if (val) {
+      filled++;
+      if (val === answerMap[k]) {
+        cell.classList.add('correct');
+        correct++;
+      } else {
+        cell.classList.add('wrong');
+      }
+    }
+  });
+  const status = document.getElementById('status');
+  if (correct === total) {
+    status.textContent = '🎉 Кроссворд решён верно! Отличная работа!';
+    status.className = 'status win';
+  } else if (filled === 0) {
+    status.textContent = 'Введите хотя бы одну букву.';
+    status.className = 'status error';
+  } else {
+    status.textContent = `Правильно: ${correct} из ${total} букв. Красным выделены ошибки.`;
+    status.className = 'status info';
+  }
+}
+
+function resetAll() {
+  Object.values(inputs).forEach(inp => {
+    inp.value = '';
+    const cell = document.getElementById('cell-'+inp.dataset.key);
+    cell.classList.remove('correct','wrong','done');
+    cell.style.background = '';
+  });
+  document.querySelectorAll('.clue').forEach(el => el.classList.remove('solved'));
+  const status = document.getElementById('status');
+  status.className = 'status';
+  status.textContent = '';
+  currentWord = null;
+}
+</script>
+</body>
+</html>
