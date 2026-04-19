@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Средства коллективной защиты — шпаргалка</title>
+<link href="https://fonts.googleapis.com/css2?family=Geologica:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green-dark: #007760;
+    --green-mid: #00756E;
+    --green-light: #E8F5F3;
+    --green-pale: #F2FAF8;
+    --text-main: #1a2e2b;
+    --text-muted: #4a6660;
+    --border: #c5e0db;
+    --white: #ffffff;
+    --shadow: 0 2px 16px rgba(0,119,96,0.10);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Geologica', sans-serif;
+    background: var(--green-pale);
+    color: var(--text-main);
+    min-height: 100vh;
+    padding: 24px 16px 40px;
+  }
+
+  .wrap {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  header {
+    background: var(--green-dark);
+    border-radius: 16px;
+    padding: 24px 28px 20px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow);
+  }
+
+  header h1 {
+    color: var(--white);
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 6px;
+  }
+
+  header p {
+    color: rgba(255,255,255,0.75);
+    font-size: 0.85rem;
+    font-weight: 300;
+    line-height: 1.5;
+  }
+
+  .section-title {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--green-mid);
+    margin-bottom: 8px;
+    padding-left: 2px;
+  }
+
+  /* SELECT */
+  .select-wrap {
+    position: relative;
+    margin-bottom: 20px;
+  }
+
+  select {
+    width: 100%;
+    appearance: none;
+    background: var(--white);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 44px 14px 16px;
+    font-family: 'Geologica', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 400;
+    color: var(--text-main);
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.2s;
+    box-shadow: var(--shadow);
+  }
+
+  select:focus {
+    border-color: var(--green-dark);
+  }
+
+  .select-arrow {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: var(--green-dark);
+  }
+
+  /* RESULT CARD */
+  .result {
+    background: var(--white);
+    border-radius: 16px;
+    border: 1.5px solid var(--border);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    animation: fadeIn 0.3s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .result-header {
+    background: var(--green-light);
+    padding: 16px 20px;
+    border-bottom: 1.5px solid var(--border);
+  }
+
+  .result-header .factor-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--green-mid);
+    margin-bottom: 4px;
+  }
+
+  .result-header .factor-name {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--green-dark);
+    line-height: 1.35;
+  }
+
+  .result-body {
+    padding: 18px 20px;
+  }
+
+  .result-body .means-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+  }
+
+  .means-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .means-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 0.92rem;
+    line-height: 1.45;
+    color: var(--text-main);
+    padding: 10px 14px;
+    background: var(--green-pale);
+    border-radius: 8px;
+    border-left: 3px solid var(--green-mid);
+  }
+
+  .means-list li::before {
+    content: "›";
+    color: var(--green-dark);
+    font-weight: 700;
+    font-size: 1.1rem;
+    line-height: 1.35;
+    flex-shrink: 0;
+  }
+
+  /* EMPTY STATE */
+  .empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-muted);
+  }
+
+  .empty svg {
+    opacity: 0.35;
+    margin-bottom: 12px;
+  }
+
+  .empty p {
+    font-size: 0.9rem;
+    font-weight: 300;
+  }
+
+  /* SECTION DIVIDER */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 8px 0 16px;
+  }
+
+  .divider span {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  optgroup {
+    font-weight: 600;
+    color: var(--green-dark);
+  }
+
+  option {
+    font-weight: 400;
+    color: var(--text-main);
+  }
+
+  footer {
+    margin-top: 24px;
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 300;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>Средства коллективной защиты</h1>
+    <p>Выберите вредный или опасный производственный фактор — получите перечень применяемых СКЗ.</p>
+  </header>
+
+  <p class="section-title">Выберите фактор</p>
+
+  <div class="select-wrap">
+    <select id="factorSelect" onchange="showResult()">
+      <option value="">— Выберите фактор —</option>
+      <optgroup label="Нормализация воздуха и освещения">
+        <option value="air">Неблагоприятная воздушная среда</option>
+        <option value="light">Недостаточное или избыточное освещение</option>
+      </optgroup>
+      <optgroup label="Физические факторы">
+        <option value="mech">Воздействие механических факторов</option>
+        <option value="elec">Поражение электрическим током</option>
+        <option value="height">Падение с высоты</option>
+        <option value="noise">Повышенный уровень шума</option>
+        <option value="vibro">Повышенный уровень вибрации</option>
+        <option value="static">Повышенный уровень статического электричества</option>
+        <option value="temp_surf">Повышенная/пониженная температура поверхностей оборудования</option>
+        <option value="temp_air">Повышенная/пониженная температура воздуха и температурные перепады</option>
+        <option value="ultrasound">Повышенный уровень ультразвука</option>
+        <option value="infrasound">Повышенный уровень инфразвуковых колебаний</option>
+      </optgroup>
+      <optgroup label="Излучения">
+        <option value="uv">Повышенный или пониженный уровень ультрафиолетовых излучений</option>
+        <option value="ionize">Повышенный уровень ионизирующих излучений</option>
+        <option value="ir">Повышенный уровень инфракрасных излучений</option>
+        <option value="emf">Повышенный уровень электромагнитных излучений</option>
+        <option value="emf_field">Повышенная напряжённость магнитных и электрических полей</option>
+        <option value="laser">Повышенный уровень лазерного излучения</option>
+      </optgroup>
+      <optgroup label="Химические и биологические факторы">
+        <option value="chem">Воздействие химических факторов</option>
+        <option value="bio">Воздействие биологических факторов</option>
+      </optgroup>
+    </select>
+    <span class="select-arrow">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </span>
+  </div>
+
+  <div id="result"></div>
+
+  <footer>На основе шпаргалки по средствам коллективной защиты</footer>
+
+</div>
+
+<script>
+const data = {
+  air: {
+    name: "Неблагоприятная воздушная среда",
+    means: [
+      "Устройства для поддержания нормируемой величины барометрического давления",
+      "Устройства вентиляции и очистки воздуха",
+      "Устройства кондиционирования воздуха",
+      "Устройства локализации вредных факторов",
+      "Устройства отопления",
+      "Устройства автоматического контроля и сигнализации",
+      "Устройства дезодорации воздуха"
+    ]
+  },
+  light: {
+    name: "Недостаточное или избыточное освещение",
+    means: [
+      "Источники света",
+      "Осветительные приборы",
+      "Световые проёмы",
+      "Светозащитные устройства",
+      "Светофильтры"
+    ]
+  },
+  mech: {
+    name: "Воздействие механических факторов",
+    means: [
+      "Оградительные устройства",
+      "Устройства автоматического контроля и сигнализации",
+      "Предохранительные устройства",
+      "Устройства дистанционного управления",
+      "Тормозные устройства",
+      "Знаки безопасности"
+    ]
+  },
+  elec: {
+    name: "Поражение электрическим током",
+    means: [
+      "Оградительные устройства",
+      "Устройства автоматического контроля и сигнализации",
+      "Изолирующие устройства и покрытия",
+      "Устройства защитного заземления и зануления",
+      "Устройства автоматического отключения",
+      "Устройства выравнивания потенциалов и понижения напряжения",
+      "Устройства дистанционного управления",
+      "Предохранительные устройства",
+      "Молниеотводы и разрядники",
+      "Знаки безопасности"
+    ]
+  },
+  height: {
+    name: "Падение с высоты",
+    means: [
+      "Ограждения",
+      "Защитные сетки",
+      "Знаки безопасности"
+    ]
+  },
+  noise: {
+    name: "Повышенный уровень шума",
+    means: [
+      "Оградительные устройства",
+      "Звукоизолирующие и звукопоглощающие устройства",
+      "Глушители шума",
+      "Устройства автоматического контроля и сигнализации",
+      "Устройства дистанционного управления"
+    ]
+  },
+  vibro: {
+    name: "Повышенный уровень вибрации",
+    means: [
+      "Оградительные устройства",
+      "Виброизолирующие, виброгасящие и вибропоглощающие устройства",
+      "Устройства автоматического контроля и сигнализации",
+      "Устройства дистанционного управления"
+    ]
+  },
+  static: {
+    name: "Повышенный уровень статического электричества",
+    means: [
+      "Заземляющие устройства",
+      "Нейтрализаторы",
+      "Увлажняющие устройства",
+      "Антиэлектростатические вещества",
+      "Экранирующие устройства"
+    ]
+  },
+  temp_surf: {
+    name: "Повышенная/пониженная температура поверхностей оборудования, материалов и заготовок",
+    means: [
+      "Оградительные устройства",
+      "Устройства автоматического контроля и сигнализации",
+      "Термоизолирующие устройства",
+      "Устройства дистанционного управления"
+    ]
+  },
+  temp_air: {
+    name: "Повышенная/пониженная температура воздуха и температурные перепады",
+    means: [
+      "Оградительные устройства",
+      "Устройства автоматического контроля и сигнализации",
+      "Термоизолирующие устройства",
+      "Устройства дистанционного управления",
+      "Устройства радиационного охлаждения и обогрева"
+    ]
+  },
+  ultrasound: {
+    name: "Повышенный уровень ультразвука",
+    means: [
+      "Оградительные устройства",
+      "Звукоизолирующие и звукопоглощающие устройства",
+      "Устройства автоматического контроля и сигнализации",
+      "Устройства дистанционного управления"
+    ]
+  },
+  infrasound: {
+    name: "Повышенный уровень инфразвуковых колебаний",
+    means: [
+      "Оградительные устройства",
+      "Знаки безопасности"
+    ]
+  },
+  uv: {
+    name: "Повышенный или пониженный уровень ультрафиолетовых излучений",
+    means: [
+      "Оградительные устройства",
+      "Устройства для вентиляции воздуха",
+      "Устройства автоматического контроля и сигнализации",
+      "Устройства дистанционного управления",
+      "Знаки безопасности"
+    ]
+  },
+  ionize: {
+    name: "Повышенный уровень ионизирующих излучений",
+    means: [
+      "Оградительные устройства",
+      "Предупредительные устройства",
+      "Герметизирующие устройства",
+      "Защитные покрытия",
+      "Устройства улавливания и очистки воздуха и жидкостей",
+      "Средства дезактивации",
+      "Устройства автоматического контроля",
+      "Устройства дистанционного управления",
+      "Средства защиты при транспортировании и хранении радиоактивных веществ",
+      "Знаки безопасности",
+      "Ёмкости для радиоактивных отходов"
+    ]
+  },
+  ir: {
+    name: "Повышенный уровень инфракрасных излучений",
+    means: [
+      "Оградительные устройства",
+      "Герметизирующие устройства",
+      "Теплоизолирующие устройства",
+      "Вентиляционные устройства",
+      "Устройства автоматического контроля и сигнализации",
+      "Устройства дистанционного управления",
+      "Знаки безопасности"
+    ]
+  },
+  emf: {
+    name: "Повышенный уровень электромагнитных излучений",
+    means: [
+      "Оградительные устройства",
+      "Защитные покрытия",
+      "Герметизирующие устройства",
+      "Устройства автоматического контроля и сигнализации",
+      "Устройства дистанционного управления",
+      "Знаки безопасности"
+    ]
+  },
+  emf_field: {
+    name: "Повышенная напряжённость магнитных и электрических полей",
+    means: [
+      "Оградительные устройства",
+      "Защитные заземления",
+      "Изолирующие устройства и покрытия",
+      "Знаки безопасности"
+    ]
+  },
+  laser: {
+    name: "Повышенный уровень лазерного излучения",
+    means: [
+      "Оградительные устройства",
+      "Предохранительные устройства",
+      "Устройства автоматического контроля и сигнализации",
+      "Устройства дистанционного управления",
+      "Знаки безопасности"
+    ]
+  },
+  chem: {
+    name: "Воздействие химических факторов",
+    means: [
+      "Оградительные устройства",
+      "Устройства автоматического контроля и сигнализации",
+      "Герметизирующие устройства",
+      "Устройства для вентиляции и очистки воздуха",
+      "Устройства для удаления токсичных веществ",
+      "Устройства дистанционного управления",
+      "Знаки безопасности"
+    ]
+  },
+  bio: {
+    name: "Воздействие биологических факторов",
+    means: [
+      "Оборудование и препараты для дезинфекции, дезинсекции, стерилизации, дератизации",
+      "Оградительные устройства",
+      "Герметизирующие устройства",
+      "Устройства для вентиляции и очистки воздуха",
+      "Знаки безопасности"
+    ]
+  }
+};
+
+function showResult() {
+  const key = document.getElementById('factorSelect').value;
+  const container = document.getElementById('result');
+
+  if (!key) {
+    container.innerHTML = '';
+    return;
+  }
+
+  const item = data[key];
+  const items = item.means.map(m => `<li>${m}</li>`).join('');
+
+  container.innerHTML = `
+    <div class="result">
+      <div class="result-header">
+        <div class="factor-label">Фактор</div>
+        <div class="factor-name">${item.name}</div>
+      </div>
+      <div class="result-body">
+        <div class="means-label">Применяемые средства коллективной защиты</div>
+        <ul class="means-list">${items}</ul>
+      </div>
+    </div>
+  `;
+}
+</script>
+</body>
+</html>
