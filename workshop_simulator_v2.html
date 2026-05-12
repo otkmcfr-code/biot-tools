@@ -1,0 +1,368 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+#sim{font-family:var(--font-sans,sans-serif);padding:1rem 0}
+#hdr{margin-bottom:12px}
+#hdr h2{font-size:17px;font-weight:500;color:var(--color-text-primary);margin-bottom:3px}
+#hdr p{font-size:13px;color:var(--color-text-secondary);line-height:1.5}
+#scorebar{display:flex;align-items:center;gap:10px;margin-bottom:10px;padding:9px 14px;background:var(--color-background-secondary);border-radius:8px;border:0.5px solid var(--color-border-tertiary)}
+#scorebar span{font-size:13px;color:var(--color-text-secondary)}
+#fcnt{font-size:15px;font-weight:500;color:var(--color-text-primary)}
+#smsg{margin-left:auto;font-size:13px;color:var(--color-text-secondary)}
+#wrap{position:relative;width:100%;max-width:680px;user-select:none}
+#wrap svg{width:100%;height:auto;display:block}
+.hz{cursor:pointer}
+.hz .ring{opacity:0;transition:opacity .2s}
+.hz:hover .ring{opacity:1}
+.hz.found .ring{display:none}
+.hz.found .chk{display:block}
+.chk{display:none}
+.hz.found .warn{display:none}
+
+/* TOOLTIP — белый фон, тень, всегда поверх */
+#tip{
+  position:absolute;
+  background:#fff;
+  border-radius:10px;
+  border:1px solid #e0e0e0;
+  box-shadow:0 4px 20px rgba(0,0,0,0.18);
+  padding:13px 15px;
+  max-width:230px;
+  min-width:180px;
+  font-size:13px;
+  line-height:1.5;
+  color:#222;
+  pointer-events:none;
+  z-index:50;
+  display:none;
+}
+#tip .tit{font-weight:500;font-size:13px;color:#c0392b;margin-bottom:5px;display:flex;align-items:center;gap:5px}
+#tip .tit svg{flex-shrink:0}
+#tip .bod{color:#444;font-size:12px;line-height:1.55}
+#tip .norm{margin-top:7px;padding-top:7px;border-top:1px solid #eee;font-size:11.5px;color:#27500A;font-weight:500}
+#tip.hover-hint .tit{color:#185FA5}
+#tip.hover-hint .bod{color:#888}
+#tip.hover-hint .norm{display:none}
+
+/* ИТОГОВЫЙ MODAL */
+#mbg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:100;align-items:center;justify-content:center}
+#mbg.open{display:flex}
+#mdl{background:#fff;border-radius:14px;padding:24px;max-width:360px;width:90%;color:#222}
+#mdl h3{font-size:17px;font-weight:500;margin-bottom:8px}
+#mdl .sub{font-size:13px;color:#666;margin-bottom:14px;line-height:1.5}
+#vlist{list-style:none;font-size:13px;border-top:1px solid #eee}
+#vlist li{padding:7px 0;border-bottom:1px solid #eee;display:flex;gap:8px;align-items:flex-start}
+#vlist li span.ico{color:#c0392b;font-weight:700;flex-shrink:0}
+#vlist li span.txt{color:#444}
+#mbtn{margin-top:16px;width:100%;padding:9px;border:1px solid #ddd;border-radius:8px;background:#f6f6f6;cursor:pointer;font-size:14px;color:#222}
+#mbtn:hover{background:#eee}
+</style>
+
+<div id="sim">
+  <h2 class="sr-only">Симулятор обхода слесарной мастерской — найдите нарушения охраны труда</h2>
+  <div id="hdr">
+    <h2>Симулятор обхода: слесарная мастерская</h2>
+    <p>Кликните на все предметы с нарушениями. Нарушения помечены мигающим <span style="color:#c0392b;font-weight:500">красным</span> контуром. Найдите все 6.</p>
+  </div>
+  <div id="scorebar">
+    <span>Найдено:</span>
+    <span id="fcnt">0 / 6</span>
+    <span id="smsg"></span>
+  </div>
+  <div id="wrap">
+    <svg viewBox="0 0 680 430" xmlns="http://www.w3.org/2000/svg" role="img">
+      <title>Схема слесарной мастерской с нарушениями</title>
+      <defs>
+        <pattern id="floor" patternUnits="userSpaceOnUse" width="40" height="40">
+          <rect width="40" height="40" fill="#E8E5DC"/>
+          <rect x="0" y="0" width="20" height="20" fill="#DDD9CF"/>
+          <rect x="20" y="20" width="20" height="20" fill="#DDD9CF"/>
+        </pattern>
+        <pattern id="wall" patternUnits="userSpaceOnUse" width="60" height="30">
+          <rect width="60" height="30" fill="#F0EDE4"/>
+          <rect x="0" y="0" width="58" height="13" fill="#EAE6DC" rx="0"/>
+          <rect x="29" y="15" width="29" height="13" fill="#EAE6DC"/>
+          <line x1="0" y1="14" x2="60" y2="14" stroke="#D8D4C8" stroke-width="0.5"/>
+          <line x1="0" y1="28" x2="60" y2="28" stroke="#D8D4C8" stroke-width="0.5"/>
+          <line x1="30" y1="0" x2="30" y2="14" stroke="#D8D4C8" stroke-width="0.5"/>
+          <line x1="0" y1="15" x2="30" y2="15" stroke="#D8D4C8" stroke-width="0.5"/>
+        </pattern>
+        <filter id="dropshadow" x="-10%" y="-10%" width="120%" height="130%">
+          <feDropShadow dx="1" dy="2" stdDeviation="2" flood-opacity="0.12"/>
+        </filter>
+        <style>
+          @keyframes pulse-ring{0%,100%{opacity:.9;stroke-width:2.5}50%{opacity:.4;stroke-width:1.5}}
+          .warn{animation:pulse-ring 1.4s ease-in-out infinite;stroke:#c0392b;fill:none;stroke-dasharray:6,3}
+          .ring{stroke:#378ADD;fill:rgba(55,138,221,0.08);stroke-width:1.5;stroke-dasharray:5,3}
+        </style>
+      </defs>
+
+      <!-- ФОН: стена и пол -->
+      <rect x="0" y="0" width="680" height="280" fill="url(#wall)"/>
+      <rect x="0" y="280" width="680" height="150" fill="url(#floor)"/>
+      <line x1="0" y1="280" x2="680" y2="280" stroke="#C8C4B8" stroke-width="2"/>
+
+      <!-- Плинтус -->
+      <rect x="0" y="275" width="680" height="8" fill="#C8C4B8"/>
+
+      <!-- ОКНО -->
+      <rect x="280" y="15" width="130" height="85" rx="3" fill="#C8DFF5" stroke="#8AB4D8" stroke-width="1.5" filter="url(#dropshadow)"/>
+      <rect x="282" y="17" width="126" height="81" rx="2" fill="#D8EAFA"/>
+      <line x1="345" y1="17" x2="345" y2="98" stroke="#8AB4D8" stroke-width="1"/>
+      <line x1="282" y1="57" x2="408" y2="57" stroke="#8AB4D8" stroke-width="1"/>
+      <rect x="278" y="13" width="138" height="7" rx="2" fill="#B0A898"/>
+      <rect x="278" y="95" width="138" height="7" rx="2" fill="#B0A898"/>
+      <text x="345" y="118" text-anchor="middle" font-size="11" fill="#888">окно</text>
+
+      <!-- ДВЕРЬ (ВЫХОД) -->
+      <rect x="598" y="185" width="55" height="95" rx="3" fill="#C8DDB8" stroke="#7BAA58" stroke-width="1.5" filter="url(#dropshadow)"/>
+      <circle cx="608" cy="234" r="4" fill="#5A8A38"/>
+      <rect x="596" y="183" width="59" height="7" rx="2" fill="#A8C890"/>
+      <text x="625" y="295" text-anchor="middle" font-size="11" fill="#5A8A38" font-weight="500">ВЫХОД</text>
+
+      <!-- ТОКАРНЫЙ СТАНОК -->
+      <rect x="28" y="150" width="145" height="110" rx="5" fill="#9E9B93" stroke="#7A7870" stroke-width="1.5" filter="url(#dropshadow)"/>
+      <rect x="38" y="162" width="115" height="68" rx="3" fill="#7A7870"/>
+      <rect x="48" y="172" width="95" height="48" rx="2" fill="#5A5855"/>
+      <rect x="58" y="180" width="65" height="28" rx="2" fill="#444240"/>
+      <ellipse cx="160" cy="195" rx="16" ry="16" fill="#5A5855" stroke="#444240" stroke-width="2"/>
+      <ellipse cx="160" cy="195" rx="8" ry="8" fill="#333130"/>
+      <rect x="38" y="234" width="20" height="22" rx="2" fill="#6A6866"/>
+      <rect x="62" y="234" width="20" height="22" rx="2" fill="#6A6866"/>
+      <text x="100" y="278" text-anchor="middle" font-size="11" fill="#666" font-weight="500">токарный станок</text>
+
+      <!-- НАРУШЕНИЕ 1: нет ограждения на станке -->
+      <g class="hz" id="hz1" data-id="1">
+        <rect class="warn" x="26" y="148" width="149" height="114" rx="6" stroke-width="2.5"/>
+        <rect class="ring" x="26" y="148" width="149" height="114" rx="6"/>
+        <text class="chk" x="100" y="210" text-anchor="middle" font-size="32" fill="#27500A">✓</text>
+      </g>
+
+      <!-- ВЕРСТАК -->
+      <rect x="210" y="188" width="200" height="24" rx="3" fill="#A89880" stroke="#8A7A68" stroke-width="1" filter="url(#dropshadow)"/>
+      <rect x="215" y="210" width="190" height="12" rx="0" fill="#8A7A68"/>
+      <!-- Столешница -->
+      <rect x="208" y="182" width="204" height="10" rx="2" fill="#C0AA90"/>
+      <!-- Ножки верстака -->
+      <rect x="220" y="222" width="14" height="60" rx="2" fill="#8A7A68"/>
+      <rect x="378" y="222" width="14" height="60" rx="2" fill="#8A7A68"/>
+      <!-- Перекладина -->
+      <rect x="220" y="262" width="172" height="6" rx="2" fill="#7A6A58"/>
+      <!-- Инструменты на верстаке -->
+      <rect x="225" y="170" width="30" height="10" rx="2" fill="#5A5855"/>
+      <rect x="265" y="167" width="10" height="14" rx="2" fill="#5A5855"/>
+      <rect x="285" y="169" width="40" height="8" rx="2" fill="#7A7870"/>
+      <circle cx="345" cy="174" r="7" fill="#5A5855"/>
+      <text x="310" y="172" text-anchor="middle" font-size="11" fill="#666" font-weight="500">верстак</text>
+
+      <!-- НАРУШЕНИЕ 2: стружка и мусор на полу под верстаком -->
+      <g class="hz" id="hz2" data-id="2">
+        <ellipse cx="310" cy="320" rx="70" ry="16" fill="#C89830" opacity="0.25"/>
+        <!-- Стружки -->
+        <path d="M255,308 Q262,303 270,310 Q277,315 268,320" stroke="#A07820" stroke-width="1.5" fill="none"/>
+        <path d="M290,312 Q298,306 305,313 Q311,319 302,323" stroke="#A07820" stroke-width="1.5" fill="none"/>
+        <path d="M320,306 Q329,301 336,308 Q342,314 333,318" stroke="#A07820" stroke-width="1.5" fill="none"/>
+        <path d="M352,311 Q359,305 366,312" stroke="#A07820" stroke-width="1.5" fill="none"/>
+        <circle cx="272" cy="322" r="2" fill="#888" opacity="0.6"/>
+        <circle cx="315" cy="325" r="1.5" fill="#888" opacity="0.6"/>
+        <circle cx="345" cy="319" r="2" fill="#888" opacity="0.6"/>
+        <rect class="warn" x="238" y="300" width="144" height="32" rx="4" stroke-width="2.5"/>
+        <rect class="ring" x="238" y="300" width="144" height="32" rx="4"/>
+        <text class="chk" x="310" y="323" text-anchor="middle" font-size="28" fill="#27500A">✓</text>
+      </g>
+      <text x="310" y="345" text-anchor="middle" font-size="10" fill="#A07820">металлическая стружка</text>
+
+      <!-- СТЕЛЛАЖ -->
+      <rect x="455" y="70" width="120" height="250" rx="3" fill="#C8B898" stroke="#A89878" stroke-width="1.5" filter="url(#dropshadow)"/>
+      <!-- Рамка стеллажа -->
+      <rect x="455" y="70" width="8" height="250" rx="2" fill="#A89878"/>
+      <rect x="567" y="70" width="8" height="250" rx="2" fill="#A89878"/>
+      <!-- Полки -->
+      <rect x="455" y="110" width="120" height="8" rx="0" fill="#A89878"/>
+      <rect x="455" y="175" width="120" height="8" rx="0" fill="#A89878"/>
+      <rect x="455" y="240" width="120" height="8" rx="0" fill="#A89878"/>
+      <!-- Содержимое полок -->
+      <!-- Нижняя полка: ящики -->
+      <rect x="462" y="248" width="48" height="22" rx="2" fill="#8A7A60" stroke="#7A6A50" stroke-width="0.5"/>
+      <rect x="515" y="248" width="45" height="22" rx="2" fill="#8A7A60" stroke="#7A6A50" stroke-width="0.5"/>
+      <!-- Средняя полка: инструменты -->
+      <rect x="462" y="183" width="30" height="12" rx="2" fill="#6A6860"/>
+      <rect x="497" y="183" width="20" height="12" rx="2" fill="#6A6860"/>
+      <rect x="522" y="183" width="30" height="12" rx="2" fill="#6A6860"/>
+      <text x="515" y="330" text-anchor="middle" font-size="11" fill="#666" font-weight="500">стеллаж</text>
+
+      <!-- НАРУШЕНИЕ 3: тяжёлый груз на верхней полке (выше плеч) -->
+      <rect x="462" y="76" width="106" height="30" rx="2" fill="#C06040" stroke="#A04828" stroke-width="1"/>
+      <text x="515" y="96" text-anchor="middle" font-size="10" fill="#fff" font-weight="500">тяжёлый ящик</text>
+      <g class="hz" id="hz3" data-id="3">
+        <rect class="warn" x="459" y="72" width="113" height="38" rx="4" stroke-width="2.5"/>
+        <rect class="ring" x="459" y="72" width="113" height="38" rx="4"/>
+        <text class="chk" x="515" y="100" text-anchor="middle" font-size="28" fill="#27500A">✓</text>
+      </g>
+
+      <!-- АПТЕЧКА (за стеллажом, плохо видна) -->
+      <rect x="460" y="118" width="42" height="28" rx="2" fill="#4488CC" stroke="#2268AA" stroke-width="1"/>
+      <rect x="476" y="122" width="10" height="20" rx="1" fill="white" opacity="0.9"/>
+      <rect x="470" y="127" width="22" height="10" rx="1" fill="white" opacity="0.9"/>
+      <text x="481" y="158" text-anchor="middle" font-size="10" fill="#2268AA">аптечка</text>
+      <!-- НАРУШЕНИЕ 4: аптечка скрыта, не обозначена -->
+      <g class="hz" id="hz4" data-id="4">
+        <rect class="warn" x="457" y="115" width="48" height="34" rx="4" stroke-width="2.5"/>
+        <rect class="ring" x="457" y="115" width="48" height="34" rx="4"/>
+        <text class="chk" x="481" y="137" text-anchor="middle" font-size="22" fill="#27500A">✓</text>
+      </g>
+
+      <!-- ПРОВОД НА ПОЛУ (через проход) -->
+      <path d="M 175 290 Q 195 285 215 292 Q 235 300 258 290 Q 275 283 295 290" stroke="#CC3322" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+      <circle cx="175" cy="290" r="5" fill="#AA2211"/>
+      <circle cx="295" cy="290" r="5" fill="#AA2211"/>
+      <!-- НАРУШЕНИЕ 5: провод в проходе -->
+      <g class="hz" id="hz5" data-id="5">
+        <rect class="warn" x="164" y="280" width="142" height="22" rx="4" stroke-width="2.5"/>
+        <rect class="ring" x="164" y="280" width="142" height="22" rx="4"/>
+        <text class="chk" x="235" y="297" text-anchor="middle" font-size="22" fill="#27500A">✓</text>
+      </g>
+      <text x="235" y="312" text-anchor="middle" font-size="10" fill="#CC3322">провод в проходе</text>
+
+      <!-- ОГНЕТУШИТЕЛЬ -->
+      <rect x="38" y="285" width="26" height="52" rx="8" fill="#DD3322" stroke="#BB2211" stroke-width="1.5" filter="url(#dropshadow)"/>
+      <rect x="44" y="278" width="14" height="12" rx="2" fill="#BB2211"/>
+      <rect x="44" y="275" width="14" height="5" rx="2" fill="#888"/>
+      <!-- Полоска/бирка просрочена -->
+      <rect x="36" y="310" width="30" height="14" rx="2" fill="#FFF" opacity="0.9"/>
+      <text x="51" y="321" text-anchor="middle" font-size="8" fill="#CC3322" font-weight="500">2021</text>
+      <text x="51" y="353" text-anchor="middle" font-size="10" fill="#666">огнетушитель</text>
+      <!-- НАРУШЕНИЕ 6: просроченный огнетушитель -->
+      <g class="hz" id="hz6" data-id="6">
+        <rect class="warn" x="30" y="272" width="42" height="70" rx="8" stroke-width="2.5"/>
+        <rect class="ring" x="30" y="272" width="42" height="70" rx="8"/>
+        <text class="chk" x="51" y="315" text-anchor="middle" font-size="28" fill="#27500A">✓</text>
+      </g>
+
+      <!-- СТРЕЛКИ ПРОХОДА -->
+      <line x1="175" y1="405" x2="455" y2="405" stroke="#639922" stroke-width="1.5" stroke-dasharray="8,5"/>
+      <polygon points="449,400 460,405 449,410" fill="#639922"/>
+      <polygon points="181,400 170,405 181,410" fill="#639922"/>
+      <text x="315" y="420" text-anchor="middle" font-size="11" fill="#3B6D11">проход</text>
+
+      <!-- Подписи зон -->
+      <text x="100" y="142" text-anchor="middle" font-size="11" fill="#666" font-weight="500">зона станка</text>
+    </svg>
+
+    <!-- ПОДСКАЗКА — белый блок с тенью -->
+    <div id="tip">
+      <div class="tit" id="tt-tit">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="7" fill="#c0392b"/><text x="7" y="11" text-anchor="middle" font-size="9" fill="white" font-weight="700">!</text></svg>
+        <span id="tt-tit-text"></span>
+      </div>
+      <div class="bod" id="tt-bod"></div>
+      <div class="norm" id="tt-norm"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ИТОГОВЫЙ MODAL -->
+<div id="mbg">
+  <div id="mdl">
+    <h3>🎉 Все нарушения найдены!</h3>
+    <p class="sub">Вы выявили все 6 нарушений. Каждое из них требует корректирующей меры:</p>
+    <ul id="vlist"></ul>
+    <button id="mbtn">Закрыть</button>
+  </div>
+</div>
+
+<script>
+const V = {
+  1:{t:"Нет защитного ограждения",b:"Вращающиеся части токарного станка не огорожены — риск захвата руки или одежды.",n:"Норма: ограждение обязательно (показатель ОБ при оценке профрисков)."},
+  2:{t:"Стружка и мусор на полу",b:"Металлическая стружка под верстаком — риск порезов стопы и скольжения.",n:"Пункт чек-листа: «Пол чистый, сухой, без мусора» — не выполняется."},
+  3:{t:"Тяжёлый груз на верхней полке",b:"Тяжёлый ящик хранится выше уровня плеч — при падении травмирует работника.",n:"Норма: тяжёлые предметы хранятся ниже уровня плеч (1,5 м)."},
+  4:{t:"Аптечка не обозначена и скрыта",b:"Аптечка спрятана за краем стеллажа, без знака «+» — работник не найдёт её в критической ситуации.",n:"Аптечка должна быть на видном, доступном, обозначенном месте."},
+  5:{t:"Провод удлинителя в проходе",b:"Красный кабель пересекает проход — риск споткнуться и упасть.",n:"Проходы должны быть свободны. Кабели убираются в кабельные каналы."},
+  6:{t:"Огнетушитель с просроченной проверкой",b:"Последняя поверка огнетушителя — 2021 год. Он может не сработать при пожаре.",n:"Огнетушители проходят техническое обслуживание ежегодно."}
+};
+
+let found = new Set();
+const tip = document.getElementById('tip');
+const wrap = document.getElementById('wrap');
+const msgs = ['','Хорошее начало!','Продолжайте!','Половина!','Уже 4 из 6!','Ещё одно!','Отлично!'];
+
+function positionTip(e) {
+  const r = wrap.getBoundingClientRect();
+  const x = e.clientX - r.left;
+  const y = e.clientY - r.top;
+  const tw = 235, th = 140;
+  const svgW = wrap.offsetWidth;
+  const svgH = wrap.querySelector('svg').offsetHeight;
+  let left = x + 16;
+  let top = y + 12;
+  if (left + tw > svgW) left = x - tw - 8;
+  if (top + th > svgH) top = y - th - 8;
+  if (left < 0) left = 4;
+  if (top < 0) top = 4;
+  tip.style.left = left + 'px';
+  tip.style.top = top + 'px';
+}
+
+document.querySelectorAll('.hz').forEach(el => {
+  el.addEventListener('mouseenter', function(e) {
+    const id = parseInt(this.dataset.id);
+    if (found.has(id)) return;
+    tip.className = 'hover-hint';
+    document.getElementById('tt-tit').style.color = '#185FA5';
+    document.getElementById('tt-tit-text').textContent = 'Нажмите, чтобы проверить';
+    document.getElementById('tt-bod').textContent = 'Здесь может быть нарушение...';
+    document.getElementById('tt-norm').textContent = '';
+    tip.style.display = 'block';
+    positionTip(e);
+  });
+
+  el.addEventListener('mousemove', function(e) {
+    const id = parseInt(this.dataset.id);
+    if (!found.has(id)) positionTip(e);
+  });
+
+  el.addEventListener('mouseleave', function() {
+    const id = parseInt(this.dataset.id);
+    if (!found.has(id)) tip.style.display = 'none';
+  });
+
+  el.addEventListener('click', function(e) {
+    const id = parseInt(this.dataset.id);
+    if (found.has(id)) return;
+    found.add(id);
+    this.classList.add('found');
+    const v = V[id];
+    tip.className = '';
+    document.getElementById('tt-tit').style.color = '#c0392b';
+    document.getElementById('tt-tit-text').textContent = v.t;
+    document.getElementById('tt-bod').textContent = v.b;
+    document.getElementById('tt-norm').textContent = '✔ ' + v.n;
+    tip.style.display = 'block';
+    positionTip(e);
+    const n = found.size;
+    document.getElementById('fcnt').textContent = n + ' / 6';
+    document.getElementById('smsg').textContent = msgs[n] || '';
+    if (n === 6) setTimeout(showFinal, 900);
+  });
+});
+
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.hz')) tip.style.display = 'none';
+});
+
+function showFinal() {
+  tip.style.display = 'none';
+  const list = document.getElementById('vlist');
+  list.innerHTML = '';
+  Object.values(V).forEach(v => {
+    const li = document.createElement('li');
+    li.innerHTML = '<span class="ico">✗</span><span class="txt"><b>' + v.t + '</b> — ' + v.b + '</span>';
+    list.appendChild(li);
+  });
+  document.getElementById('mbg').classList.add('open');
+}
+
+document.getElementById('mbtn').addEventListener('click', () => {
+  document.getElementById('mbg').classList.remove('open');
+});
+</script>
