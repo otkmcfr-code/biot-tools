@@ -1,0 +1,265 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans,sans-serif)}
+#sim{padding:1rem 0}
+#header{margin-bottom:1rem}
+#header h2{font-size:18px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px}
+#header p{font-size:14px;color:var(--color-text-secondary)}
+#score-bar{display:flex;align-items:center;gap:12px;margin-bottom:12px;padding:10px 14px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary)}
+#score-bar span{font-size:13px;color:var(--color-text-secondary)}
+#found-count{font-size:15px;font-weight:500;color:var(--color-text-primary)}
+#workshop-wrap{position:relative;width:100%;max-width:680px}
+#workshop-svg{width:100%;height:auto;display:block;cursor:default}
+.hz{cursor:pointer;transition:opacity 0.15s}
+.hz:hover rect.pulse,.hz:hover circle.pulse,.hz:hover ellipse.pulse,.hz:hover polygon.pulse{opacity:0.5}
+.hz.found rect.pulse,.hz.found circle.pulse,.hz.found ellipse.pulse,.hz.found polygon.pulse{display:none}
+.hz.found .ok-mark{display:block}
+.ok-mark{display:none}
+#tooltip{position:absolute;background:var(--color-background-primary);border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-lg);padding:12px 14px;max-width:240px;font-size:13px;line-height:1.5;color:var(--color-text-primary);pointer-events:none;z-index:10;display:none;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
+#tooltip .tt-title{font-weight:500;font-size:13px;margin-bottom:4px;color:var(--color-text-primary)}
+#tooltip .tt-body{color:var(--color-text-secondary)}
+#tooltip .tt-correct{color:#3B6D11;font-weight:500;margin-top:6px;font-size:12px}
+#modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:20;align-items:center;justify-content:center}
+#modal-bg.open{display:flex}
+#modal{background:var(--color-background-primary);border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-tertiary);padding:1.5rem;max-width:360px;width:90%}
+#modal h3{font-size:18px;font-weight:500;margin-bottom:8px;color:var(--color-text-primary)}
+#modal p{font-size:14px;color:var(--color-text-secondary);line-height:1.6;margin-bottom:16px}
+#modal-list{list-style:none;font-size:13px;color:var(--color-text-secondary);margin-bottom:16px}
+#modal-list li{padding:4px 0;border-bottom:0.5px solid var(--color-border-tertiary)}
+#modal-list li:last-child{border:none}
+#modal-list .viol{color:#A32D2D}
+#modal-close{width:100%;padding:8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-secondary);cursor:pointer;font-size:14px;color:var(--color-text-primary)}
+#modal-close:hover{background:var(--color-background-tertiary)}
+</style>
+
+<div id="sim">
+  <h2 class="sr-only">Симулятор обхода: найдите нарушения в слесарной мастерской</h2>
+  <div id="header">
+    <h2>Симулятор обхода рабочего места</h2>
+    <p>Осмотрите слесарную мастерскую. Нажмите на предметы, где есть нарушения — найдите все 6.</p>
+  </div>
+  <div id="score-bar">
+    <span>Найдено нарушений:</span>
+    <span id="found-count">0 / 6</span>
+    <span id="score-msg" style="margin-left:auto;font-size:13px;color:var(--color-text-secondary)"></span>
+  </div>
+  <div id="workshop-wrap">
+    <svg id="workshop-svg" viewBox="0 0 680 420" xmlns="http://www.w3.org/2000/svg" role="img">
+      <title>Схема слесарной мастерской с нарушениями охраны труда</title>
+
+      <!-- Пол -->
+      <rect x="0" y="340" width="680" height="80" fill="#D3D1C7"/>
+      <!-- Стены -->
+      <rect x="0" y="0" width="680" height="340" fill="#F1EFE8"/>
+      <!-- Линия пола -->
+      <line x1="0" y1="340" x2="680" y2="340" stroke="#B4B2A9" stroke-width="1.5"/>
+
+      <!-- Окно -->
+      <rect x="280" y="20" width="120" height="70" rx="2" fill="#B5D4F4" stroke="#85B7EB" stroke-width="1"/>
+      <line x1="340" y1="20" x2="340" y2="90" stroke="#85B7EB" stroke-width="0.8"/>
+      <line x1="280" y1="55" x2="400" y2="55" stroke="#85B7EB" stroke-width="0.8"/>
+      <text x="340" y="108" text-anchor="middle" font-size="11" fill="#888780">окно</text>
+
+      <!-- Дверь (выход) -->
+      <rect x="580" y="240" width="60" height="100" rx="2" fill="#C0DD97" stroke="#639922" stroke-width="1"/>
+      <circle cx="590" cy="292" r="3" fill="#639922"/>
+      <text x="610" y="308" text-anchor="middle" font-size="11" fill="#3B6D11">выход</text>
+
+      <!-- ТОКАРНЫЙ СТАНОК (слева) -->
+      <rect x="30" y="160" width="130" height="90" rx="4" fill="#B4B2A9" stroke="#888780" stroke-width="1"/>
+      <rect x="50" y="175" width="90" height="55" rx="2" fill="#888780"/>
+      <rect x="65" y="185" width="60" height="30" rx="2" fill="#5F5E5A"/>
+      <ellipse cx="155" cy="205" rx="14" ry="14" fill="#5F5E5A" stroke="#444441" stroke-width="1"/>
+      <text x="95" y="268" text-anchor="middle" font-size="11" fill="#5F5E5A">токарный станок</text>
+
+      <!-- НАРУШЕНИЕ 1: нет ограждения на станке — мигающий красный контур -->
+      <g class="hz" id="hz1" data-id="1">
+        <rect class="pulse" x="28" y="158" width="134" height="94" rx="4" fill="#F09595" stroke="#E24B4A" stroke-width="2" stroke-dasharray="5,3" opacity="0.6"/>
+        <text class="ok-mark" x="95" y="225" text-anchor="middle" font-size="22" fill="#3B6D11">✓</text>
+      </g>
+
+      <!-- ВЕРСТАК (центр) -->
+      <rect x="220" y="200" width="180" height="20" rx="2" fill="#B4B2A9" stroke="#888780" stroke-width="1"/>
+      <rect x="225" y="220" width="170" height="100" rx="2" fill="#D3D1C7" stroke="#B4B2A9" stroke-width="0.8"/>
+      <!-- Ножки -->
+      <rect x="230" y="315" width="12" height="25" fill="#B4B2A9"/>
+      <rect x="378" y="315" width="12" height="25" fill="#B4B2A9"/>
+      <!-- Инструменты на верстаке -->
+      <rect x="240" y="188" width="25" height="8" rx="2" fill="#5F5E5A"/>
+      <rect x="275" y="185" width="8" height="12" rx="1" fill="#5F5E5A"/>
+      <text x="310" y="198" text-anchor="middle" font-size="11" fill="#5F5E5A">верстак</text>
+
+      <!-- НАРУШЕНИЕ 2: стружка на полу под верстаком -->
+      <g class="hz" id="hz2" data-id="2">
+        <ellipse class="pulse" cx="310" cy="335" rx="50" ry="10" fill="#EF9F27" stroke="#BA7517" stroke-width="1.5" stroke-dasharray="4,2" opacity="0.7"/>
+        <text x="310" y="338" text-anchor="middle" font-size="9" fill="#633806">✦ ✦ ✦ ✦</text>
+        <text class="ok-mark" x="310" y="338" text-anchor="middle" font-size="20" fill="#3B6D11">✓</text>
+      </g>
+
+      <!-- СТЕЛЛАЖ (справа) -->
+      <rect x="450" y="80" width="110" height="240" rx="2" fill="#D3D1C7" stroke="#B4B2A9" stroke-width="1"/>
+      <!-- Полки -->
+      <rect x="450" y="120" width="110" height="6" fill="#B4B2A9"/>
+      <rect x="450" y="180" width="110" height="6" fill="#B4B2A9"/>
+      <rect x="450" y="240" width="110" height="6" fill="#B4B2A9"/>
+      <!-- Ящики на полках -->
+      <rect x="458" y="130" width="35" height="45" rx="2" fill="#888780"/>
+      <rect x="498" y="130" width="35" height="45" rx="2" fill="#888780"/>
+      <!-- НАРУШЕНИЕ 3: тяжёлый груз на верхней полке -->
+      <rect x="456" y="86" width="90" height="28" rx="2" fill="#F09595" stroke="#E24B4A" stroke-width="1"/>
+      <text x="501" y="104" text-anchor="middle" font-size="10" fill="#791F1F">тяжёлый ящик</text>
+      <g class="hz" id="hz3" data-id="3">
+        <rect class="pulse" x="454" y="84" width="94" height="32" rx="2" fill="#F09595" stroke="#E24B4A" stroke-width="2" stroke-dasharray="4,2" opacity="0.5"/>
+        <text class="ok-mark" x="501" y="104" text-anchor="middle" font-size="20" fill="#3B6D11">✓</text>
+      </g>
+      <text x="505" y="335" text-anchor="middle" font-size="11" fill="#5F5E5A">стеллаж</text>
+
+      <!-- АПТЕЧКА (неудобное место — за стеллажом) -->
+      <rect x="455" y="248" width="40" height="30" rx="2" fill="#B5D4F4" stroke="#378ADD" stroke-width="1"/>
+      <text x="475" y="260" text-anchor="middle" font-size="9" fill="#0C447C">+</text>
+      <text x="475" y="270" text-anchor="middle" font-size="8" fill="#0C447C">аптечка</text>
+      <!-- НАРУШЕНИЕ 4: аптечка не на видном месте -->
+      <g class="hz" id="hz4" data-id="4">
+        <rect class="pulse" x="453" y="246" width="44" height="34" rx="2" fill="#F09595" stroke="#E24B4A" stroke-width="2" stroke-dasharray="4,2" opacity="0.5"/>
+        <text class="ok-mark" x="475" y="267" text-anchor="middle" font-size="20" fill="#3B6D11">✓</text>
+      </g>
+
+      <!-- УДЛИНИТЕЛЬ / ПРОВОДА на полу -->
+      <path d="M 170 340 Q 200 330 230 340 Q 260 350 290 340" stroke="#E24B4A" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <!-- НАРУШЕНИЕ 5: провод в проходе -->
+      <g class="hz" id="hz5" data-id="5">
+        <ellipse class="pulse" cx="230" cy="338" rx="65" ry="12" fill="#F09595" stroke="#E24B4A" stroke-width="1.5" stroke-dasharray="4,2" opacity="0.5"/>
+        <text class="ok-mark" x="230" y="343" text-anchor="middle" font-size="20" fill="#3B6D11">✓</text>
+      </g>
+
+      <!-- ОГНЕТУШИТЕЛЬ (с просроченной проверкой) -->
+      <rect x="38" y="290" width="22" height="44" rx="6" fill="#E24B4A" stroke="#A32D2D" stroke-width="1"/>
+      <rect x="44" y="283" width="10" height="10" rx="2" fill="#A32D2D"/>
+      <text x="49" y="350" text-anchor="middle" font-size="10" fill="#5F5E5A">огнетуш.</text>
+      <!-- НАРУШЕНИЕ 6: просрочен -->
+      <g class="hz" id="hz6" data-id="6">
+        <rect class="pulse" x="33" y="278" width="33" height="62" rx="6" fill="#F09595" stroke="#E24B4A" stroke-width="2" stroke-dasharray="4,2" opacity="0.5"/>
+        <text x="49" y="305" text-anchor="middle" font-size="8" fill="#791F1F">2021</text>
+        <text class="ok-mark" x="49" y="315" text-anchor="middle" font-size="20" fill="#3B6D11">✓</text>
+      </g>
+
+      <!-- Подписи зон -->
+      <text x="95" y="155" text-anchor="middle" font-size="12" fill="#5F5E5A" font-weight="500">зона станка</text>
+      <text x="310" y="185" text-anchor="middle" font-size="12" fill="#5F5E5A" font-weight="500">рабочая зона</text>
+
+      <!-- Стрелка прохода -->
+      <line x1="170" y1="370" x2="450" y2="370" stroke="#639922" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <polygon points="445,365 455,370 445,375" fill="#639922"/>
+      <polygon points="175,365 165,370 175,375" fill="#639922"/>
+      <text x="310" y="385" text-anchor="middle" font-size="11" fill="#3B6D11">проход</text>
+    </svg>
+    <div id="tooltip">
+      <div class="tt-title" id="tt-title"></div>
+      <div class="tt-body" id="tt-body"></div>
+      <div class="tt-correct" id="tt-correct"></div>
+    </div>
+  </div>
+</div>
+
+<div id="modal-bg">
+  <div id="modal">
+    <h3 id="modal-h"></h3>
+    <p id="modal-p"></p>
+    <ul id="modal-list"></ul>
+    <button id="modal-close">Закрыть</button>
+  </div>
+</div>
+
+<script>
+const violations = {
+  1:{title:"Нет защитного ограждения",body:"Токарный станок работает без защитного ограждения вращающихся частей.",correct:"Правильно! Ограждение обязательно по требованиям безопасности оборудования (показатель ОБ при ОПР)."},
+  2:{title:"Металлическая стружка на полу",body:"Пол под верстаком покрыт стружкой — риск порезов и скольжения.",correct:"Верно! Пункт чек-листа «Пол чистый, сухой, без мусора» — не выполняется."},
+  3:{title:"Тяжёлый груз на верхней полке",body:"Тяжёлый ящик хранится выше уровня плеч — риск падения на работника.",correct:"Точно! По нормам тяжёлые предметы должны храниться ниже уровня плеч."},
+  4:{title:"Аптечка не на видном месте",body:"Аптечка спрятана за стеллажом — работник не знает, где она находится.",correct:"Верно! Аптечка должна быть на видном, обозначенном, доступном месте."},
+  5:{title:"Провод (удлинитель) в проходе",body:"Кабель лежит прямо в проходе — риск зацепиться и упасть.",correct:"Правильно! Проходы должны быть свободны. Кабели убирают в кабельные каналы."},
+  6:{title:"Огнетушитель с просроченной проверкой",body:"Дата последней поверки огнетушителя — 2021 год. Он может оказаться неисправным.",correct:"Верно! Огнетушители проверяются ежегодно. Просроченный — нарушение пожарной безопасности."}
+};
+
+let found = new Set();
+const tooltip = document.getElementById('tooltip');
+const wrap = document.getElementById('workshop-wrap');
+
+document.querySelectorAll('.hz').forEach(el => {
+  el.addEventListener('click', function(e) {
+    const id = parseInt(this.dataset.id);
+    if (found.has(id)) return;
+    found.add(id);
+    this.classList.add('found');
+
+    const v = violations[id];
+    showTooltip(e, v);
+    updateScore();
+    if (found.size === 6) {
+      setTimeout(showFinal, 800);
+    }
+  });
+
+  el.addEventListener('mouseenter', function(e) {
+    if (!found.has(parseInt(this.dataset.id))) {
+      tooltip.style.display = 'block';
+      document.getElementById('tt-title').textContent = '🔍 Нажмите, чтобы проверить';
+      document.getElementById('tt-body').textContent = '';
+      document.getElementById('tt-correct').textContent = '';
+      posTooltip(e);
+    }
+  });
+
+  el.addEventListener('mousemove', posTooltip);
+
+  el.addEventListener('mouseleave', function() {
+    const id = parseInt(this.dataset.id);
+    if (!found.has(id)) tooltip.style.display = 'none';
+  });
+});
+
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.hz')) tooltip.style.display = 'none';
+});
+
+function posTooltip(e) {
+  const rect = wrap.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+  const tw = 240, th = 120;
+  tooltip.style.left = (x + 14 + tw > rect.width ? x - tw - 8 : x + 14) + 'px';
+  tooltip.style.top = (y + 14 + th > rect.height ? y - th - 8 : y + 14) + 'px';
+}
+
+function showTooltip(e, v) {
+  document.getElementById('tt-title').textContent = '✓ ' + v.title;
+  document.getElementById('tt-body').textContent = v.body;
+  document.getElementById('tt-correct').textContent = v.correct;
+  tooltip.style.display = 'block';
+  posTooltip(e);
+}
+
+function updateScore() {
+  const n = found.size;
+  document.getElementById('found-count').textContent = n + ' / 6';
+  const msgs = ['','Хорошее начало!','Продолжайте!','Уже половина!','Почти все!','Ещё одно!','Отличная работа!'];
+  document.getElementById('score-msg').textContent = msgs[n] || '';
+}
+
+function showFinal() {
+  document.getElementById('modal-h').textContent = 'Все нарушения найдены!';
+  document.getElementById('modal-p').textContent = 'Вы выявили все 6 нарушений. Вот что требует корректирующих мер:';
+  const list = document.getElementById('modal-list');
+  list.innerHTML = '';
+  Object.values(violations).forEach(v => {
+    const li = document.createElement('li');
+    li.innerHTML = '<span class="viol">✗</span> ' + v.title;
+    list.appendChild(li);
+  });
+  document.getElementById('modal-bg').classList.add('open');
+}
+
+document.getElementById('modal-close').addEventListener('click', () => {
+  document.getElementById('modal-bg').classList.remove('open');
+});
+</script>
