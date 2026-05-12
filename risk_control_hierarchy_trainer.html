@@ -1,0 +1,261 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+#app{font-family:var(--font-sans,sans-serif);padding:1.25rem 0;max-width:660px}
+#intro{margin-bottom:1.5rem}
+#intro h2{font-size:17px;font-weight:500;color:var(--color-text-primary);margin-bottom:6px}
+#intro p{font-size:13px;color:var(--color-text-secondary);line-height:1.6}
+#progress-wrap{margin-bottom:1rem}
+#progress-label{font-size:12px;color:var(--color-text-secondary);margin-bottom:5px}
+#progress-track{height:4px;background:var(--color-background-secondary);border-radius:2px;overflow:hidden}
+#progress-fill{height:4px;background:#185FA5;border-radius:2px;transition:width .4s ease}
+#card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden}
+#situation-header{padding:12px 16px;background:var(--color-background-secondary);border-bottom:0.5px solid var(--color-border-tertiary);display:flex;align-items:center;justify-content:space-between}
+#situation-num{font-size:13px;font-weight:500;color:var(--color-text-secondary)}
+#score-badge{font-size:12px;color:var(--color-text-secondary);background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:20px;padding:2px 10px}
+#situation-body{padding:18px 18px 6px}
+#situation-text{font-size:15px;color:var(--color-text-primary);line-height:1.65;margin-bottom:16px;font-weight:400}
+#options{display:flex;flex-direction:column;gap:8px;padding:0 18px 16px}
+.opt{display:flex;align-items:flex-start;gap:11px;padding:11px 14px;border:1.5px solid var(--color-border-tertiary);border-radius:8px;cursor:pointer;transition:border-color .15s,background .15s;background:var(--color-background-primary)}
+.opt:hover:not(.locked){border-color:#378ADD;background:var(--color-background-secondary)}
+.opt-letter{width:24px;height:24px;border-radius:50%;background:var(--color-background-secondary);border:1.5px solid var(--color-border-secondary);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;color:var(--color-text-secondary);flex-shrink:0;transition:background .15s,border-color .15s}
+.opt-text{font-size:13.5px;color:var(--color-text-primary);line-height:1.55;padding-top:2px}
+.opt.correct{border-color:#3B6D11;background:#EAF3DE}
+.opt.correct .opt-letter{background:#3B6D11;border-color:#3B6D11;color:#fff}
+.opt.correct .opt-text{color:#27500A}
+.opt.wrong{border-color:#A32D2D;background:#FCEBEB}
+.opt.wrong .opt-letter{background:#A32D2D;border-color:#A32D2D;color:#fff}
+.opt.wrong .opt-text{color:#791F1F}
+.opt.neutral{opacity:.55}
+.opt.locked{cursor:default}
+#feedback{margin:0 18px 16px;padding:12px 14px;border-radius:8px;font-size:13px;line-height:1.6;display:none}
+#feedback.correct{background:#EAF3DE;border:1px solid #C0DD97;color:#27500A}
+#feedback.wrong{background:#FCEBEB;border:1px solid #F7C1C1;color:#791F1F}
+#feedback .fb-title{font-weight:500;margin-bottom:4px;font-size:13px}
+#feedback .fb-body{color:inherit;opacity:.85}
+#footer{padding:12px 18px 16px;border-top:0.5px solid var(--color-border-tertiary);display:flex;align-items:center;justify-content:flex-end}
+#btn-next{padding:8px 20px;background:#185FA5;color:#fff;border:none;border-radius:7px;font-size:13px;font-weight:500;cursor:pointer;display:none;transition:background .15s}
+#btn-next:hover{background:#0C447C}
+#hint{font-size:12px;color:var(--color-text-secondary)}
+
+#final{display:none;padding:24px 20px}
+#final h3{font-size:18px;font-weight:500;color:var(--color-text-primary);margin-bottom:6px}
+#final .result-line{font-size:14px;color:var(--color-text-secondary);margin-bottom:20px}
+#final .result-line b{color:var(--color-text-primary)}
+#hierarchy{background:var(--color-background-secondary);border-radius:8px;padding:14px 16px;margin-bottom:20px}
+#hierarchy p{font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:10px}
+.h-row{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:0.5px solid var(--color-border-tertiary)}
+.h-row:last-child{border:none}
+.h-num{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;flex-shrink:0}
+.h1 .h-num{background:#EAF3DE;color:#27500A}
+.h2 .h-num{background:#D8EAFA;color:#0C447C}
+.h3 .h-num{background:#E6F1FB;color:#185FA5}
+.h4 .h-num{background:#FAEEDA;color:#633806}
+.h5 .h-num{background:#FCEBEB;color:#791F1F}
+.h-label{font-size:13px;font-weight:500;color:var(--color-text-primary)}
+.h-desc{font-size:12px;color:var(--color-text-secondary)}
+#btn-restart{padding:9px 20px;background:var(--color-background-secondary);border:0.5px solid var(--color-border-secondary);border-radius:7px;font-size:13px;font-weight:500;cursor:pointer;color:var(--color-text-primary)}
+#btn-restart:hover{background:var(--color-background-tertiary)}
+</style>
+
+<div id="app">
+  <h2 class="sr-only">Тренажёр: выберите правильную меру по иерархии контроля рисков</h2>
+  <div id="intro">
+    <h2>Выберите правильную меру</h2>
+    <p>Тренажёр по иерархии контроля рисков. Для каждой ситуации выберите наиболее эффективную меру — и узнаете, почему одни меры работают лучше других.</p>
+  </div>
+
+  <div id="progress-wrap">
+    <div id="progress-label">Ситуация <span id="cur">1</span> из 5</div>
+    <div id="progress-track"><div id="progress-fill" style="width:0%"></div></div>
+  </div>
+
+  <div id="card">
+    <div id="situation-header">
+      <span id="situation-num">Ситуация 1 / 5</span>
+      <span id="score-badge">Верно: <span id="score">0</span></span>
+    </div>
+
+    <div id="situation-body">
+      <p id="situation-text"></p>
+    </div>
+    <div id="options"></div>
+    <div id="feedback"><div class="fb-title" id="fb-title"></div><div class="fb-body" id="fb-body"></div></div>
+    <div id="footer">
+      <span id="hint">Выберите вариант</span>
+      <button id="btn-next">Следующая ситуация →</button>
+    </div>
+
+    <div id="final">
+      <h3 id="final-title"></h3>
+      <p class="result-line" id="final-sub"></p>
+      <div id="hierarchy">
+        <p>Иерархия мер контроля рисков</p>
+        <div class="h-row h1"><div class="h-num">1</div><div><div class="h-label">Ликвидация</div><div class="h-desc">Убрать источник опасности совсем</div></div></div>
+        <div class="h-row h2"><div class="h-num">2</div><div><div class="h-label">Замена</div><div class="h-desc">Заменить опасное на менее опасное</div></div></div>
+        <div class="h-row h3"><div class="h-num">3</div><div><div class="h-label">Технические меры</div><div class="h-desc">Ограждения, кабельные каналы, вентиляция</div></div></div>
+        <div class="h-row h4"><div class="h-num">4</div><div><div class="h-label">Административные меры</div><div class="h-desc">Инструктажи, знаки, регламенты</div></div></div>
+        <div class="h-row h5"><div class="h-num">5</div><div><div class="h-label">СИЗ</div><div class="h-desc">Последний рубеж, не заменяет уровни 1-4</div></div></div>
+      </div>
+      <button id="btn-restart">Пройти ещё раз</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const DATA = [
+  {
+    situation: "На токарном станке отсутствует защитное ограждение вращающихся частей.",
+    options: [
+      {letter:"А", text:"Провести инструктаж с оператором о правилах безопасной работы",
+       correct:false, fb:"Инструктаж не устраняет физическую опасность. Это административная мера — 4-й уровень иерархии. Пока ограждения нет, риск остаётся."},
+      {letter:"Б", text:"Установить стационарное защитное ограждение",
+       correct:true, fb:"Правильно. Прежде всего нужна техническая мера — 3-й уровень. Ограждение работает независимо от поведения человека: оно физически исключает контакт с опасной зоной."},
+      {letter:"В", text:"Выдать оператору перчатки и защитные очки",
+       correct:false, fb:"СИЗ — это 5-й, последний уровень иерархии. Перчатки не предотвращают захват руки в механизм. Сначала нужно устранить саму опасность технической мерой."}
+    ]
+  },
+  {
+    situation: "В рабочей зоне сварщика применяется токсичный растворитель для обезжиривания деталей.",
+    options: [
+      {letter:"А", text:"Обязать сварщика использовать респиратор при работе с растворителем",
+       correct:false, fb:"Респиратор — это СИЗ (5-й уровень). Он снижает воздействие, но не устраняет источник риска. Токсичное вещество по-прежнему присутствует на рабочем месте."},
+      {letter:"Б", text:"Заменить токсичный растворитель на менее опасный водорастворимый обезжириватель",
+       correct:true, fb:"Правильно. Наиболее эффективная мера в данном случае — замена (2-й уровень иерархии). Она убирает сам вредный фактор, а не просто ограничивает его воздействие."},
+      {letter:"В", text:"Установить знак «Работать только в СИЗ»",
+       correct:false, fb:"Знак — административная мера (4-й уровень). Он напоминает об опасности, но не устраняет её. Токсичный растворитель при этом никуда не исчезает."}
+    ]
+  },
+  {
+    situation: "Металлическая стружка после работы на верстаке остаётся на полу — работник не убирает её, потому что нет подходящего инструмента для уборки.",
+    options: [
+      {letter:"А", text:"Провести внеплановый инструктаж о необходимости поддерживать порядок на рабочем месте",
+       correct:false, fb:"Причина нарушения не в незнании правил, а в отсутствии средств уборки. Инструктаж не решит проблему: работник и так знает, что нужно убирать — просто нечем."},
+      {letter:"Б", text:"Закупить промышленный пылесос для уборки стружки",
+       correct:true, fb:"Правильно. Здесь нужна техническая/организационная мера, которая устраняет саму причину нарушения. Появился инструмент — исчезло препятствие для соблюдения правил."},
+      {letter:"В", text:"Выдать работнику защитную обувь с металлическим носком",
+       correct:false, fb:"Защитная обувь — это СИЗ (5-й уровень). Она снижает тяжесть травмы, но не убирает стружку с пола. Источник риска остаётся."}
+    ]
+  },
+  {
+    situation: "Кабель удлинителя проложен через проход в цехе, создавая риск падения.",
+    options: [
+      {letter:"А", text:"Разместить предупреждающий знак «Осторожно — кабель»",
+       correct:false, fb:"Знак — административная мера (4-й уровень). Он предупреждает, но не убирает препятствие. Кабель по-прежнему лежит в проходе."},
+      {letter:"Б", text:"Убрать кабель в напольный кабельный канал или проложить по стене",
+       correct:true, fb:"Правильно. Техническая мера (3-й уровень) устраняет опасность физически: кабель больше не пересекает проход. Это надёжнее любого знака или запрета."},
+      {letter:"В", text:"Запретить проходить через этот участок и установить обходной маршрут",
+       correct:false, fb:"Это административная мера (4-й уровень) — она может подойти как временное решение, пока кабель не убран. Но она не устраняет источник риска и неудобна для работы."}
+    ]
+  },
+  {
+    situation: "Тяжёлые ящики хранятся на верхней полке стеллажа выше уровня плеч.",
+    options: [
+      {letter:"А", text:"Выдать работникам каски на случай падения предмета",
+       correct:false, fb:"Каска — СИЗ (5-й уровень). Она снижает тяжесть последствий при падении, но не предотвращает само падение. Ящики по-прежнему хранятся опасно."},
+      {letter:"Б", text:"Переложить тяжёлые ящики на нижние полки (ниже уровня плеч), лёгкие предметы — на верхние",
+       correct:true, fb:"Правильно. Это ликвидация опасности (1-й уровень — наиболее эффективный) путём изменения организации хранения. Опасная ситуация физически исключена."},
+      {letter:"В", text:"Провести инструктаж о правилах хранения материалов",
+       correct:false, fb:"Инструктаж нужен в любом случае, но сам по себе он не устранит неправильное расположение ящиков. Административная мера (4-й уровень) не заменяет физическое исправление ситуации."}
+    ]
+  }
+];
+
+const titles = ["","Неплохо, но есть над чем поработать","Хорошо!","Хорошо!","Отлично!","Отлично! Все верно!"];
+let cur = 0, score = 0, answered = false;
+
+function render() {
+  const d = DATA[cur];
+  document.getElementById('cur').textContent = cur + 1;
+  document.getElementById('situation-num').textContent = 'Ситуация ' + (cur+1) + ' / 5';
+  document.getElementById('progress-fill').style.width = (cur / 5 * 100) + '%';
+  document.getElementById('situation-text').textContent = d.situation;
+  document.getElementById('feedback').style.display = 'none';
+  document.getElementById('feedback').className = '';
+  document.getElementById('btn-next').style.display = 'none';
+  document.getElementById('hint').style.display = 'inline';
+  document.getElementById('hint').textContent = 'Выберите вариант';
+  answered = false;
+
+  const opts = document.getElementById('options');
+  opts.innerHTML = '';
+  d.options.forEach((o, i) => {
+    const el = document.createElement('div');
+    el.className = 'opt';
+    el.dataset.i = i;
+    el.innerHTML = '<div class="opt-letter">' + o.letter + '</div><div class="opt-text">' + o.text + '</div>';
+    el.addEventListener('click', () => choose(i));
+    opts.appendChild(el);
+  });
+}
+
+function choose(i) {
+  if (answered) return;
+  answered = true;
+  const d = DATA[cur];
+  const chosen = d.options[i];
+  const allOpts = document.querySelectorAll('.opt');
+
+  allOpts.forEach((el, idx) => {
+    el.classList.add('locked');
+    if (idx === i) {
+      el.classList.add(chosen.correct ? 'correct' : 'wrong');
+    } else if (d.options[idx].correct) {
+      el.classList.add('correct');
+    } else {
+      el.classList.add('neutral');
+    }
+  });
+
+  const fb = document.getElementById('feedback');
+  fb.className = chosen.correct ? 'correct' : 'wrong';
+  document.getElementById('fb-title').textContent = chosen.correct ? '✓ Верно' : '✗ Не совсем';
+  document.getElementById('fb-body').textContent = chosen.fb;
+  fb.style.display = 'block';
+
+  if (chosen.correct) score++;
+  document.getElementById('score').textContent = score;
+  document.getElementById('hint').style.display = 'none';
+  const btn = document.getElementById('btn-next');
+  btn.style.display = 'inline-block';
+  btn.textContent = cur < 4 ? 'Следующая ситуация →' : 'Посмотреть итог →';
+}
+
+document.getElementById('btn-next').addEventListener('click', () => {
+  cur++;
+  if (cur < 5) {
+    render();
+  } else {
+    showFinal();
+  }
+});
+
+function showFinal() {
+  document.getElementById('progress-fill').style.width = '100%';
+  document.getElementById('situation-header').style.display = 'none';
+  document.getElementById('situation-body').style.display = 'none';
+  document.getElementById('options').style.display = 'none';
+  document.getElementById('feedback').style.display = 'none';
+  document.getElementById('footer').style.display = 'none';
+  const t = titles[score] || (score >= 3 ? 'Хорошо!' : 'Есть над чем поработать');
+  document.getElementById('final-title').textContent = t;
+  document.getElementById('final-sub').innerHTML = 'Правильных ответов: <b>' + score + ' из 5</b>. ' +
+    (score === 5 ? 'Вы отлично понимаете иерархию мер контроля рисков.' :
+     score >= 3 ? 'Основная логика иерархии понятна. Повторите уровни, вызвавшие затруднение.' :
+     'Рекомендуем повторить тему и пройти тренажёр ещё раз.');
+  document.getElementById('final').style.display = 'block';
+}
+
+document.getElementById('btn-restart').addEventListener('click', () => {
+  cur = 0; score = 0;
+  document.getElementById('score').textContent = '0';
+  document.getElementById('situation-header').style.display = '';
+  document.getElementById('situation-body').style.display = '';
+  document.getElementById('options').style.display = '';
+  document.getElementById('footer').style.display = '';
+  document.getElementById('final').style.display = 'none';
+  render();
+});
+
+render();
+</script>
