@@ -1,0 +1,136 @@
+
+<h2 class="sr-only">Карта ключевых летних рисков — навигация по разделам статьи</h2>
+
+<style>
+.map-wrap {
+  background: var(--color-background-secondary);
+  border-radius: var(--border-radius-lg);
+  padding: 18px 16px 16px;
+}
+.map-intro {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  margin: 0 0 14px 2px;
+  letter-spacing: 0.03em;
+}
+.risk-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+.risk-card {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 14px 13px 12px;
+  border-radius: var(--border-radius-md);
+  text-decoration: none;
+  transition: filter 0.15s, transform 0.1s;
+}
+.risk-card:hover {
+  filter: brightness(0.95);
+  transform: translateY(-1px);
+}
+.risk-card:active {
+  transform: scale(0.98);
+}
+.card-icon {
+  font-size: 22px;
+  margin-bottom: 3px;
+}
+.card-title {
+  font-size: 13.5px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+.card-hint {
+  font-size: 11.5px;
+  line-height: 1.4;
+  opacity: 0.85;
+}
+.card-link {
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  margin-top: auto;
+  padding-top: 7px;
+  opacity: 0.7;
+}
+
+.c1 { background: #FEF3E2; color: #7A3E08; }
+.c2 { background: #FDE8E8; color: #7A1616; }
+.c3 { background: #E4F4EC; color: #0D5C30; }
+.c4 { background: #E6F0FB; color: #0D3D78; }
+.c5 { background: #EDE9FB; color: #3A2882; }
+.c6 { background: #E2F4F7; color: #0A4D5C; }
+.c7 { background: #EEF7E4; color: #2A5410; }
+.c8 { background: #F3EBF9; color: #52186E; }
+
+@media (max-width: 600px) {
+  .risk-grid { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+
+<div class="map-wrap">
+  <p class="map-intro">В статье — 8 тем. Нажмите на карточку, чтобы перейти к нужному разделу</p>
+  <div class="risk-grid">
+
+    <a class="risk-card c1" href="https://e.otruda.mcfr.kz/1185893#1">
+      <i class="ti ti-building card-icon" aria-hidden="true"></i>
+      <span class="card-title">Работа в помещениях</span>
+      <span class="card-hint">Микроклимат, кондиционеры, питьевой режим</span>
+      <span class="card-link"><i class="ti ti-arrow-right" aria-hidden="true"></i> К разделу</span>
+    </a>
+
+    <a class="risk-card c2" href="https://e.otruda.mcfr.kz/1185893#2">
+      <i class="ti ti-sun card-icon" aria-hidden="true"></i>
+      <span class="card-title">Работа на открытом воздухе</span>
+      <span class="card-hint">Режим труда и отдыха, СИЗ, группы риска</span>
+      <span class="card-link"><i class="ti ti-arrow-right" aria-hidden="true"></i> К разделу</span>
+    </a>
+
+    <a class="risk-card c3" href="https://e.otruda.mcfr.kz/1185893#3">
+      <i class="ti ti-paw card-icon" aria-hidden="true"></i>
+      <span class="card-title">Опасные животные и насекомые</span>
+      <span class="card-hint">Клещи, змеи, собаки, дикие животные</span>
+      <span class="card-link"><i class="ti ti-arrow-right" aria-hidden="true"></i> К разделу</span>
+    </a>
+
+    <a class="risk-card c4" href="https://e.otruda.mcfr.kz/1185893#4">
+      <i class="ti ti-clipboard-check card-icon" aria-hidden="true"></i>
+      <span class="card-title">Приём новых работников</span>
+      <span class="card-hint">Медосмотры, инструктажи, обязательный порядок</span>
+      <span class="card-link"><i class="ti ti-arrow-right" aria-hidden="true"></i> К разделу</span>
+    </a>
+
+    <a class="risk-card c5" href="https://e.otruda.mcfr.kz/1185893#5">
+      <i class="ti ti-users card-icon" aria-hidden="true"></i>
+      <span class="card-title">Временные работники и практиканты</span>
+      <span class="card-hint">Особые риски, наставник, несовершеннолетние</span>
+      <span class="card-link"><i class="ti ti-arrow-right" aria-hidden="true"></i> К разделу</span>
+    </a>
+
+    <a class="risk-card c6" href="https://e.otruda.mcfr.kz/1185893#6">
+      <i class="ti ti-droplet card-icon" aria-hidden="true"></i>
+      <span class="card-title">Безопасность на воде: отдых и работа</span>
+      <span class="card-hint">Корпоративы, тимбилдинги, работы у водоёмов</span>
+      <span class="card-link"><i class="ti ti-arrow-right" aria-hidden="true"></i> К разделу</span>
+    </a>
+
+    <a class="risk-card c7" href="https://e.otruda.mcfr.kz/1185893#7">
+      <i class="ti ti-calendar-event card-icon" aria-hidden="true"></i>
+      <span class="card-title">Летние тренинги и отпуска</span>
+      <span class="card-hint">День охраны труда, памятки, замещение в отпусках</span>
+      <span class="card-link"><i class="ti ti-arrow-right" aria-hidden="true"></i> К разделу</span>
+    </a>
+
+    <a class="risk-card c8" href="https://e.otruda.mcfr.kz/1185893#8">
+      <i class="ti ti-steering-wheel card-icon" aria-hidden="true"></i>
+      <span class="card-title">Водители</span>
+      <span class="card-hint">Жара в кабине, дети на дорогах, обезвоживание</span>
+      <span class="card-link"><i class="ti ti-arrow-right" aria-hidden="true"></i> К разделу</span>
+    </a>
+
+  </div>
+</div>
