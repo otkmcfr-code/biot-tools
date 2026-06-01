@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Конвертер списков проверок</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #f0f2f5;
+    min-height: 100vh;
+    padding: 32px 16px;
+    color: #1a1a2e;
+  }
+
+  .container {
+    max-width: 780px;
+    margin: 0 auto;
+  }
+
+  h1 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #1a1a2e;
+    margin-bottom: 6px;
+  }
+
+  .subtitle {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 28px;
+  }
+
+  .card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 28px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    margin-bottom: 20px;
+  }
+
+  .card h2 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 16px;
+  }
+
+  .drop-zone {
+    border: 2px dashed #c5ccd8;
+    border-radius: 10px;
+    padding: 36px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    background: #fafbfc;
+  }
+
+  .drop-zone:hover, .drop-zone.drag-over {
+    border-color: #4a7fc1;
+    background: #f0f5ff;
+  }
+
+  .drop-zone input { display: none; }
+
+  .drop-icon { font-size: 2rem; margin-bottom: 8px; }
+
+  .drop-text {
+    font-size: 0.9rem;
+    color: #555;
+  }
+
+  .drop-text span {
+    color: #4a7fc1;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+
+  label.field-label {
+    display: block;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: #555;
+    margin-bottom: 6px;
+    margin-top: 16px;
+  }
+
+  input[type="text"], textarea {
+    width: 100%;
+    border: 1px solid #d8dde6;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 0.88rem;
+    font-family: inherit;
+    color: #1a1a2e;
+    transition: border-color 0.2s;
+    background: #fff;
+  }
+
+  input[type="text"]:focus, textarea:focus {
+    outline: none;
+    border-color: #4a7fc1;
+  }
+
+  textarea { resize: vertical; min-height: 70px; }
+
+  .hint {
+    font-size: 0.78rem;
+    color: #888;
+    margin-top: 4px;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #4a7fc1;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 11px 22px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 20px;
+  }
+
+  .btn:hover { background: #3a6aab; }
+  .btn:disabled { background: #b0bec5; cursor: not-allowed; }
+
+  .status {
+    font-size: 0.85rem;
+    margin-top: 12px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    display: none;
+  }
+
+  .status.ok { background: #e8f5e9; color: #2e7d32; display: block; }
+  .status.err { background: #ffebee; color: #c62828; display: block; }
+
+  .output-area {
+    display: none;
+  }
+
+  .output-area h2 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 12px;
+  }
+
+  .code-box {
+    background: #f4f6fa;
+    border: 1px solid #d8dde6;
+    border-radius: 8px;
+    padding: 14px;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 0.75rem;
+    white-space: pre-wrap;
+    word-break: break-all;
+    max-height: 220px;
+    overflow-y: auto;
+    color: #2d3a4a;
+    line-height: 1.5;
+  }
+
+  .copy-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: #fff;
+    color: #4a7fc1;
+    border: 1.5px solid #4a7fc1;
+    border-radius: 8px;
+    padding: 9px 18px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 12px;
+  }
+
+  .copy-btn:hover { background: #f0f5ff; }
+  .copy-btn.copied { background: #e8f5e9; color: #2e7d32; border-color: #4caf50; }
+
+  .preview-wrap {
+    margin-top: 20px;
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+  }
+
+  .preview-label {
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: #555;
+    margin-bottom: 12px;
+  }
+
+  /* ---- PREVIEW WIDGET STYLES ---- */
+  .preview-subtitle {
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+    line-height: 1.4;
+  }
+
+  .widget-frame {
+    border: 1px solid #d0d5dd;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #fff;
+  }
+
+  .widget-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 13px 18px;
+    cursor: pointer;
+    user-select: none;
+    background: #f8f9fb;
+    border-bottom: 1px solid transparent;
+    transition: background 0.15s;
+  }
+
+  .widget-toggle:hover { background: #f0f3f8; }
+
+  .widget-toggle-text {
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: #444;
+  }
+
+  .widget-arrow {
+    font-size: 0.7rem;
+    color: #888;
+    transition: transform 0.25s;
+  }
+
+  .widget-arrow.open { transform: rotate(180deg); }
+
+  .widget-body {
+    display: none;
+    overflow-x: auto;
+    border-top: 1px solid #e5e8ee;
+  }
+
+  .widget-body.open { display: block; }
+
+  .widget-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 0.78rem;
+  }
+
+  .widget-table th {
+    background: #f2f4f8;
+    color: #444;
+    font-weight: 600;
+    padding: 9px 12px;
+    text-align: left;
+    border-bottom: 1px solid #dde1ea;
+    white-space: nowrap;
+  }
+
+  .widget-table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid #eef0f4;
+    vertical-align: top;
+    color: #2d3a4a;
+    line-height: 1.4;
+  }
+
+  .widget-table tr:last-child td { border-bottom: none; }
+  .widget-table tr:hover td { background: #f9fafb; }
+
+  .widget-region-row td {
+    background: #eef2f9;
+    font-weight: 600;
+    color: #3a5a8a;
+    padding: 7px 12px;
+    font-size: 0.8rem;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .badge-high { background: #fff0f0; color: #c0392b; }
+  .badge-mid  { background: #fff8e1; color: #b7770d; }
+  .badge-low  { background: #f0fff0; color: #1a7a3a; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <h1>Конвертер списков проверок</h1>
+  <p class="subtitle">Загрузите xlsx → получите HTML-код виджета для вставки на сайт</p>
+
+  <div class="card">
+    <h2>1. Загрузите файл</h2>
+    <div class="drop-zone" id="dropZone">
+      <input type="file" id="fileInput" accept=".xlsx">
+      <div class="drop-icon">📂</div>
+      <div class="drop-text">Перетащите .xlsx сюда или <span onclick="document.getElementById('fileInput').click()">выберите файл</span></div>
+    </div>
+    <div class="status" id="status"></div>
+  </div>
+
+  <div class="card" id="settingsCard" style="display:none">
+    <h2>2. Настройте подзаголовок и метку</h2>
+
+    <label class="field-label">Подзаголовок (некликабельный, над плашкой)</label>
+    <textarea id="subtitleInput" placeholder="Например: по услугам подачи воды по каналам, подачи воды для орошения..."></textarea>
+    <div class="hint">Введите укороченную версию названия списка. Общую часть («Список профилактического контроля на II полугодие 2026 года») можно опустить.</div>
+
+    <label class="field-label">Текст на плашке «Развернуть»</label>
+    <input type="text" id="toggleLabel" value="Развернуть">
+    <div class="hint">Обычно оставьте «Развернуть».</div>
+
+    <button class="btn" id="generateBtn" onclick="generateHTML()">⚙️ Сгенерировать HTML</button>
+  </div>
+
+  <div class="card output-area" id="outputArea">
+    <h2>3. Готовый HTML-код</h2>
+    <p style="font-size:0.82rem;color:#666;margin-bottom:10px;">Скопируйте этот код и сохраните как отдельный <code>.html</code> файл в репозиторий GitHub.</p>
+    <div class="code-box" id="codeBox"></div>
+    <button class="copy-btn" id="copyBtn" onclick="copyCode()">📋 Скопировать код</button>
+
+    <div class="preview-wrap">
+      <div class="preview-label">Предпросмотр виджета:</div>
+      <div id="previewArea"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+let parsedData = null;
+
+// Drag and drop
+const dropZone = document.getElementById('dropZone');
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropZone.classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file) processFile(file);
+});
+document.getElementById('fileInput').addEventListener('change', e => {
+  if (e.target.files[0]) processFile(e.target.files[0]);
+});
+
+function setStatus(msg, type) {
+  const s = document.getElementById('status');
+  s.textContent = msg;
+  s.className = 'status ' + type;
+}
+
+function processFile(file) {
+  if (!file.name.endsWith('.xlsx')) {
+    setStatus('Нужен файл формата .xlsx', 'err');
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const wb = XLSX.read(e.target.result, { type: 'array', cellDates: true });
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+      parsedData = parseSheet(rows);
+      if (!parsedData) {
+        setStatus('Не удалось найти заголовки таблицы (строку с «№ п/п»). Проверьте файл.', 'err');
+        return;
+      }
+      setStatus(`✓ Файл прочитан. Найдено строк данных: ${parsedData.totalRows}`, 'ok');
+      document.getElementById('settingsCard').style.display = 'block';
+    } catch(err) {
+      setStatus('Ошибка при чтении файла: ' + err.message, 'err');
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function parseSheet(rows) {
+  // Find header row
+  let headerIdx = -1;
+  for (let i = 0; i < rows.length; i++) {
+    const vals = rows[i].map(v => String(v).trim());
+    if (vals.some(v => v.includes('п/п') || v === '№')) {
+      headerIdx = i;
+      break;
+    }
+  }
+  if (headerIdx === -1) return null;
+
+  const rawHeaders = rows[headerIdx].map(v => String(v).trim());
+
+  // Map headers, skip № column
+  const colMap = []; // {index, label}
+  const skipPatterns = ['п/п', '№'];
+  rawHeaders.forEach((h, i) => {
+    const skip = skipPatterns.some(p => h.includes(p)) || h === '1' || h === '' && i === 0;
+    if (!skip && h !== '') {
+      // Shorten long header names
+      let label = h;
+      if (h.includes('Индивидуальный') || h.includes('ИИН')) label = 'ИИН/БИН';
+      if (h.includes('Дата') && h.includes('регистрации')) label = 'Дата регистрации';
+      colMap.push({ index: i, label });
+    }
+  });
+
+  // Find the row after header (skip numeric-only row like "1 2 3 4...")
+  let dataStart = headerIdx + 1;
+  const nextRow = rows[dataStart];
+  if (nextRow) {
+    const vals = nextRow.map(v => String(v).trim()).filter(v => v !== '');
+    const allNumeric = vals.every(v => /^\d+$/.test(v));
+    if (allNumeric) dataStart++;
+  }
+
+  // Parse data rows — detect region rows (single non-empty cell spanning)
+  const sections = []; // [{region: str|null, rows: [...]}]
+  let currentSection = { region: null, rows: [] };
+
+  for (let i = dataStart; i < rows.length; i++) {
+    const row = rows[i];
+    const nonEmpty = row.map(v => String(v).trim()).filter(v => v !== '');
+    if (nonEmpty.length === 0) continue;
+
+    // Region row: only one meaningful cell, and it's not a number
+    if (nonEmpty.length === 1 && isNaN(nonEmpty[0])) {
+      if (currentSection.rows.length > 0 || currentSection.region) {
+        sections.push(currentSection);
+      }
+      currentSection = { region: nonEmpty[0], rows: [] };
+      continue;
+    }
+
+    // Data row
+    const cells = colMap.map(c => {
+      let v = String(row[c.index] || '').trim();
+      // Clean date formatting
+      if (c.label === 'Дата регистрации' && v.includes('T')) {
+        v = v.split('T')[0].split('-').reverse().join('.');
+      }
+      // Remove \n
+      v = v.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
+      return v;
+    });
+    currentSection.rows.push(cells);
+  }
+  if (currentSection.rows.length > 0 || currentSection.region) {
+    sections.push(currentSection);
+  }
+
+  const totalRows = sections.reduce((s, sec) => s + sec.rows.length, 0);
+  return { headers: colMap.map(c => c.label), sections, totalRows };
+}
+
+function buildWidgetHTML(subtitle, toggleLabel, data, forEmbed) {
+  // forEmbed = true → full HTML page; false → snippet for preview
+  const headers = data.headers;
+
+  let tableRows = '';
+  data.sections.forEach(sec => {
+    if (sec.region) {
+      tableRows += `<tr class="widget-region-row"><td colspan="${headers.length}">${escHtml(sec.region)}</td></tr>\n`;
+    }
+    sec.rows.forEach(cells => {
+      tableRows += '<tr>' + cells.map((c, ci) => {
+        // Risk badge
+        if (headers[ci] === 'Группа риска') {
+          const lc = c.toLowerCase();
+          const cls = lc.includes('выс') ? 'badge-high' : lc.includes('сред') ? 'badge-mid' : 'badge-low';
+          return `<td><span class="badge ${cls}">${escHtml(c)}</span></td>`;
+        }
+        return `<td>${escHtml(c)}</td>`;
+      }).join('') + '</tr>\n';
+    });
+  });
+
+  const snippet = `<p class="preview-subtitle">${escHtml(subtitle)}</p>
+<div class="widget-frame">
+  <div class="widget-toggle" onclick="var b=this.nextElementSibling;var a=this.querySelector('.widget-arrow');b.classList.toggle('open');a.classList.toggle('open');">
+    <span class="widget-toggle-text">${escHtml(toggleLabel)}</span>
+    <span class="widget-arrow">&#9660;</span>
+  </div>
+  <div class="widget-body">
+    <div style="overflow-x:auto;">
+      <table class="widget-table">
+        <thead><tr>${headers.map(h => `<th>${escHtml(h)}</th>`).join('')}</tr></thead>
+        <tbody>${tableRows}</tbody>
+      </table>
+    </div>
+  </div>
+</div>`;
+
+  if (!forEmbed) return snippet;
+
+  return `<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${escHtml(subtitle)}</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#fff;padding:16px;}
+.preview-subtitle{font-size:.92rem;color:#333;margin-bottom:8px;line-height:1.5;}
+.widget-frame{border:1px solid #d0d5dd;border-radius:8px;overflow:hidden;background:#fff;}
+.widget-toggle{display:flex;align-items:center;justify-content:space-between;padding:13px 18px;cursor:pointer;user-select:none;background:#f8f9fb;border-bottom:1px solid transparent;}
+.widget-toggle:hover{background:#f0f3f8;}
+.widget-toggle-text{font-size:.88rem;font-weight:500;color:#444;}
+.widget-arrow{font-size:.7rem;color:#888;transition:transform .25s;display:inline-block;}
+.widget-arrow.open{transform:rotate(180deg);}
+.widget-body{display:none;overflow-x:auto;border-top:1px solid #e5e8ee;}
+.widget-body.open{display:block;}
+.widget-table{width:100%;border-collapse:collapse;font-size:.78rem;}
+.widget-table th{background:#f2f4f8;color:#444;font-weight:600;padding:9px 12px;text-align:left;border-bottom:1px solid #dde1ea;white-space:nowrap;}
+.widget-table td{padding:8px 12px;border-bottom:1px solid #eef0f4;vertical-align:top;color:#2d3a4a;line-height:1.4;}
+.widget-table tr:last-child td{border-bottom:none;}
+.widget-table tr:hover td{background:#f9fafb;}
+.widget-region-row td{background:#eef2f9;font-weight:600;color:#3a5a8a;padding:7px 12px;font-size:.8rem;}
+.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:.72rem;font-weight:500;white-space:nowrap;}
+.badge-high{background:#fff0f0;color:#c0392b;}
+.badge-mid{background:#fff8e1;color:#b7770d;}
+.badge-low{background:#f0fff0;color:#1a7a3a;}
+</style>
+</head>
+<body>
+${snippet}
+<script>
+// toggle is inline onclick, no extra script needed
+<\/script>
+</body>
+</html>`;
+}
+
+function escHtml(str) {
+  return String(str)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+
+function generateHTML() {
+  if (!parsedData) return;
+  const subtitle = document.getElementById('subtitleInput').value.trim();
+  const toggleLabel = document.getElementById('toggleLabel').value.trim() || 'Развернуть';
+
+  if (!subtitle) {
+    alert('Введите подзаголовок (поле выше).');
+    return;
+  }
+
+  const fullHTML = buildWidgetHTML(subtitle, toggleLabel, parsedData, true);
+  const previewHTML = buildWidgetHTML(subtitle, toggleLabel, parsedData, false);
+
+  document.getElementById('codeBox').textContent = fullHTML;
+  document.getElementById('previewArea').innerHTML = previewHTML;
+  document.getElementById('outputArea').style.display = 'block';
+  document.getElementById('outputArea').scrollIntoView({ behavior: 'smooth' });
+}
+
+function copyCode() {
+  const code = document.getElementById('codeBox').textContent;
+  navigator.clipboard.writeText(code).then(() => {
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = '✓ Скопировано!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = '📋 Скопировать код';
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+}
+</script>
+</body>
+</html>
