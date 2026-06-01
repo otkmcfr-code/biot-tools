@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>по услугам подачи воды по каналам, подачи воды для орошения и регулирования поверхностного стока при помощи подпорных гидротехнических сооружений</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#fff;padding:16px;}
+.preview-subtitle{font-size:.92rem;color:#333;margin-bottom:8px;line-height:1.5;}
+.widget-frame{border:1px solid #d0d5dd;border-radius:8px;overflow:hidden;background:#fff;}
+.widget-toggle{display:flex;align-items:center;justify-content:space-between;padding:13px 18px;cursor:pointer;user-select:none;background:#f8f9fb;border-bottom:1px solid transparent;}
+.widget-toggle:hover{background:#f0f3f8;}
+.widget-toggle-text{font-size:.88rem;font-weight:500;color:#444;}
+.widget-arrow{font-size:.7rem;color:#888;transition:transform .25s;display:inline-block;}
+.widget-arrow.open{transform:rotate(180deg);}
+.widget-body{display:none;overflow-x:auto;border-top:1px solid #e5e8ee;}
+.widget-body.open{display:block;}
+.widget-table{width:100%;border-collapse:collapse;font-size:.78rem;}
+.widget-table th{background:#f2f4f8;color:#444;font-weight:600;padding:9px 12px;text-align:left;border-bottom:1px solid #dde1ea;white-space:nowrap;}
+.widget-table td{padding:8px 12px;border-bottom:1px solid #eef0f4;vertical-align:top;color:#2d3a4a;line-height:1.4;}
+.widget-table tr:last-child td{border-bottom:none;}
+.widget-table tr:hover td{background:#f9fafb;}
+.widget-region-row td{background:#eef2f9;font-weight:600;color:#3a5a8a;padding:7px 12px;font-size:.8rem;}
+.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:.72rem;font-weight:500;white-space:nowrap;}
+.badge-high{background:#fff0f0;color:#c0392b;}
+.badge-mid{background:#fff8e1;color:#b7770d;}
+.badge-low{background:#f0fff0;color:#1a7a3a;}
+</style>
+</head>
+<body>
+<p class="preview-subtitle">по услугам подачи воды по каналам, подачи воды для орошения и регулирования поверхностного стока при помощи подпорных гидротехнических сооружений</p>
+<div class="widget-frame">
+  <div class="widget-toggle" onclick="var b=this.nextElementSibling;var a=this.querySelector('.widget-arrow');b.classList.toggle('open');a.classList.toggle('open');">
+    <span class="widget-toggle-text">Развернуть</span>
+    <span class="widget-arrow">&#9660;</span>
+  </div>
+  <div class="widget-body">
+    <div style="overflow-x:auto;">
+      <table class="widget-table">
+        <thead><tr><th>Наименование проверяемого субъекта</th><th>ИИН/БИН</th><th>Наименование проверяемого объекта</th><th>Местонахождение проверяемого объекта</th><th>Группа риска</th><th>Категория предпринимательства проверяемого субъекта</th><th>Дата регистрации</th></tr></thead>
+        <tbody><tr><td>Государственное коммунальное предприятие на праве хозяйственного ведения «Тұран су» управления сельского хозяйства Туркестанской области</td><td>031140002354</td><td>Государственное коммунальное предприятие на праве хозяйственного ведения «Тұран су» управления сельского хозяйства Туркестанской области</td><td>Республика Қазахстан, Туркестанская область, город Туркестан, улица Толе би, строение 65Б</td><td><span class="badge badge-high">высокая</span></td><td>крупное</td><td>21.11.2003 г.</td></tr>
+</tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<script>
+// toggle is inline onclick, no extra script needed
+</script>
+</body>
+</html>
