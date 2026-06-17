@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Что такое мера оперативного воздействия</title>
+<style>
+  :root{
+    --card-bg:#ffffff;
+    --card-border:#e3e8ef;
+    --accent:#1f5c8b;          /* спокойный надзорный синий */
+    --accent-soft:#eaf2f8;
+    --title:#152536;
+    --text:#33414f;
+    --muted:#6b7785;
+    --shadow:0 1px 2px rgba(21,37,54,.04), 0 6px 20px rgba(21,37,54,.06);
+    --radius:14px;
+  }
+
+  *{box-sizing:border-box}
+
+  body{
+    margin:0;
+    padding:18px;
+    background:transparent;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    color:var(--text);
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .acc{
+    max-width:680px;
+    margin:0 auto;
+    background:var(--card-bg);
+    border:1px solid var(--card-border);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    overflow:hidden;
+  }
+
+  /* скрытый чекбокс — механика без JS */
+  .acc__toggle{
+    position:absolute;
+    width:1px;height:1px;
+    opacity:0;
+    margin:-1px;
+    pointer-events:none;
+  }
+
+  .acc__header{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:18px 20px;
+    cursor:pointer;
+    user-select:none;
+    border-left:4px solid var(--accent);
+    transition:background .18s ease;
+  }
+  .acc__header:hover{background:var(--accent-soft)}
+
+  .acc__eyebrow{
+    display:block;
+    font-size:11px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--accent);
+    font-weight:600;
+    margin-bottom:3px;
+  }
+  .acc__title{
+    font-size:16.5px;
+    line-height:1.35;
+    font-weight:600;
+    color:var(--title);
+  }
+  .acc__titlewrap{flex:1}
+
+  .acc__icon{
+    flex-shrink:0;
+    width:26px;height:26px;
+    border-radius:50%;
+    background:var(--accent-soft);
+    position:relative;
+    transition:transform .28s ease, background .18s ease;
+  }
+  .acc__icon::before,
+  .acc__icon::after{
+    content:"";
+    position:absolute;
+    top:50%;left:50%;
+    width:11px;height:2px;
+    border-radius:2px;
+    background:var(--accent);
+    transform:translate(-50%,-50%);
+    transition:opacity .28s ease;
+  }
+  .acc__icon::after{transform:translate(-50%,-50%) rotate(90deg)}
+
+  /* раскрытие */
+  .acc__panel{
+    max-height:0;
+    overflow:hidden;
+    transition:max-height .32s ease;
+  }
+  .acc__panel-inner{
+    padding:2px 20px 20px 24px;
+  }
+  .acc__panel p{
+    margin:0 0 12px;
+    font-size:15px;
+    line-height:1.62;
+  }
+  .acc__panel p:last-child{margin-bottom:0}
+
+  .acc__takeaway{
+    color:var(--title);
+    font-weight:600;
+  }
+
+  a.acc__link{
+    color:var(--accent);
+    text-decoration:underline;
+    text-underline-offset:2px;
+    text-decoration-thickness:1px;
+    font-weight:500;
+  }
+  a.acc__link:hover{text-decoration-thickness:2px}
+
+  /* открытое состояние */
+  .acc__toggle:checked ~ .acc__panel{max-height:460px}
+  .acc__toggle:checked ~ .acc__header .acc__icon{transform:rotate(180deg)}
+  .acc__toggle:checked ~ .acc__header .acc__icon::after{opacity:0}
+
+  /* фокус с клавиатуры */
+  .acc__toggle:focus-visible ~ .acc__header{
+    outline:2px solid var(--accent);
+    outline-offset:-2px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .acc__panel,.acc__icon,.acc__header{transition:none}
+  }
+</style>
+</head>
+<body>
+
+  <div class="acc">
+    <input type="checkbox" id="acc-mov" class="acc__toggle">
+    <label class="acc__header" for="acc-mov">
+      <span class="acc__titlewrap">
+        <span class="acc__eyebrow">Промышленная безопасность</span>
+        <span class="acc__title">Что такое мера оперативного воздействия</span>
+      </span>
+      <span class="acc__icon" aria-hidden="true"></span>
+    </label>
+    <div class="acc__panel">
+      <div class="acc__panel-inner">
+        <p>Это право госинспектора по промышленной безопасности приостановить или запретить эксплуатацию опасного объекта или технического устройства, если нарушение создаёт прямую угрозу жизни и здоровью людей (<a class="acc__link" href="https://biot.mcfr.kz/#/document/93/155/dfashx30qx/" target="_blank" rel="noopener">ст. 39-1 Закона о гражданской защите</a>).</p>
+        <p>Устройство выводится из работы до устранения нарушений и возвращается в эксплуатацию только после повторной проверки.</p>
+        <p class="acc__takeaway">Это не наказание, а способ остановить риск до аварии.</p>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
