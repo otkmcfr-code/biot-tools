@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Проверочный лист УПР (упрощённый порядок)</title>
+<style>
+  :root{
+    --navy:#1F4E79;
+    --blue:#2E75B6;
+    --blue-light:#EAF2FA;
+    --ink:#1D2B36;
+    --gray:#6B7686;
+    --line:#D9E2EC;
+    --bg:#F6F8FA;
+    --white:#FFFFFF;
+    --ok:#2E7D4F;
+    --ok-bg:#E7F5EC;
+    --warn:#B7791F;
+    --warn-bg:#FDF3E0;
+    --bad:#B3261E;
+    --bad-bg:#FCEAE9;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:"Segoe UI", Arial, sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    line-height:1.5;
+  }
+  .wrap{max-width:820px;margin:0 auto;padding:32px 20px 80px;}
+
+  header.top{
+    background:var(--navy);
+    color:#fff;
+    padding:28px 20px;
+  }
+  header.top .wrap{padding:0;}
+  header.top h1{
+    margin:0 0 6px;
+    font-size:22px;
+    font-weight:700;
+  }
+  header.top p{
+    margin:0;
+    font-size:14px;
+    color:#CFE0EF;
+  }
+
+  .meta-row{
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+    background:var(--white);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:14px 16px;
+    margin:20px 0;
+  }
+  .meta-field{flex:1;min-width:200px;}
+  .meta-field label{display:block;font-size:12px;color:var(--gray);margin-bottom:4px;}
+  .meta-field input{
+    width:100%;
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:7px 9px;
+    font-size:14px;
+    font-family:inherit;
+  }
+
+  .progress-shell{
+    position:sticky;
+    top:0;
+    background:var(--bg);
+    padding:10px 0 14px;
+    z-index:5;
+  }
+  .progress-bar{
+    height:8px;
+    background:var(--line);
+    border-radius:6px;
+    overflow:hidden;
+  }
+  .progress-fill{
+    height:100%;
+    width:0%;
+    background:var(--blue);
+    transition:width .25s ease;
+  }
+  .progress-label{
+    font-size:12px;
+    color:var(--gray);
+    margin-top:6px;
+  }
+
+  .q-card{
+    background:var(--white);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:16px 18px;
+    margin-bottom:12px;
+  }
+  .q-card.answered-yes{border-left:4px solid var(--ok);}
+  .q-card.answered-no{border-left:4px solid var(--bad);}
+  .q-top{
+    display:flex;
+    gap:12px;
+    align-items:flex-start;
+  }
+  .q-num{
+    flex:none;
+    width:26px;height:26px;
+    border-radius:50%;
+    background:var(--blue-light);
+    color:var(--navy);
+    font-size:13px;
+    font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .q-body{flex:1;}
+  .q-text{font-size:14.5px;color:var(--ink);}
+  .q-weight{
+    font-size:11px;
+    color:var(--gray);
+    margin-top:2px;
+  }
+  .q-answers{
+    display:flex;
+    gap:8px;
+    margin-top:12px;
+    margin-left:38px;
+  }
+  .ans-btn{
+    border:1px solid var(--line);
+    background:var(--white);
+    color:var(--ink);
+    padding:7px 18px;
+    border-radius:7px;
+    font-size:13.5px;
+    cursor:pointer;
+    font-family:inherit;
+  }
+  .ans-btn:hover{border-color:var(--blue);}
+  .ans-btn.yes.active{background:var(--ok-bg);border-color:var(--ok);color:var(--ok);font-weight:600;}
+  .ans-btn.no.active{background:var(--bad-bg);border-color:var(--bad);color:var(--bad);font-weight:600;}
+
+  .result-card{
+    background:var(--white);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:22px 20px;
+    margin-top:24px;
+    text-align:center;
+    display:none;
+  }
+  .result-card.show{display:block;}
+  .result-score{
+    font-size:42px;
+    font-weight:800;
+    color:var(--navy);
+    line-height:1;
+  }
+  .result-degree{
+    display:inline-block;
+    margin-top:10px;
+    padding:6px 16px;
+    border-radius:20px;
+    font-size:14px;
+    font-weight:700;
+  }
+  .deg-1{background:var(--ok-bg);color:var(--ok);}
+  .deg-2{background:#E7F0E2;color:#4C7A2E;}
+  .deg-3{background:var(--warn-bg);color:var(--warn);}
+  .deg-4{background:#FBE4D9;color:#B15318;}
+  .deg-5{background:var(--bad-bg);color:var(--bad);}
+  .result-note{
+    margin-top:14px;
+    font-size:13.5px;
+    color:var(--gray);
+    max-width:520px;
+    margin-left:auto;
+    margin-right:auto;
+  }
+  .corrective-alert{
+    margin-top:14px;
+    background:var(--bad-bg);
+    border:1px solid #F0C3C0;
+    color:var(--bad);
+    border-radius:8px;
+    padding:12px 14px;
+    font-size:13.5px;
+    text-align:left;
+  }
+
+  .actions-card{
+    background:var(--white);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:22px 20px;
+    margin-top:16px;
+    display:none;
+  }
+  .actions-card.show{display:block;}
+  .actions-card h2{
+    margin:0 0 4px;
+    font-size:17px;
+    color:var(--navy);
+  }
+  .actions-card .sub{
+    font-size:13px;
+    color:var(--gray);
+    margin-bottom:16px;
+  }
+  .action-item{
+    display:flex;
+    gap:10px;
+    padding:10px 0;
+    border-top:1px solid var(--line);
+  }
+  .action-item:first-of-type{border-top:none;}
+  .action-check{
+    flex:none;
+    width:18px;height:18px;
+    border:2px solid var(--bad);
+    border-radius:4px;
+    margin-top:2px;
+  }
+  .action-text b{color:var(--ink);}
+  .action-text .weight-tag{
+    display:inline-block;
+    font-size:11px;
+    color:var(--bad);
+    background:var(--bad-bg);
+    border-radius:4px;
+    padding:1px 6px;
+    margin-left:6px;
+  }
+  .all-good{
+    text-align:center;
+    color:var(--ok);
+    font-size:14.5px;
+    padding:10px 0;
+  }
+  .info-note{
+    margin-top:14px;
+    padding-top:14px;
+    border-top:1px dashed var(--line);
+    font-size:12.5px;
+    color:var(--gray);
+  }
+
+  .btn-row{
+    display:flex;
+    gap:10px;
+    margin-top:20px;
+    justify-content:center;
+  }
+  .btn{
+    border:none;
+    border-radius:8px;
+    padding:11px 22px;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    font-family:inherit;
+  }
+  .btn-primary{background:var(--navy);color:#fff;}
+  .btn-primary:disabled{background:#B7C4D1;cursor:not-allowed;}
+  .btn-secondary{background:var(--white);color:var(--navy);border:1px solid var(--navy);}
+
+  .hint{font-size:12px;color:var(--gray);text-align:center;margin-top:8px;}
+
+  .print-header{display:none;}
+
+  @media print{
+    body{background:#fff;}
+    header.top, .progress-shell, .q-card, .btn-row, .hint, .meta-row{display:none !important;}
+    .wrap{max-width:100%;padding:0;}
+    .print-header{
+      display:block;
+      border-bottom:2px solid var(--navy);
+      padding-bottom:10px;
+      margin-bottom:16px;
+    }
+    .print-header h1{font-size:18px;color:var(--navy);margin:0 0 4px;}
+    .print-header .pinfo{font-size:12px;color:#333;display:flex;gap:20px;}
+    .result-card, .actions-card{
+      display:block !important;
+      border:1px solid #ccc;
+      box-shadow:none;
+    }
+    .action-item{break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <h1>Проверочный лист (опросник) по соответствию требованиям БиОТ</h1>
+    <p>Упрощённый порядок управления профессиональными рисками (УПР) — самопроверка перед подачей в ЕЦС</p>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="print-header">
+    <h1>Проверочный лист (опросник) по соответствию требованиям БиОТ</h1>
+    <div class="pinfo">
+      <span id="pOrg">Организация: —</span>
+      <span id="pDate">Дата: —</span>
+    </div>
+  </div>
+
+  <div class="meta-row">
+    <div class="meta-field">
+      <label for="orgName">Организация (для печатной версии)</label>
+      <input type="text" id="orgName" placeholder="Наименование предприятия">
+    </div>
+    <div class="meta-field">
+      <label for="orgDate">Дата заполнения</label>
+      <input type="date" id="orgDate">
+    </div>
+  </div>
+
+  <div class="progress-shell">
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-label" id="progressLabel">Отвечено: 0 из 15</div>
+  </div>
+
+  <div id="questions"></div>
+
+  <div class="btn-row">
+    <button class="btn btn-primary" id="calcBtn" disabled>Показать результат</button>
+    <button class="btn btn-secondary" id="resetBtn">Начать заново</button>
+  </div>
+  <div class="hint" id="remainingHint">Ответьте на все 15 вопросов, чтобы увидеть результат</div>
+
+  <div class="result-card" id="resultCard">
+    <div style="font-size:13px;color:var(--gray);">Итоговая оценка выполнения требований</div>
+    <div class="result-score" id="resultScore">0%</div>
+    <div class="result-degree" id="resultDegree">—</div>
+    <div class="result-note" id="resultNote"></div>
+    <div class="corrective-alert" id="correctiveAlert" style="display:none;"></div>
+  </div>
+
+  <div class="actions-card" id="actionsCard">
+    <h2>Что нужно сделать</h2>
+    <div class="sub">Пункты с ответом «Нет» — по ним нужны подтверждающие документы или мероприятия</div>
+    <div id="actionsList"></div>
+    <div class="info-note" id="infoNote"></div>
+  </div>
+
+  <div class="btn-row" id="printRow" style="display:none;">
+    <button class="btn btn-primary" id="printBtn">Распечатать список</button>
+  </div>
+
+</div>
+
+<script>
+const criteria = [
+  {id:1, weight:3, text:"Численность работников вашего предприятия превышает 50 человек?", infoOnly:true,
+    action:"Информационный критерий — не требует корректирующих действий. Влияет на состав обязательных требований (например, необходимость создания службы БиОТ)."},
+  {id:2, weight:3, text:"Создана служба БиОТ?",
+    action:"Создать службу БиОТ либо ввести должность специалиста по БиОТ."},
+  {id:3, weight:7, text:"Введена должность специалиста по БиОТ с учётом специфики деятельности либо назначено лицо, ответственное за БиОТ по совместительству с основной деятельностью?",
+    action:"Издать приказ о назначении лица, ответственного за БиОТ."},
+  {id:4, weight:6, text:"Лица, ответственные за обеспечение охраны труда, прошли обучение и проверку знаний по безопасности и охране труда?",
+    action:"Организовать обучение и проверку знаний по БиОТ для ответственных лиц; получить сертификаты и протоколы проверки знаний."},
+  {id:5, weight:6, text:"Первый руководитель прошёл обучение и проверку знаний по безопасности и охране труда?",
+    action:"Направить первого руководителя на обучение и проверку знаний по БиОТ; получить подтверждающие сертификаты и протоколы."},
+  {id:6, weight:5, text:"Вводный инструктаж проводится?",
+    action:"Утвердить программу вводного инструктажа и вести журнал регистрации вводного инструктажа."},
+  {id:7, weight:10, text:"Проведено обязательное страхование работников вашего предприятия от несчастных случаев при исполнении ими трудовых (служебных) обязанностей?",
+    action:"Заключить договор обязательного страхования (ОСНС) и сформировать список застрахованных работников."},
+  {id:8, weight:10, text:"Отсутствуют несчастные случаи, связанные с выполнением трудовых обязанностей?",
+    action:"Оформить Акт о несчастном случае, провести расследование причин и разработать меры по недопущению повторения."},
+  {id:9, weight:10, text:"На вашем предприятии внедрена система управления охраной труда?",
+    action:"Разработать и утвердить документ о системе управления охраной труда (СУОТ)."},
+  {id:10, weight:7, text:"Проводятся работы повышенной опасности с выдачей наряд-допуска?",
+    action:"Утвердить перечень работ повышенной опасности и порядок выдачи наряд-допусков."},
+  {id:11, weight:5, text:"Разработаны и утверждены инструкции по безопасности и охране труда для всех работ и профессий?",
+    action:"Разработать и утвердить инструкции по БиОТ для всех видов работ и профессий предприятия."},
+  {id:12, weight:7, text:"Проводится предсменное медицинское освидетельствование работников?",
+    action:"Утвердить перечень должностей, подлежащих предсменному/послесменному осмотру, и вести журнал регистрации результатов осмотра."},
+  {id:13, weight:7, text:"Работники обеспечены средствами индивидуальной защиты (СИЗ)?",
+    action:"Утвердить нормы выдачи СИЗ, обеспечить работников СИЗ и вести личные карточки учёта выдачи."},
+  {id:14, weight:7, text:"Проведена идентификация опасностей (физические, химические, биологические, механические, тяжесть и напряжённость труда), которые могут привести к травмированию работника или развитию профзаболевания по каждой профессии?",
+    action:"Провести идентификацию опасностей и рисков по каждой профессии; оформить Перечень идентифицированных опасностей и рисков."},
+  {id:15, weight:7, text:"Работники обеспечены санитарно-бытовыми помещениями?",
+    action:"Обеспечить работников санитарно-бытовыми помещениями в соответствии с требованиями."}
+];
+
+const answers = {}; // id -> 'yes' | 'no'
+
+const qContainer = document.getElementById('questions');
+
+criteria.forEach(q => {
+  const card = document.createElement('div');
+  card.className = 'q-card';
+  card.id = 'card-' + q.id;
+  card.innerHTML = `
+    <div class="q-top">
+      <div class="q-num">${q.id}</div>
+      <div class="q-body">
+        <div class="q-text">${q.text}</div>
+        <div class="q-weight">Вес критерия: ${q.weight}%</div>
+      </div>
+    </div>
+    <div class="q-answers">
+      <button class="ans-btn yes" data-id="${q.id}" data-val="yes">Да</button>
+      <button class="ans-btn no" data-id="${q.id}" data-val="no">Нет</button>
+    </div>
+  `;
+  qContainer.appendChild(card);
+});
+
+qContainer.addEventListener('click', (e) => {
+  if (!e.target.classList.contains('ans-btn')) return;
+  const id = e.target.dataset.id;
+  const val = e.target.dataset.val;
+  answers[id] = val;
+
+  const card = document.getElementById('card-' + id);
+  card.classList.remove('answered-yes','answered-no');
+  card.classList.add(val === 'yes' ? 'answered-yes' : 'answered-no');
+  card.querySelectorAll('.ans-btn').forEach(b => b.classList.remove('active'));
+  e.target.classList.add('active');
+
+  updateProgress();
+});
+
+function updateProgress(){
+  const answered = Object.keys(answers).length;
+  document.getElementById('progressFill').style.width = (answered/15*100) + '%';
+  document.getElementById('progressLabel').textContent = `Отвечено: ${answered} из 15`;
+  const btn = document.getElementById('calcBtn');
+  btn.disabled = answered < 15;
+  document.getElementById('remainingHint').textContent =
+    answered < 15 ? `Осталось ответить: ${15 - answered}` : 'Все вопросы отвечены — можно смотреть результат';
+}
+
+function degreeInfo(pct){
+  if (pct > 91) return {n:1, label:'1 степень — допустимый риск', cls:'deg-1'};
+  if (pct >= 71) return {n:2, label:'2 степень — низкий риск', cls:'deg-2'};
+  if (pct >= 51) return {n:3, label:'3 степень — средний риск', cls:'deg-3'};
+  if (pct >= 31) return {n:4, label:'4 степень — высокий риск', cls:'deg-4'};
+  return {n:5, label:'5 степень — очень высокий риск', cls:'deg-5'};
+}
+
+document.getElementById('calcBtn').addEventListener('click', () => {
+  let total = 0;
+  criteria.forEach(q => { if (answers[q.id] === 'yes') total += q.weight; });
+
+  document.getElementById('resultScore').textContent = total + '%';
+  const deg = degreeInfo(total);
+  const degEl = document.getElementById('resultDegree');
+  degEl.textContent = deg.label;
+  degEl.className = 'result-degree ' + deg.cls;
+
+  document.getElementById('resultNote').textContent =
+    'Расчёт по шкале упрощённого порядка УПР: 1 степень — более 91%, 2 степень — 71–90%, 3 степень — 51–70%, 4 степень — 31–50%, 5 степень — 30% и менее.';
+
+  const alertBox = document.getElementById('correctiveAlert');
+  if (deg.n === 4 || deg.n === 5) {
+    alertBox.style.display = 'block';
+    alertBox.textContent = 'При 4 и 5 степени риска работодатель обязан составить План корректирующих мер со сроком исполнения 6 месяцев.';
+  } else {
+    alertBox.style.display = 'none';
+  }
+
+  document.getElementById('resultCard').classList.add('show');
+
+  // action list
+  const list = document.getElementById('actionsList');
+  list.innerHTML = '';
+  const noAnswers = criteria.filter(q => answers[q.id] === 'no' && !q.infoOnly);
+  const infoNoted = criteria.find(q => answers[q.id] === 'no' && q.infoOnly);
+
+  if (noAnswers.length === 0) {
+    list.innerHTML = '<div class="all-good">По всем содержательным критериям получены положительные ответы. Отдельных корректирующих мер не требуется.</div>';
+  } else {
+    noAnswers.forEach(q => {
+      const item = document.createElement('div');
+      item.className = 'action-item';
+      item.innerHTML = `
+        <div class="action-check"></div>
+        <div class="action-text">
+          <b>П.${q.id}.</b> ${q.action}
+          <span class="weight-tag">−${q.weight}%</span>
+        </div>`;
+      list.appendChild(item);
+    });
+  }
+
+  document.getElementById('infoNote').textContent = infoNoted
+    ? 'Пункт 1 отмечен «Нет» — это информационный критерий и на список корректирующих мер не влияет.'
+    : '';
+
+  document.getElementById('actionsCard').classList.add('show');
+  document.getElementById('printRow').style.display = 'flex';
+
+  document.getElementById('resultCard').scrollIntoView({behavior:'smooth', block:'start'});
+});
+
+document.getElementById('resetBtn').addEventListener('click', () => {
+  Object.keys(answers).forEach(k => delete answers[k]);
+  document.querySelectorAll('.q-card').forEach(c => c.classList.remove('answered-yes','answered-no'));
+  document.querySelectorAll('.ans-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('resultCard').classList.remove('show');
+  document.getElementById('actionsCard').classList.remove('show');
+  document.getElementById('printRow').style.display = 'none';
+  updateProgress();
+  window.scrollTo({top:0, behavior:'smooth'});
+});
+
+document.getElementById('printBtn').addEventListener('click', () => {
+  document.getElementById('pOrg').textContent = 'Организация: ' + (document.getElementById('orgName').value || '—');
+  const d = document.getElementById('orgDate').value;
+  document.getElementById('pDate').textContent = 'Дата: ' + (d ? new Date(d).toLocaleDateString('ru-RU') : '—');
+  window.print();
+});
+
+updateProgress();
+</script>
+
+</body>
+</html>
