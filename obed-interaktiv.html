@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Помоги работнику собрать обед</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  /* ---------- ТОКЕНЫ ---------- */
+  :root{
+    --brand:#007760;      /* фирменный зелёный */
+    --brand-600:#00654f;
+    --brand-050:#e8f3ef;
+    --paper:#eef3f1;
+    --card:#ffffff;
+    --ink:#1f2d29;
+    --muted:#6d7a75;
+    --line:#dce6e2;
+    --red:#d6503c;        /* высокий ГИ */
+    --amber:#e0a13a;      /* средний ГИ */
+    --leaf:#3a9d5d;       /* низкий ГИ / ровная энергия */
+    --hat:#f2b134;
+    --radius:16px;
+    --shadow:0 10px 30px rgba(0,60,45,.10);
+    --font: "Nunito", ui-rounded, "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+  }
+
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    font-family:var(--font);
+    color:var(--ink);
+    background:var(--paper);
+    line-height:1.45;
+    -webkit-font-smoothing:antialiased;
+    padding:16px;
+    display:flex;justify-content:center;
+  }
+  .app{
+    width:100%;max-width:440px;background:var(--card);
+    border-radius:var(--radius);box-shadow:var(--shadow);
+    overflow:hidden;position:relative;
+  }
+  .pad{padding:22px 20px 24px}
+
+  .eyebrow{
+    font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--brand);margin:0 0 6px;
+  }
+  h1{font-size:26px;line-height:1.15;font-weight:900;margin:0 0 8px;letter-spacing:-.01em}
+  .lead{color:var(--muted);font-size:15px;font-weight:600;margin:0}
+
+  /* ---------- ЭКРАНЫ ---------- */
+  .screen{display:none;animation:fade .35s ease both}
+  .screen.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  /* ---------- КНОПКИ ---------- */
+  .btn{
+    appearance:none;border:0;cursor:pointer;font-family:inherit;
+    font-weight:800;font-size:16px;border-radius:12px;padding:14px 18px;width:100%;
+    background:var(--brand);color:#fff;transition:transform .12s ease, background .2s ease;
+  }
+  .btn:hover{background:var(--brand-600)}
+  .btn:active{transform:translateY(1px)}
+  .btn[disabled]{background:#b9c8c3;cursor:not-allowed}
+  .btn.ghost{background:var(--brand-050);color:var(--brand-600)}
+  .btn.ghost:hover{background:#dcebe6}
+  .btn-row{display:flex;gap:10px;margin-top:14px}
+  .btn-row .btn{width:auto;flex:1}
+  :focus-visible{outline:3px solid #7fc4b3;outline-offset:2px}
+
+  /* ---------- ПЕРСОНАЖ ---------- */
+  .stage{display:flex;justify-content:center;margin:6px 0 2px}
+  .worker{width:150px;height:180px}
+  .breath{transform-origin:100px 150px;animation:breath 3.2s ease-in-out infinite}
+  @keyframes breath{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.02)}}
+
+  /* энергичный */
+  .arm-flex,.sparks{opacity:0}
+  .is-energized .arm-flex{opacity:1;transform-origin:149px 90px;animation:flex 1.1s ease-in-out infinite}
+  .is-energized .arm-down-r{opacity:0}
+  .is-energized .sparks{opacity:1}
+  .is-energized .spark{animation:tw 1.4s ease-in-out infinite}
+  .is-energized .spark:nth-child(2){animation-delay:.45s}
+  .is-energized .spark:nth-child(3){animation-delay:.9s}
+  @keyframes flex{0%,100%{transform:rotate(0)}50%{transform:rotate(-7deg)}}
+  @keyframes tw{0%,100%{opacity:0;transform:scale(.6)}50%{opacity:1;transform:scale(1)}}
+
+  /* сонный */
+  .eyes-closed,.zzz{opacity:0}
+  .is-sleepy .body-lean{transform:rotate(4deg);transform-origin:100px 150px}
+  .is-sleepy .eyes-open{opacity:0}
+  .is-sleepy .eyes-closed{opacity:1}
+  .is-sleepy .mouth-smile{opacity:0}
+  .is-sleepy .mouth-o{opacity:1}
+  .mouth-o{opacity:0}
+  .is-sleepy .zzz{opacity:1}
+  .is-sleepy .z{animation:float 2.4s ease-in infinite}
+  .is-sleepy .z1{animation-delay:0s}
+  .is-sleepy .z2{animation-delay:.8s}
+  .is-sleepy .z3{animation-delay:1.6s}
+  @keyframes float{
+    0%{opacity:0;transform:translate(0,0) scale(.7)}
+    25%{opacity:1}
+    100%{opacity:0;transform:translate(14px,-30px) scale(1.1)}
+  }
+
+  /* ---------- ПОДНОС / КАРТОЧКИ ---------- */
+  .hint{font-size:13px;font-weight:700;color:var(--brand-600);background:var(--brand-050);
+        display:inline-block;padding:6px 12px;border-radius:20px;margin:2px 0 14px}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .dish{
+    border:2px solid var(--line);background:#fff;border-radius:14px;padding:10px 6px 8px;
+    cursor:pointer;text-align:center;transition:border-color .15s, transform .1s, background .15s;
+    position:relative;
+  }
+  .dish:active{transform:scale(.96)}
+  .dish svg{width:40px;height:40px;display:block;margin:0 auto 4px}
+  .dish span{font-size:12px;font-weight:700;color:var(--ink);display:block}
+  .dish.on{border-color:var(--brand);background:var(--brand-050)}
+  .dish .tick{
+    position:absolute;top:-8px;right:-8px;width:22px;height:22px;border-radius:50%;
+    background:var(--brand);color:#fff;font-size:13px;font-weight:900;
+    display:none;align-items:center;justify-content:center;line-height:1;
+  }
+  .dish.on .tick{display:flex}
+  .tray-count{font-size:13px;font-weight:700;color:var(--muted);text-align:center;margin:14px 0 0}
+
+  /* ---------- РЕЗУЛЬТАТ ---------- */
+  .verdict{font-size:19px;font-weight:900;margin:2px 0 4px;text-align:center}
+  .verdict.g{color:var(--leaf)} .verdict.y{color:var(--amber)} .verdict.r{color:var(--red)}
+  .verdict-sub{color:var(--muted);font-weight:600;font-size:14.5px;text-align:center;margin:0 0 14px}
+  .chart{width:100%;height:auto;background:#fbfdfc;border:1px solid var(--line);border-radius:12px}
+  .curve{fill:none;stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
+  .breakdown{margin:14px 0 2px;display:flex;flex-direction:column;gap:7px}
+  .brow{display:flex;align-items:center;gap:10px;font-weight:700;font-size:14px}
+  .dot{width:12px;height:12px;border-radius:50%;flex:none}
+  .brow small{margin-left:auto;color:var(--muted);font-weight:700}
+  .safety{display:flex;gap:8px;align-items:flex-start;background:#fef1ee;border:1px solid #f6d3cb;
+          color:#a23a29;border-radius:12px;padding:10px 12px;font-size:13.5px;font-weight:700;margin-top:14px}
+  .safety b{color:var(--red)}
+
+  /* ---------- КАК ЭТО РАБОТАЕТ ---------- */
+  .how{margin-top:14px;border-top:1px solid var(--line);padding-top:12px}
+  .how-btn{background:none;border:0;color:var(--brand-600);font-weight:800;font-size:14px;
+           cursor:pointer;font-family:inherit;padding:4px 0;display:flex;align-items:center;gap:6px;width:100%}
+  .how-btn .chev{transition:transform .2s}
+  .how.open .chev{transform:rotate(180deg)}
+  .how-body{display:none;font-size:13.5px;color:var(--muted);font-weight:600;padding-top:8px}
+  .how.open .how-body{display:block;animation:fade .3s ease both}
+  .how-body p{margin:0 0 8px}
+  .how-body b{color:var(--ink)}
+  .disclaimer{font-size:12px;color:#93a09b;font-weight:700;margin-top:6px}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ================= ЭКРАН 1: ИНТРО ================= -->
+  <section class="screen active pad" id="s-intro">
+    <p class="eyebrow">Интерактив · охрана здоровья</p>
+    <h1>Помоги работнику собрать обед</h1>
+    <p class="lead">Собери поднос из столовой — и увидишь, что будет с бодростью и вниманием во время смены.</p>
+    <div class="stage" id="stage-intro"></div>
+    <button class="btn" onclick="go('build')">Собрать обед</button>
+  </section>
+
+  <!-- ================= ЭКРАН 2: ПОДНОС ================= -->
+  <section class="screen pad" id="s-build">
+    <p class="eyebrow">Шаг 1 · поднос</p>
+    <h1 style="font-size:22px">Что берём на обед?</h1>
+    <span class="hint">Выбери 2–4 блюда: гарнир, горячее, хлеб, напиток</span>
+    <div class="grid" id="grid"></div>
+    <p class="tray-count" id="count">Выбрано: 0 из 4</p>
+    <button class="btn" id="eatBtn" disabled onclick="showResult()">Съесть и выйти в смену</button>
+  </section>
+
+  <!-- ================= ЭКРАН 3: РЕЗУЛЬТАТ ================= -->
+  <section class="screen pad" id="s-result">
+    <p class="eyebrow" id="res-eyebrow">Итог смены</p>
+    <div class="stage"><div id="stage-result"></div></div>
+    <p class="verdict" id="verdict"></p>
+    <p class="verdict-sub" id="verdict-sub"></p>
+
+    <svg class="chart" viewBox="0 0 320 175" id="chart" role="img" aria-label="Кривая бодрости в течение смены">
+      <!-- зона сонливости -->
+      <rect x="20" y="128" width="288" height="26" fill="#fdece9"/>
+      <line x1="20" y1="128" x2="308" y2="128" stroke="#f3ccc4" stroke-width="1" stroke-dasharray="4 4"/>
+      <text x="24" y="145" font-size="10" font-weight="700" fill="#c67667" font-family="Nunito,sans-serif">зона сонливости · микросон</text>
+      <!-- ось -->
+      <line x1="20" y1="154" x2="308" y2="154" stroke="#d7e2de" stroke-width="1.5"/>
+      <text x="20" y="168" font-size="10" font-weight="700" fill="#8fa19b" font-family="Nunito,sans-serif">обед</text>
+      <text x="150" y="168" font-size="10" font-weight="700" fill="#8fa19b" font-family="Nunito,sans-serif" text-anchor="middle">середина смены</text>
+      <text x="308" y="168" font-size="10" font-weight="700" fill="#8fa19b" font-family="Nunito,sans-serif" text-anchor="end">конец смены</text>
+      <!-- кривая -->
+      <path class="curve" id="curve" d=""></path>
+    </svg>
+
+    <div class="breakdown" id="breakdown"></div>
+
+    <div class="safety">
+      <span>⚠️</span>
+      <span><b>Красное</b> — не лучший выбор перед высотными или точными работами: реакция замедляется.</span>
+    </div>
+
+    <div class="how" id="how">
+      <button class="how-btn" onclick="toggleHow()">
+        <span class="chev">▾</span> Как это работает
+      </button>
+      <div class="how-body">
+        <p><b>Гликемическая яма.</b> Жарено-мучное и сладкое (баурсаки, самса, выпечка, сладкий чай, газировка) дают резкий скачок сахара — и такой же резкий спад. В этот момент клонит в сон и падает концентрация.</p>
+        <p><b>Микросон.</b> Оставшись без ровного притока энергии, мозг «отключается» на 1–3 секунды с открытыми глазами. На опасном участке этого хватает для ЧП.</p>
+        <p><b>Что держит ровно.</b> Мясо, рыба, овощи, крупы, кисломолочное — энергия поступает плавно, без провалов.</p>
+        <p class="disclaimer">Категории ориентировочны: зависят от приготовления и порции. Это про бодрость в смену, а не диета, и не заменяет рекомендации врача. По данным ВОЗ/МОТ и международных таблиц гликемического индекса.</p>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn ghost" onclick="resetAll()">Собрать заново</button>
+    </div>
+  </section>
+</div>
+
+<script>
+/* ======================= ДАННЫЕ ======================= */
+/* cat: 'red' высокий ГИ | 'amber' средний | 'leaf' низкий/ровный. score: red -2, amber 0, leaf +2 */
+const DISHES = [
+  {id:'grechka',  name:'Гречка',            cat:'leaf'},
+  {id:'ricewhite',name:'Белый рис',         cat:'red'},
+  {id:'potato',   name:'Картофель отварной',cat:'amber'},
+  {id:'plov',     name:'Плов',              cat:'amber'},
+  {id:'pasta',    name:'Макароны',          cat:'amber'},
+  {id:'chicken',  name:'Курица',            cat:'leaf'},
+  {id:'fish',     name:'Рыба',              cat:'leaf'},
+  {id:'egg',      name:'Яйцо',              cat:'leaf'},
+  {id:'veg',      name:'Овощи',             cat:'leaf'},
+  {id:'baursak',  name:'Баурсаки',          cat:'red'},
+  {id:'bun',      name:'Другая выпечка',    cat:'red'},
+  {id:'ayran',    name:'Айран',             cat:'leaf'},
+  {id:'teaplain', name:'Чай без сахара',    cat:'leaf'},
+  {id:'tea',      name:'Сладкий чай',       cat:'red'},
+  {id:'soda',     name:'Сладкая газировка', cat:'red'},
+];
+const SCORE = {red:-2, amber:0, leaf:2};
+const CATCOLOR = {red:'var(--red)', amber:'var(--amber)', leaf:'var(--leaf)'};
+const CATLABEL = {red:'быстрый скачок и спад', amber:'умеренно', leaf:'ровная энергия'};
+const MAX = 4;
+let selected = [];
+
+/* ======================= ИКОНКИ БЛЮД (SVG) ======================= */
+function icon(id){
+  const c = {r:'#d6503c', a:'#e0a13a', g:'#3a9d5d'};
+  const map = {
+    grechka:`<circle cx="20" cy="24" r="13" fill="#eadfce"/><path d="M7 24a13 13 0 0 0 26 0z" fill="#b98b52"/>${dots('#7a5a30',[[15,22],[20,20],[25,23],[17,26],[23,27]])}`,
+    chicken:`<path d="M14 30c-6 0-9-6-5-11 3-4 9-5 13-2 4 3 4 9 0 12-2 1-5 1-8 1z" fill="#d79a5a"/><rect x="9" y="28" width="7" height="4" rx="2" transform="rotate(40 12 30)" fill="#f0e6d6"/>`,
+    fish:`<path d="M8 20c6-7 18-7 24 0-6 7-18 7-24 0z" fill="#7fb0c9"/><path d="M30 14l6-3v18l-6-3z" fill="#5f96b0"/><circle cx="14" cy="20" r="1.8" fill="#123"/>`,
+    veg:`<path d="M20 8c2 4 2 8 0 12" stroke="#3a9d5d" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M22 18c6 2 8 8 4 13-4 4-10 2-12-3-2-6 2-11 8-10z" fill="#e0663a"/>`,
+    ayran:`<path d="M12 10h16l-2 22H14z" fill="#eef4f6"/><path d="M13 20h14l-1 12H14z" fill="#dbe8ee"/><rect x="12" y="10" width="16" height="4" rx="2" fill="#cddbe2"/>`,
+    plov:`<path d="M7 24a13 13 0 0 0 26 0z" fill="#e8c07a"/><ellipse cx="20" cy="24" rx="13" ry="4" fill="#f0d59a"/>${dots('#b5762f',[[15,24],[20,25],[25,24],[18,27]])}<circle cx="23" cy="23" r="2" fill="#a34a34"/>`,
+    potato:`<ellipse cx="20" cy="22" rx="12" ry="9" fill="#c18956"/>${dots('#8a5c34',[[16,20],[24,21],[20,25]])}`,
+    egg:`<ellipse cx="20" cy="22" rx="10" ry="13" fill="#f7f4ee"/><ellipse cx="20" cy="22" rx="10" ry="13" fill="none" stroke="#e4ddd0" stroke-width="1"/><circle cx="20" cy="24" r="5.5" fill="#f2b134"/>`,
+    pasta:`<path d="M8 22h24a12 12 0 0 1-24 0z" fill="#e9c88a"/><ellipse cx="20" cy="22" rx="12" ry="3.6" fill="#f0d59a"/><path d="M12 21c3-3 5 1 8-1s4 2 7-1" stroke="#c8933f" stroke-width="1.7" fill="none" stroke-linecap="round"/><path d="M13 24c3-3 5 1 8-1s4 2 6-1" stroke="#d3a35a" stroke-width="1.4" fill="none" stroke-linecap="round" opacity=".7"/>`,
+    baursak:`<circle cx="15" cy="18" r="7" fill="#e0a94e"/><circle cx="25" cy="17" r="7" fill="#e6b45e"/><circle cx="20" cy="26" r="7" fill="#dba044"/>`,
+    samsa:`<path d="M20 8l12 22H8z" fill="#e2b262"/><path d="M20 8l12 22H8z" fill="none" stroke="#c8933f" stroke-width="1.5"/><path d="M14 24l3-3 3 3 3-3 3 3" stroke="#b07f34" stroke-width="1.5" fill="none"/>`,
+    tea:`<path d="M11 14h16v8a8 8 0 0 1-16 0z" fill="#b56b3a"/><path d="M27 15h3a3 3 0 0 1 0 6h-3" fill="none" stroke="#9a5227" stroke-width="2"/><path d="M16 8c-1 2 1 3 0 5M22 8c-1 2 1 3 0 5" stroke="#c9ad9a" stroke-width="1.6" fill="none" stroke-linecap="round"/>`,
+    soda:`<rect x="13" y="10" width="14" height="22" rx="3" fill="#d6503c"/><rect x="13" y="16" width="14" height="6" fill="#fff" opacity=".85"/>${dots('#d6503c',[[17,19],[20,19],[23,19]])}`,
+    bun:`<path d="M8 26c0-9 24-9 24 0 0 3-24 3-24 0z" fill="#e0a457"/><path d="M8 26c2-3 22-3 24 0" fill="none" stroke="#c07e34" stroke-width="1.4"/><path d="M14 20l2-4M20 19l1-5M26 20l2-4" stroke="#c07e34" stroke-width="1.4" stroke-linecap="round"/>`,
+    ricewhite:`<path d="M7 24a13 13 0 0 0 26 0z" fill="#d9e2e6"/><ellipse cx="20" cy="24" rx="13" ry="4" fill="#eef3f5"/>${dots('#aeb9be',[[15,23],[20,22],[25,24],[17,26],[23,26]])}`,
+    soup:`<path d="M6 22h28a14 14 0 0 1-28 0z" fill="#e6ddcf"/><ellipse cx="20" cy="22" rx="14" ry="3.6" fill="#e0b070"/>${dots('#b5762f',[[15,22],[24,22],[20,23]])}<path d="M16 10c-1 2 1 3 0 5M24 10c-1 2 1 3 0 5" stroke="#c9ad9a" stroke-width="1.4" fill="none" stroke-linecap="round"/>`,
+    teaplain:`<path d="M13 12h14l-1 20H14z" fill="#c59a5e" opacity=".5"/><rect x="12" y="10" width="16" height="3" rx="1.5" fill="#b98b52"/><path d="M17 5c-1 2 1 3 0 5M23 5c-1 2 1 3 0 5" stroke="#c9ad9a" stroke-width="1.4" fill="none" stroke-linecap="round"/>`,
+    compote:`<path d="M13 12h14l-1 20H14z" fill="#d16a7a" opacity=".6"/><rect x="12" y="10" width="16" height="3" rx="1.5" fill="#c04f63"/><circle cx="18" cy="24" r="2.4" fill="#a83b52"/><circle cx="23" cy="27" r="2" fill="#b5455e"/>`,
+  };
+  return `<svg viewBox="0 0 40 40">${map[id]||''}</svg>`;
+}
+function dots(color, pts){return pts.map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="1.5" fill="${color}"/>`).join('')}
+
+/* ======================= ПЕРСОНАЖ (SVG) ======================= */
+function worker(state){ // state: 'neutral' | 'energized' | 'sleepy'
+  return `
+  <svg class="worker is-${state}" viewBox="0 0 200 190" role="img" aria-label="Работник">
+    <g class="breath">
+      <g class="body-lean">
+        <!-- ноги -->
+        <rect x="86" y="150" width="12" height="26" rx="6" fill="#3a4f48"/>
+        <rect x="102" y="150" width="12" height="26" rx="6" fill="#3a4f48"/>
+        <!-- корпус: рубашка -->
+        <rect x="72" y="96" width="56" height="62" rx="18" fill="#0a8f74"/>
+        <!-- хи-вис жилет -->
+        <path d="M78 100h44v54a22 22 0 0 1-44 0z" fill="#f2b134" opacity=".92"/>
+        <rect x="94" y="100" width="12" height="58" fill="#0a8f74"/>
+        <rect x="78" y="126" width="44" height="7" fill="#e6e6e6"/>
+        <!-- левая рука вниз -->
+        <rect x="60" y="104" width="13" height="40" rx="6.5" fill="#0a8f74"/>
+        <circle cx="66.5" cy="146" r="7" fill="#f0c9a8"/>
+        <!-- правая рука вниз (нейтр/сон) -->
+        <g class="arm-down-r">
+          <rect x="127" y="104" width="13" height="40" rx="6.5" fill="#0a8f74"/>
+          <circle cx="133.5" cy="146" r="7" fill="#f0c9a8"/>
+        </g>
+        <!-- правая рука согнута (бодрый, бицепс) -->
+        <g class="arm-flex">
+          <rect x="120" y="96" width="34" height="13" rx="6.5" fill="#0a8f74" transform="rotate(-28 122 102)"/>
+          <circle cx="140" cy="86" r="8" fill="#0a8f74"/>
+          <rect x="143" y="60" width="13" height="32" rx="6.5" fill="#0a8f74"/>
+          <circle cx="149.5" cy="58" r="8" fill="#f0c9a8"/>
+        </g>
+        <!-- голова -->
+        <circle cx="100" cy="74" r="24" fill="#f0c9a8"/>
+        <!-- каска -->
+        <path d="M74 70a26 22 0 0 1 52 0z" fill="#f2b134"/>
+        <rect x="70" y="68" width="60" height="7" rx="3.5" fill="#d99a1f"/>
+        <rect x="96" y="49" width="8" height="12" rx="3" fill="#d99a1f"/>
+        <!-- глаза открытые -->
+        <g class="eyes-open">
+          <circle cx="91" cy="76" r="3.2" fill="#22302c"/>
+          <circle cx="109" cy="76" r="3.2" fill="#22302c"/>
+        </g>
+        <!-- глаза закрытые -->
+        <g class="eyes-closed">
+          <path d="M86 77c3 3 7 3 10 0" stroke="#22302c" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+          <path d="M104 77c3 3 7 3 10 0" stroke="#22302c" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+        </g>
+        <!-- рот -->
+        <path class="mouth-smile" d="M90 86c4 6 16 6 20 0" stroke="#b06a4e" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+        <ellipse class="mouth-o" cx="100" cy="88" rx="4" ry="5" fill="#b06a4e"/>
+      </g>
+
+      <!-- искры (бодрый) -->
+      <g class="sparks" fill="#f2b134">
+        <path class="spark" d="M150 44l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/>
+        <path class="spark" d="M44 60l1.5 4 4 1.5-4 1.5-1.5 4-1.5-4-4-1.5 4-1.5z"/>
+        <path class="spark" d="M158 78l1.5 4 4 1.5-4 1.5-1.5 4-1.5-4-4-1.5 4-1.5z"/>
+      </g>
+      <!-- Zzz (сонный) -->
+      <g class="zzz" fill="#4a9d8e" font-family="Nunito,sans-serif" font-weight="900">
+        <text class="z z1" x="132" y="52" font-size="14">z</text>
+        <text class="z z2" x="140" y="44" font-size="18">z</text>
+        <text class="z z3" x="150" y="34" font-size="22">Z</text>
+      </g>
+    </g>
+  </svg>`;
+}
+
+/* ======================= ЛОГИКА ======================= */
+function go(screen){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('s-'+screen).classList.add('active');
+  document.querySelector('.app').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function renderGrid(){
+  const g = document.getElementById('grid');
+  g.innerHTML = DISHES.map(d=>`
+    <button class="dish ${selected.includes(d.id)?'on':''}" data-id="${d.id}" onclick="toggle('${d.id}')" aria-pressed="${selected.includes(d.id)}">
+      <span class="tick">✓</span>
+      ${icon(d.id)}
+      <span>${d.name}</span>
+    </button>`).join('');
+}
+function toggle(id){
+  const i = selected.indexOf(id);
+  if(i>-1){ selected.splice(i,1); }
+  else{
+    if(selected.length>=MAX){ flashLimit(); return; }
+    selected.push(id);
+  }
+  renderGrid();
+  document.getElementById('count').textContent = `Выбрано: ${selected.length} из ${MAX}`;
+  document.getElementById('eatBtn').disabled = selected.length===0;
+}
+function flashLimit(){
+  const c = document.getElementById('count');
+  c.textContent = `Достаточно ${MAX} блюд — как в реальный обед :)`;
+  c.style.color = 'var(--red)';
+  setTimeout(()=>{ c.style.color=''; c.textContent = `Выбрано: ${selected.length} из ${MAX}`; }, 1400);
+}
+
+/* формы кривой по итогу */
+const CURVES = {
+  g:{d:"M20,104 C70,88 110,80 160,80 S250,72 308,66", color:"var(--leaf)"},
+  y:{d:"M20,104 C60,74 95,64 128,72 C158,80 176,116 210,118 C246,120 278,104 308,100", color:"var(--amber)"},
+  r:{d:"M20,108 C48,72 70,44 96,46 C120,48 136,74 150,104 C164,132 186,140 214,140 C248,140 278,138 308,138", color:"var(--red)"},
+};
+const VERDICTS = {
+  g:{eyebrow:"Итог смены · бодрость держится", title:"Ровная бодрость до конца смены",
+     sub:"Работник собран, реакция быстрая. Такой обед — надёжный: и на высоте, и на точной работе."},
+  g2:{eyebrow:"Итог смены · бодрость держится", title:"Бодрость держится — почти ровно",
+     sub:"Зелёная основа тянет смену стабильно. Быстрые углеводы в подносе дадут небольшой скачок — перед высотными или точными работами это стоит учесть."},
+  y:{eyebrow:"Итог смены · так себе разгон", title:"К середине смены потянет в сон",
+     sub:"Внимание чуть просядет. Перед ответственной операцией стоит взбодриться и размяться."},
+  r:{eyebrow:"Итог смены · гликемическая яма", title:"Через пару часов — клонит в сон",
+     sub:"Реакция замедляется, как после бессонной ночи. Работник ловит микросон прямо у станка."},
+};
+
+function tier(){
+  if(selected.length===0) return 'y';
+  const avg = selected.reduce((s,id)=> s + SCORE[DISHES.find(d=>d.id===id).cat], 0) / selected.length;
+  if(avg >= 1) return 'g';
+  if(avg <= -1) return 'r';
+  return 'y';
+}
+
+function showResult(){
+  const t = tier();
+  const hasRed = selected.some(id => DISHES.find(d=>d.id===id).cat==='red');
+  const key = (t==='g' && hasRed) ? 'g2' : t;   // зелёный с оговоркой, если есть красное
+  const state = t==='g' ? 'energized' : t==='r' ? 'sleepy' : 'neutral';
+  document.getElementById('stage-result').innerHTML = worker(state);
+
+  document.getElementById('res-eyebrow').textContent = VERDICTS[key].eyebrow;
+  const v = document.getElementById('verdict');
+  v.textContent = VERDICTS[key].title; v.className = 'verdict '+t;
+  document.getElementById('verdict-sub').textContent = VERDICTS[key].sub;
+
+  // разбор блюд
+  document.getElementById('breakdown').innerHTML = selected.map(id=>{
+    const d = DISHES.find(x=>x.id===id);
+    return `<div class="brow"><span class="dot" style="background:${CATCOLOR[d.cat]}"></span>${d.name}<small>${CATLABEL[d.cat]}</small></div>`;
+  }).join('');
+
+  // кривая с анимацией «прорисовки»
+  const path = document.getElementById('curve');
+  path.setAttribute('d', CURVES[t].d);
+  path.style.stroke = CURVES[t].color;
+  const len = path.getTotalLength();
+  path.style.transition='none';
+  path.style.strokeDasharray = len;
+  path.style.strokeDashoffset = len;
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    path.style.transition='stroke-dashoffset 1.1s ease';
+    path.style.strokeDashoffset = 0;
+  }));
+
+  // сбросить «как это работает»
+  document.getElementById('how').classList.remove('open');
+  go('result');
+}
+
+function toggleHow(){ document.getElementById('how').classList.toggle('open'); }
+
+function resetAll(){
+  selected = [];
+  renderGrid();
+  document.getElementById('count').textContent = `Выбрано: 0 из ${MAX}`;
+  document.getElementById('count').style.color='';
+  document.getElementById('eatBtn').disabled = true;
+  go('build');
+}
+
+/* инициализация */
+document.getElementById('stage-intro').innerHTML = worker('neutral');
+renderGrid();
+
+/* авто-высота для iframe: сообщаем родителю фактическую высоту */
+function postHeight(){
+  var app = document.querySelector('.app');
+  if(app) parent.postMessage({type:'obed-height', height: Math.ceil(app.offsetHeight) + 32}, '*');
+}
+window.addEventListener('load', postHeight);
+window.addEventListener('resize', postHeight);
+if(window.ResizeObserver){ new ResizeObserver(postHeight).observe(document.body); }
+</script>
+</body>
+</html>
