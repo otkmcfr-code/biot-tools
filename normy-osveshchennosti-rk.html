@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Нормы освещённости рабочих мест и помещений — РК</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --brand:#007760; --brand-d:#005c4a; --brand-tint:#e9f3f0; --brand-tint2:#f3f8f6;
+    --ink:#16201d; --muted:#5c6b66; --faint:#8a9793;
+    --line:#e0e6e3; --line-s:#cfd8d4; --bg:#f6f8f7; --card:#ffffff;
+    --radius:10px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:'Inter',system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);
+       -webkit-font-smoothing:antialiased;font-size:15px;line-height:1.5}
+  .wrap{max-width:560px;margin:0 auto;padding:10px}
+  /* stage / slide animation */
+  .stage{position:relative;overflow:hidden}
+  .screen{background:var(--card);border:.5px solid var(--line);border-radius:14px;overflow:hidden}
+  .screen.in-right{animation:inR .28s cubic-bezier(.22,.61,.36,1)}
+  .screen.in-left{animation:inL .28s cubic-bezier(.22,.61,.36,1)}
+  @keyframes inR{from{transform:translateX(28px);opacity:.001}to{transform:none;opacity:1}}
+  @keyframes inL{from{transform:translateX(-28px);opacity:.001}to{transform:none;opacity:1}}
+  @media (prefers-reduced-motion:reduce){.screen.in-right,.screen.in-left{animation:none}}
+  /* header */
+  .hdr{background:var(--brand);color:#fff;display:flex;align-items:center;gap:10px;padding:12px 14px}
+  .hdr .ttl{font-weight:600;font-size:15px;flex:1;min-width:0;line-height:1.25}
+  .hdr .sub{display:block;font-weight:400;font-size:11.5px;color:#cde6df;margin-top:1px}
+  .iconbtn{appearance:none;background:transparent;border:0;color:#fff;cursor:pointer;padding:6px;
+           border-radius:8px;display:inline-flex;align-items:center;justify-content:center}
+  .iconbtn:hover{background:rgba(255,255,255,.14)}
+  .iconbtn:focus-visible{outline:2px solid #fff;outline-offset:1px}
+  .iconbtn svg{width:22px;height:22px;display:block}
+  /* crumbs */
+  .crumbs{font-size:11.5px;color:var(--muted);padding:8px 14px;border-bottom:.5px solid var(--line);
+          background:var(--brand-tint2);white-space:nowrap;overflow-x:auto}
+  .crumbs b{color:var(--brand-d);font-weight:600}
+  /* home */
+  .home-hero{padding:16px 14px 6px}
+  .home-hero h1{margin:0;font-size:19px;font-weight:700;letter-spacing:-.2px}
+  .home-hero p{margin:6px 0 0;color:var(--muted);font-size:13px}
+  .search{padding:12px 14px 4px;position:relative}
+  .search input{width:100%;height:44px;border:.5px solid var(--line-s);border-radius:10px;
+     padding:0 40px 0 40px;font:inherit;font-size:15px;background:#fff;color:var(--ink)}
+  .search input:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-tint)}
+  .search .si{position:absolute;left:24px;top:24px;color:var(--faint);pointer-events:none}
+  .search .clr{position:absolute;right:22px;top:20px}
+  .menu{padding:10px 14px 16px;display:flex;flex-direction:column;gap:10px}
+  .m-lbl{font-size:11.5px;color:var(--faint);font-weight:600;margin:6px 2px 0}
+  /* row buttons */
+  .row{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:#fff;
+       border:.5px solid var(--line);border-radius:var(--radius);padding:13px 14px;cursor:pointer;
+       font:inherit;color:var(--ink)}
+  .row:hover{border-color:var(--brand);background:var(--brand-tint2)}
+  .row:focus-visible{outline:2px solid var(--brand);outline-offset:1px}
+  .row .rt{flex:1;min-width:0}
+  .row .rn{font-size:14.5px;font-weight:500;line-height:1.3}
+  .row .rd{font-size:12px;color:var(--muted);margin-top:2px}
+  .row .rc{color:var(--brand);flex-shrink:0}
+  .row.cat .ri{width:34px;height:34px;border-radius:9px;background:var(--brand-tint);color:var(--brand-d);
+       display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .list{padding:12px 14px 6px;display:flex;flex-direction:column;gap:8px}
+  .cnt{font-size:11px;color:var(--faint);font-weight:500;margin-left:6px}
+  /* detail card */
+  .detail{padding:14px}
+  .d-name{font-size:17px;font-weight:600;line-height:1.3;margin:0 0 2px}
+  .d-in{font-size:12px;color:var(--muted);margin-bottom:12px}
+  .hero{display:flex;gap:10px;margin:0 0 14px;flex-wrap:wrap}
+  .hcard{background:var(--brand-tint);border-radius:12px;padding:11px 13px;flex:1;min-width:120px}
+  .hcard .hl{font-size:11.5px;color:var(--brand-d);font-weight:500}
+  .hcard .hv{font-size:29px;font-weight:700;color:var(--brand-d);line-height:1.05;margin-top:3px;
+       font-variant-numeric:tabular-nums;letter-spacing:-.5px}
+  .hcard .hv small{font-size:13px;font-weight:500}
+  .hcard.alt{background:#eef1f0}
+  .hcard.alt .hl{color:var(--muted)} .hcard.alt .hv{color:var(--ink)}
+  .sect{margin:14px 0 6px;font-size:12px;font-weight:600;color:var(--brand-d)}
+  .kv{width:100%;border-collapse:collapse;font-size:13.5px}
+  .kv tr{border-top:.5px solid var(--line)}
+  .kv tr:first-child{border-top:0}
+  .kv td{padding:8px 0;vertical-align:top}
+  .kv td.k{color:var(--muted);width:52%;padding-right:12px}
+  .kv td.v{text-align:right;font-weight:500;font-variant-numeric:tabular-nums}
+  .rowblock{border:.5px solid var(--line);border-radius:10px;padding:6px 12px;margin-bottom:10px}
+  .rowblock .rbh{font-size:13px;font-weight:600;color:var(--ink);padding:8px 0 2px}
+  .note{background:var(--brand-tint2);border:.5px solid var(--line);border-radius:10px;
+        padding:10px 12px;font-size:12.5px;color:var(--muted);line-height:1.5;margin-top:12px}
+  .note b{color:var(--ink)}
+  /* collapsible */
+  details.prim{margin-top:12px;border:.5px solid var(--line);border-radius:10px;overflow:hidden;background:#fff}
+  details.prim>summary{list-style:none;cursor:pointer;padding:11px 13px;font-size:13px;font-weight:500;
+       color:var(--brand-d);display:flex;align-items:center;gap:8px}
+  details.prim>summary::-webkit-details-marker{display:none}
+  details.prim>summary .chev{transition:transform .2s;margin-left:auto;color:var(--faint)}
+  details.prim[open]>summary .chev{transform:rotate(180deg)}
+  .prim-body{padding:0 13px 12px;font-size:12.5px;color:var(--muted);line-height:1.55}
+  .prim-body p{margin:0 0 7px} .prim-body p:last-child{margin:0}
+  /* source */
+  .src{margin-top:12px;padding-top:11px;border-top:.5px solid var(--line);
+       font-size:11.5px;color:var(--faint);line-height:1.5}
+  .src b{color:var(--muted);font-weight:600}
+  /* empty */
+  .empty{padding:26px 16px;text-align:center;color:var(--muted);font-size:13.5px}
+  .empty svg{color:var(--line-s);margin-bottom:8px}
+  .foot{padding:12px 14px 6px}
+  .foot button{width:100%;background:#fff;border:.5px solid var(--line);border-radius:10px;
+       padding:11px;font:inherit;font-size:12.5px;color:var(--muted);cursor:pointer;
+       display:flex;align-items:center;justify-content:center;gap:8px}
+  .foot button:hover{border-color:var(--brand);color:var(--brand-d)}
+  .badge{display:inline-block;font-size:10.5px;font-weight:600;padding:2px 7px;border-radius:20px;
+     background:var(--brand-tint);color:var(--brand-d);margin-top:3px}
+  .info p{font-size:13px;color:var(--muted);line-height:1.6;margin:0 0 10px}
+  .info h4{font-size:13px;color:var(--brand-d);margin:14px 0 4px}
+</style>
+</head>
+<body>
+<div class="wrap"><div class="stage" id="stage"></div></div>
+<script id="npa-data" type="application/json">{"industrial":{"items":[{"n":1,"group":"Склады","name":"Склады, кладовые масел, лакокрасочных материалов: 1) с разливом на складе","rows":[{"surface":"Г - пол","razryad":"VIIIб","eObsh":"75","eKombTot":"","eKombObsh":"","oslep":"","puls":"","note":""}]},{"n":2,"group":"Склады","name":"Склады, кладовые химикатов, карбида кальция, кислот, щелочей и аналогичные склады","rows":[{"surface":"Г - пол","razryad":"VIIIв","eObsh":"50","eKombTot":"","eKombObsh":"","oslep":"","puls":"","note":""}]},{"n":3,"group":"Склады","name":"Склады, кладовые металла, запасных частей, ремонтного фонда, готовой продукции; деталей, ожидающих ремонта, инструментальные","rows":[{"surface":"Г - пол","razryad":"VIIIб","eObsh":"75","eKombTot":"","eKombObsh":"","oslep":"","puls":"","note":""}]},{"n":4,"group":"Склады","name":"Склады со стеллажным хранением: 1) экспедиция приема и выдачи груза","rows":[{"surface":"Г - 0,8 м от пола","razryad":"IVв","eObsh":"200","eKombTot":"400","eKombObsh":"200","oslep":"40","puls":"20","note":"В зонах хранения стеллажных складов с автоматическими кранами-штаберами устройство рабочего освещения не требуется, необходимо аварийное освещение, ремонтное освещение троллеев и дежурное освещение проходов"}]},{"n":5,"group":"Склады","name":"Склады, кладовые, открытые площадки под навесом баллонов газа","rows":[{"surface":"Г - пол","razryad":"VIIIв","eObsh":"50","eKombTot":"","eKombObsh":"","oslep":"","puls":"","note":""}]},{"n":6,"group":"Склады","name":"Склады громоздких предметов и сыпучих материалов (песка, цемента и аналогичные материалы)","rows":[{"surface":"Г - пол","razryad":"VIIIб","eObsh":"75","eKombTot":"","eKombObsh":"","oslep":"","puls":"","note":""}]},{"n":7,"group":"Склады","name":"Грузоподъемные механизмы (кран-балки, тельферы, мостовые краны и аналогичные грузоподъемные механизмы) в помещении","rows":[{"surface":"Г, В - пульт управления","razryad":"VIIIв","eObsh":"50","eKombTot":"","eKombObsh":"","oslep":"","puls":"","note":""},{"surface":"В - крюк крана, площадки приема и подачи оборудования и деталей","razryad":"VIIIв","eObsh":"50","eKombTot":"","eKombObsh":"","oslep":"","puls":"","note":""},{"surface":"В - крюк крана","razryad":"ХII","eObsh":"10","eKombTot":"","eKombObsh":"","oslep":"","puls":"","note":""},{"surface":"Г - площадки приема и подачи оборудования, материалов, деталей","razryad":"ХII","eObsh":"10","eKombTot":"","eKombObsh":"","oslep":"","puls":"","note":""}]},{"n":8,"group":"Склады","name":"Сливно-наливные эстакады","rows":[{"surface":"Г - пол площадки","razryad":"XIII","eObsh":"5","eKombTot":"","eKombObsh":"","oslep":"","puls":"","note":""},{"surface":"Г - горловина цистерны","razryad":"ХI","eObsh":"20","eKombTot":"","eKombObsh":"","oslep":"","puls":"","note":""}]},{"n":9,"group":"Электропомещения","name":"Помещения распределительных устройств, диспетчерские, операторные, (электрощитовые): 1) с постоянным пребыванием людей","rows":[{"surface":"Г-0,8 м от пола","razryad":"IIIв*)","eObsh":"200","eKombTot":"","eKombObsh":"","oslep":"40","puls":"20","note":""},{"surface":"Г-стол оператора","razryad":"","eObsh":"300","eKombTot":"750","eKombObsh":"200","oslep":"","puls":"20/15","note":""},{"surface":"Г,В-1,5 м на панели пульта управления шкалы приборов","razryad":"Ivг*","eObsh":"150","eKombTot":"","eKombObsh":"","oslep":"","puls":"20","note":""},{"surface":"В-1,5 м задняя сторона щита","razryad":"VIIIв","eObsh":"50","eKombTot":"","eKombObsh":"","oslep":"","puls":"","note":""},{"surface":"Г, В-1,5 м панели, пульты управления шкалы приборов","razryad":"","eObsh":"150","eKombTot":"","eKombObsh":"","oslep":"","puls":"20","note":""},{"surface":"В-1,5 м задняя сторона щита","razryad":"VIIIв","eObsh":"50","eKombTot":"","eKombObsh":"","oslep":"","puls":"","note":""}]},{"n":10,"group":"Электропомещения","name":"Пульты и щиты управления: а) в помещениях: с измерительной аппаратурой","rows":[{"surface":"Г-0,8 м шкалы приборов","razryad":"Ivг*","eObsh":"150","eKombTot":"","eKombObsh":"","oslep":"","puls":"20","note":""},{"surface":"В - 1,5 м","razryad":"","eObsh":"","eKombTot":"","eKombObsh":"","oslep":"","puls":"","note":""},{"surface":"В-1,5 м рычаги, рукоятки, кнопки","razryad":"","eObsh":"","eKombTot":"","eKombObsh":"","oslep":"","puls":"","note":""},{"surface":"В-1,5 м рычаги, рукоятки, кнопки","razryad":"IX","eObsh":"50","eKombTot":"","eKombObsh":"","oslep":"","puls":"","note":""}]},{"n":11,"group":"Электропомещения","name":"Отдельно стоящие приборы контроля в помещениях: 1) с постоянным наблюдением","rows":[{"surface":"Г, В-шкала приборов","razryad":"IVг","eObsh":"200","eKombTot":"","eKombObsh":"","oslep":"","puls":"20","note":"Предусмотреть розетки для переносного освещения"}]},{"n":12,"group":"Электропомещения","name":"Помещения и камеры трансформаторов, реакторов, статических конденсаторов, аккумуляторов","rows":[{"surface":"В - 1,5","razryad":"VIIIб","eObsh":"75","eKombTot":"","eKombObsh":"","oslep":"","puls":"","note":""}]},{"n":13,"group":"Электропомещения","name":"Электромашинные помещения: с постоянным пребыванием людей","rows":[{"surface":"Г-0,8 м от пола В-1,5 м на щитах","razryad":"IVг","eObsh":"200","eKombTot":"","eKombObsh":"","oslep":"40","puls":"20","note":""},{"surface":"В-1,5 м на щитах","razryad":"","eObsh":"","eKombTot":"","eKombObsh":"","oslep":"","puls":"","note":""}]},{"n":14,"group":"Электропомещения","name":"Электрощитовые в жилых и общественных зданиях","rows":[{"surface":"Г-0,8 м от пола","razryad":"VIIIб","eObsh":"75","eKombTot":"","eKombObsh":"","oslep":"","puls":"","note":""},{"surface":"В-1,5 м на щитах","razryad":"","eObsh":"","eKombTot":"","eKombObsh":"","oslep":"","puls":"","note":""}]},{"n":15,"group":"Котельные","name":"Запорная и регулирующая арматура: 1) в помещениях","rows":[{"surface":"В - на топках, задвижках, вентилях, клапанах, рычагах, затворах, петлях бункеров и аналогичных устройствах и помещениях","razryad":"VIIIб","eObsh":"75","eKombTot":"","eKombObsh":"","oslep":"","puls":"","note":""}]},{"n":16,"group":"Котельные","name":"Площадки и лестницы котлов и экономайзеров, проходы за котлами","rows":[{"surface":"Г-пол","razryad":"VIIIв","eObsh":"50","eKombTot":"","eKombObsh":"","oslep":"","puls":"","note":""}]},{"n":17,"group":"Котельные","name":"Помещение топливоотдачи","rows":[{"surface":"Г-0,8 м от пола","razryad":"VI*","eObsh":"150","eKombTot":"","eKombObsh":"","oslep":"40","puls":"20","note":""}]},{"n":18,"group":"Котельные","name":"Помещение дымососов, вентиляторов, бункерное отделение","rows":[{"surface":"Г, В-0,8 м от пола","razryad":"VI*","eObsh":"150","eKombTot":"","eKombObsh":"","oslep":"40","puls":"20","note":""}]},{"n":19,"group":"Котельные","name":"Конденсационная, химводоочистка, бойлерная, деаэраторная, зольное помещение","rows":[{"surface":"Г-пол","razryad":"VIIIб","eObsh":"75","eKombTot":"","eKombObsh":"","oslep":"","puls":"","note":""}]},{"n":20,"group":"Котельные","name":"Помещение химводоочистки и генераторная","rows":[{"surface":"Г-пол","razryad":"VIIIв","eObsh":"50","eKombTot":"","eKombObsh":"","oslep":"","puls":"","note":""}]},{"n":21,"group":"Котельные","name":"Надбункерное помещение","rows":[{"surface":"Г-0,8 м от пола","razryad":"VIIIв","eObsh":"50","eKombTot":"","eKombObsh":"","oslep":"","puls":"","note":""}]},{"n":22,"group":"Помещения инженерных сетей","name":"Машинные залы насосных (технологические, по перекачке воды и нефтеблочные кустовые насосные станции и аналогичные помещения), воздуходувные","rows":[{"surface":"Г-0,8 м от пола","razryad":"IVг*","eObsh":"200","eKombTot":"","eKombObsh":"","oslep":"40","puls":"20","note":""},{"surface":"Г - стол машиниста","razryad":"IIIг","eObsh":"200","eKombTot":"400","eKombObsh":"200","oslep":"","puls":"20/15","note":""},{"surface":"В - на шкалах приборов контроля","razryad":"","eObsh":"150","eKombTot":"","eKombObsh":"","oslep":"","puls":"20","note":""}]},{"n":23,"group":"Помещения инженерных сетей","name":"Помещения для кондиционеров, тепловые пункты","rows":[{"surface":"Г-0,8 м от пола","razryad":"VI*","eObsh":"150","eKombTot":"","eKombObsh":"","oslep":"40","puls":"20","note":""}]},{"n":24,"group":"Помещения инженерных сетей","name":"Компрессорные (блоки, станции, помещения, залы) 1) с постоянным дежурством персонала","rows":[{"surface":"Г-0,8 м от пола","razryad":"IVг*","eObsh":"200","eKombTot":"","eKombObsh":"","oslep":"40","puls":"20","note":""},{"surface":"В-на шкалах приборов, щите управления компрессором","razryad":"","eObsh":"150","eKombTot":"","eKombObsh":"","oslep":"40","puls":"20","note":""},{"surface":"Г - стол машиниста","razryad":"IIIг","eObsh":"200","eKombTot":"400","eKombObsh":"200","oslep":"","puls":"20/15","note":""},{"surface":"В - на шкалах приборов контроля","razryad":"","eObsh":"150","eKombTot":"","eKombObsh":"","oslep":"","puls":"20","note":""}]},{"n":25,"group":"Помещения инженерных сетей","name":"Вентиляционные помещения установки: 1) камеры вытяжных и приточных вентиляторов","rows":[{"surface":"Г-0,8 м от пола","razryad":"VIIIв","eObsh":"50","eKombTot":"","eKombObsh":"","oslep":"","puls":"","note":""}]},{"n":26,"group":"Помещения инженерных сетей","name":"Галереи и тоннели токопроводов, транспортеров, конвейеров","rows":[{"surface":"Г-пол","razryad":"VIIIг","eObsh":"20","eKombTot":"","eKombObsh":"","oslep":"","puls":"","note":""}]},{"n":27,"group":"Помещения инженерных сетей","name":"Тоннели кабельные, теплофикационные, масляные, пульповодов, водопроводные","rows":[{"surface":"Г-пол","razryad":"VIIIг","eObsh":"20","eKombTot":"","eKombObsh":"","oslep":"","puls":"","note":""}]},{"n":28,"group":"Предприятия по обслуживанию автомобилей","name":"Осмотровые канавы: в помещении и вне зданий","rows":[{"surface":"Г-днище машины","razryad":"Vб","eObsh":"200","eKombTot":"","eKombObsh":"","oslep":"40","puls":"20","note":"Предусмотреть розетки для переносного освещения"}]},{"n":29,"group":"Предприятия по обслуживанию автомобилей","name":"Посты мойки и уборки подвижного состава: вне зданий","rows":[{"surface":"Г-покрытие","razryad":"XII","eObsh":"10","eKombTot":"","eKombObsh":"","oslep":"","puls":"","note":""}]},{"n":30,"group":"Предприятия по обслуживанию автомобилей","name":"Мойка агрегатов, узлов, деталей","rows":[{"surface":"Г-место загрузки и выгрузки","razryad":"VI*","eObsh":"150","eKombTot":"","eKombObsh":"","oslep":"40","puls":"20","note":""}]},{"n":31,"group":"Предприятия по обслуживанию автомобилей","name":"Участки диагностирования легковых и грузовых автомобилей","rows":[{"surface":"Г-0,8 м от пола","razryad":"Vб","eObsh":"200","eKombTot":"","eKombObsh":"","oslep":"40","puls":"20","note":""}]},{"n":32,"group":"Предприятия по обслуживанию автомобилей","name":"Участок технического обслуживания и технического ремонта легковых, грузовых автомобилей и автобусов","rows":[{"surface":"Г-0,8 м от пола","razryad":"Vб","eObsh":"200","eKombTot":"","eKombObsh":"","oslep":"40","puls":"20","note":""}]},{"n":33,"group":"Предприятия по обслуживанию автомобилей","name":"Подъемники","rows":[{"surface":"Г-днище машины","razryad":"IVв","eObsh":"150**","eKombTot":"","eKombObsh":"","oslep":"40","puls":"20","note":"Предусмотреть розетки для переносного освещения у подъемников"}]},{"n":34,"group":"Предприятия по обслуживанию автомобилей","name":"Шиномотальный участок","rows":[{"surface":"Г-0,8 м от пола","razryad":"Vа","eObsh":"300","eKombTot":"","eKombObsh":"","oslep":"40","puls":"20","note":""}]},{"n":35,"group":"Предприятия по обслуживанию автомобилей","name":"Кузнечно-рессорный участок","rows":[{"surface":"Г-0,8 м от пола","razryad":"IVб","eObsh":"200","eKombTot":"","eKombObsh":"","oslep":"40","puls":"20/20","note":""}]},{"n":36,"group":"Предприятия по обслуживанию автомобилей","name":"Сварочно-жестяницкий участок","rows":[{"surface":"Г-0,8 м от пола","razryad":"IVв","eObsh":"200","eKombTot":"","eKombObsh":"","oslep":"40","puls":"20","note":""}]},{"n":37,"group":"Предприятия по обслуживанию автомобилей","name":"Медницкий участок","rows":[{"surface":"Г-0,8 м от пола","razryad":"IVб","eObsh":"200","eKombTot":"","eKombObsh":"","oslep":"","puls":"20","note":""},{"surface":"Г-верстак","razryad":"","eObsh":"","eKombTot":"500","eKombObsh":"200","oslep":"","puls":"20/20","note":""},{"surface":"Г-ванна","razryad":"Vа","eObsh":"","eKombTot":"400","eKombObsh":"200","oslep":"","puls":"20/20","note":""}]},{"n":38,"group":"Предприятия по обслуживанию автомобилей","name":"Участок ремонта электрооборудования и приборов питания","rows":[{"surface":"Г-0,8 м от пола","razryad":"IIIв","eObsh":"300","eKombTot":"","eKombObsh":"","oslep":"","puls":"20","note":""},{"surface":"Г-верстак, стенд","razryad":"","eObsh":"","eKombTot":"750","eKombObsh":"200","oslep":"","puls":"20/15","note":""}]},{"n":39,"group":"Предприятия по обслуживанию автомобилей","name":"Деревообрабатывающий участок","rows":[{"surface":"Г-0,8 м от пола","razryad":"IIIб","eObsh":"200","eKombTot":"","eKombObsh":"","oslep":"","puls":"20","note":""},{"surface":"Г-зона обработки, разметочная плита","razryad":"","eObsh":"","eKombTot":"1000","eKombObsh":"200","oslep":"","puls":"20/15","note":""}]},{"n":40,"group":"Предприятия по обслуживанию автомобилей","name":"Обойный участок","rows":[{"surface":"Г-0,8 м от пола","razryad":"IVа","eObsh":"300","eKombTot":"","eKombObsh":"","oslep":"40","puls":"20","note":""}]},{"n":41,"group":"Предприятия по обслуживанию автомобилей","name":"Вулканизационный участок","rows":[{"surface":"Г-0,8 м от пола","razryad":"IIIб","eObsh":"300","eKombTot":"","eKombObsh":"","oslep":"40","puls":"20","note":""},{"surface":"Г-верстак, ванна","razryad":"","eObsh":"300","eKombTot":"1000","eKombObsh":"200","oslep":"40","puls":"20/15","note":""},{"surface":"Г-место загрузки и выгрузки","razryad":"VI","eObsh":"200","eKombTot":"","eKombObsh":"","oslep":"40","puls":"20","note":""}]},{"n":42,"group":"Предприятия по обслуживанию автомобилей","name":"Таксометровый участок","rows":[{"surface":"Г-0,8 м от пола","razryad":"IIв","eObsh":"300","eKombTot":"2000","eKombObsh":"200","oslep":"20","puls":"20","note":""},{"surface":"Г-столешница","razryad":"","eObsh":"","eKombTot":"","eKombObsh":"","oslep":"","puls":"20/10","note":""}]},{"n":43,"group":"Предприятия по обслуживанию автомобилей","name":"Слесарно-механический участок","rows":[{"surface":"Г-0,8 м от пола","razryad":"","eObsh":"300","eKombTot":"","eKombObsh":"","oslep":"20","puls":"20","note":""}]},{"n":44,"group":"Предприятия по обслуживанию автомобилей","name":"Металлорежущие станки: токарные, токарно-затыловочные, резьботокарные, координатно-расточные, резьбошлифовальные, заточные, зубообрабатывающие, резьбонакатные;","rows":[{"surface":"Г-зона обработки","razryad":"IIв","eObsh":"","eKombTot":"2000","eKombObsh":"200","oslep":"","puls":"20/10","note":""}]},{"n":45,"group":"Предприятия по обслуживанию автомобилей","name":"Краскоприготовительная","rows":[{"surface":"Г-0,8 м от пола","razryad":"IIIб","eObsh":"300","eKombTot":"","eKombObsh":"","oslep":"40","puls":"15","note":"Использовать лампы типа ЛДЦ"},{"surface":"Г-верстак, краскомешалка","razryad":"","eObsh":"","eKombTot":"1000","eKombObsh":"200","oslep":"40","puls":"20/15","note":""}]},{"n":46,"group":"Предприятия по обслуживанию автомобилей","name":"Окрасочный участок легковых автомобилей","rows":[{"surface":"Г,В-кузов автомобиля","razryad":"IIIб","eObsh":"300","eKombTot":"","eKombObsh":"","oslep":"40","puls":"15","note":""}]},{"n":47,"group":"Предприятия по обслуживанию автомобилей","name":"Окрасочный участок грузовых автомобилей и автобусов","rows":[{"surface":"Г,В- кузов автомобиля, автобуса","razryad":"IVв","eObsh":"200","eKombTot":"","eKombObsh":"","oslep":"40","puls":"20","note":""}]},{"n":48,"group":"Предприятия по обслуживанию автомобилей","name":"Сушка автомобилей и автобусов","rows":[{"surface":"Г-0,8 м от пола","razryad":"VI*","eObsh":"200","eKombTot":"","eKombObsh":"","oslep":"","puls":"","note":""}]},{"n":49,"group":"Предприятия по обслуживанию автомобилей","name":"Агрегатный участок легковых автомобилей","rows":[{"surface":"Г-0,8 м от пола","razryad":"IIIв","eObsh":"300","eKombTot":"750","eKombObsh":"","oslep":"40","puls":"20","note":""},{"surface":"Г-верстак","razryad":"","eObsh":"300","eKombTot":"","eKombObsh":"200","oslep":"","puls":"20/15","note":""}]},{"n":50,"group":"Предприятия по обслуживанию автомобилей","name":"Агрегатный участок грузовых автомобилей и автобусов","rows":[{"surface":"Г-0,8 м от пола","razryad":"IVв","eObsh":"200","eKombTot":"400","eKombObsh":"200","oslep":"40","puls":"20","note":""},{"surface":"Г-верстак","razryad":"","eObsh":"200","eKombTot":"","eKombObsh":"","oslep":"","puls":"20/20","note":""}]},{"n":51,"group":"Предприятия по обслуживанию автомобилей","name":"Кузовной участок","rows":[{"surface":"Г-0,8 м от пола","razryad":"IVв","eObsh":"200","eKombTot":"","eKombObsh":"","oslep":"40","puls":"20","note":""}]},{"n":52,"group":"Предприятия по обслуживанию автомобилей","name":"Открытые стоянки, площадки для хранения подвижного состава: 1) без подогрева","rows":[{"surface":"Г- на покрытии","razryad":"XIV","eObsh":"2","eKombTot":"","eKombObsh":"","oslep":"","puls":"","note":""}]},{"n":53,"group":"Предприятия по обслуживанию автомобилей","name":"Помещение закрытого хранения подвижного состава","rows":[{"surface":"Г-пол","razryad":"VIIIб","eObsh":"50","eKombTot":"","eKombObsh":"","oslep":"","puls":"","note":""}]}],"groups":["Склады","Электропомещения","Котельные","Помещения инженерных сетей","Предприятия по обслуживанию автомобилей"]},"public":{"items":[{"n":1,"sphere":"Административные здания","name":"Кабинеты и рабочие комнаты","rows":[{"surface":"Г-0,8","razryad":"Б-1","eKomb":"400/200","eObsh":"300","cyl":"","disc":"40","puls":"15","keoNatTop":"3,0","keoNatSide":"1,0","keoSovTop":"1,8","keoSovSide":"0,6"}]},{"n":2,"sphere":"Административные здания","name":"Проектные залы и комнаты, конструкторские, чертежные бюро","rows":[{"surface":"Г-0,8","razryad":"А-1","eKomb":"600/400","eObsh":"500","cyl":"","disc":"40","puls":"10","keoNatTop":"4,0","keoNatSide":"1,5","keoSovTop":"2,4","keoSovSide":"0,9"}]},{"n":3,"sphere":"Административные здания","name":"Книгохранилища и архивы, помещения фонда открытого доступа","rows":[{"surface":"В- 1,0 (на стеллажах)","razryad":"","eKomb":"15","eObsh":"","cyl":"","disc":"","puls":"","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":""}]},{"n":4,"sphere":"Административные здания","name":"Макетные, столярные и ремонтные мастерские","rows":[{"surface":"Г-0,8, на верстаках и рабочих столах","razryad":"IIIв","eKomb":"750/200","eObsh":"300","cyl":"","disc":"401)","puls":"15/20","keoNatTop":"","keoNatSide":"","keoSovTop":"3,0","keoSovSide":"1,2"}]},{"n":5,"sphere":"Административные здания","name":"Помещения для работы с дисплеями и видеотерминалами, дисплейные залы","rows":[{"surface":"В- 1,2 (на экране дисплея)","razryad":"Б-2","eKomb":"","eObsh":"200","cyl":"","disc":"","puls":"","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":""},{"surface":"Г-0,8 на рабочих столах","razryad":"А-2","eKomb":"500/300","eObsh":"400","cyl":"","disc":"15","puls":"10","keoNatTop":"3,5","keoNatSide":"1,2","keoSovTop":"2,1","keoSovSide":"0,7"}]},{"n":6,"sphere":"Административные здания","name":"Конференц-залы, залы заседаний","rows":[{"surface":"Г-0,8","razryad":"Г","eKomb":"","eObsh":"300","cyl":"75","disc":"60","puls":"20","keoNatTop":"2,5","keoNatSide":"0,7","keoSovTop":"1,5","keoSovSide":"0,4"}]},{"n":7,"sphere":"Административные здания","name":"Читальные залы","rows":[{"surface":"Г-0,8","razryad":"А-2","eKomb":"500/300","eObsh":"400","cyl":"150","disc":"40","puls":"15","keoNatTop":"3,5","keoNatSide":"1,2","keoSovTop":"2,1","keoSovSide":"0,7"}]},{"n":8,"sphere":"Административные здания","name":"Кулуары (фойе)","rows":[{"surface":"Пол","razryad":"Е","eKomb":"","eObsh":"150","cyl":"50","disc":"90","puls":"","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":""}]},{"n":9,"sphere":"Административные здания","name":"Лаборатории: органической и неорганической химии, термические, физические, спектрографические, стилометрические, фотометрические, микроскопные, рентгеноструктурного анализа, механические и радио-измерительные, электронных устройств, препараторские","rows":[{"surface":"Г-0,8","razryad":"А-2","eKomb":"500/300","eObsh":"400","cyl":"","disc":"40","puls":"10","keoNatTop":"3,5","keoNatSide":"1,2","keoSovTop":"2,1","keoSovSide":"0,7"}]},{"n":10,"sphere":"Административные здания","name":"Аналитические лаборатории","rows":[{"surface":"Г-0,8","razryad":"А-1","eKomb":"600/400","eObsh":"500","cyl":"","disc":"40","puls":"10","keoNatTop":"4,0","keoNatSide":"1,5","keoSovTop":"2,4","keoSovSide":"0,9"}]},{"n":11,"sphere":"Банковские и страховые учреждения","name":"Операционный зал, кредитная группа, кассовый зал, помещения для пересчета денег","rows":[{"surface":"Г-0,8 на рабочих столах","razryad":"А-2","eKomb":"500/300","eObsh":"400","cyl":"","disc":"15","puls":"10","keoNatTop":"3,5","keoNatSide":"1,2","keoSovTop":"2,1","keoSovSide":"0,7"}]},{"n":12,"sphere":"Учреждения общего, начального, среднего и высшего специального образования","name":"Классные комнаты, аудитории, учебные кабинеты, лаборатории общеобразовательных школ, школ-интернатов, среднеспециальных и профессионально-технических учреждений","rows":[{"surface":"В -1,5 на середине доски","razryad":"А-1","eKomb":"","eObsh":"500","cyl":"","disc":"","puls":"10","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":""},{"surface":"Г-0,8 на рабочих столах и партах","razryad":"А-2","eKomb":"","eObsh":"400","cyl":"","disc":"40","puls":"10","keoNatTop":"4,02)","keoNatSide":"1,52)","keoSovTop":"2,1","keoSovSide":"1,3"}]},{"n":13,"sphere":"Учреждения общего, начального, среднего и высшего специального образования","name":"Аудитории, учебные кабинеты, лаборатории в техникумах и высших учебных заведениях","rows":[{"surface":"Г-0,8 на рабочих столах и партах","razryad":"А-2","eKomb":"","eObsh":"400","cyl":"","disc":"40","puls":"10","keoNatTop":"3,5","keoNatSide":"1,2","keoSovTop":"2,1","keoSovSide":"0,7"}]},{"n":14,"sphere":"Учреждения общего, начального, среднего и высшего специального образования","name":"Кабинеты информатики и вычислительной техники","rows":[{"surface":"В- 1,0 (на экране дисплея)","razryad":"Б-2","eKomb":"","eObsh":"200","cyl":"","disc":"","puls":"","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":""},{"surface":"Г-0,8 на рабочих столах и партах","razryad":"А-2","eKomb":"500/300","eObsh":"400","cyl":"","disc":"15","puls":"10","keoNatTop":"3,5","keoNatSide":"1,2","keoSovTop":"2,1","keoSovSide":"0,7"}]},{"n":15,"sphere":"Учреждения общего, начального, среднего и высшего специального образования","name":"Кабинеты технического черчения и рисования","rows":[{"surface":"В - на доске","razryad":"А-1","eKomb":"","eObsh":"500","cyl":"","disc":"40","puls":"10","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":""},{"surface":"Г-0,8 на рабочих столах и партах","razryad":"А-1","eKomb":"","eObsh":"500","cyl":"","disc":"40","puls":"10","keoNatTop":"4,0","keoNatSide":"1,5","keoSovTop":"2,1","keoSovSide":"1,3"}]},{"n":16,"sphere":"Учреждения общего, начального, среднего и высшего специального образования","name":"Мастерские по обработке металлов и древесины","rows":[{"surface":"Г-0,8 на верстаках и рабочих столах","razryad":"IIIб","eKomb":"1000/200","eObsh":"300","cyl":"","disc":"401)","puls":"15","keoNatTop":"","keoNatSide":"","keoSovTop":"3,0","keoSovSide":"1,2"}]},{"n":17,"sphere":"Учреждения общего, начального, среднего и высшего специального образования","name":"Кабинеты обслуживающих видов труда для девочек","rows":[{"surface":"Г-0,8","razryad":"А-2","eKomb":"","eObsh":"400","cyl":"","disc":"40","puls":"10","keoNatTop":"4,02)","keoNatSide":"1,52)","keoSovTop":"2,1","keoSovSide":"1,3"}]},{"n":18,"sphere":"Учреждения общего, начального, среднего и высшего специального образования","name":"Спортивные залы","rows":[{"surface":"Пол, Г-0,0","razryad":"Б-2","eKomb":"","eObsh":"200","cyl":"","disc":"60","puls":"20","keoNatTop":"2,52)","keoNatSide":"0,72)","keoSovTop":"1,5","keoSovSide":"0,4"},{"surface":"В - на уровне 2,0 м от пола с обеих сторон на продольной оси помещения","razryad":"","eKomb":"","eObsh":"75","cyl":"","disc":"","puls":"","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":""}]},{"n":19,"sphere":"Учреждения общего, начального, среднего и высшего специального образования","name":"Крытые бассейны","rows":[{"surface":"Г- поверхность воды","razryad":"В-1","eKomb":"","eObsh":"150","cyl":"","disc":"60","puls":"20","keoNatTop":"2,0","keoNatSide":"0,5","keoSovTop":"1,5","keoSovSide":"0,4"}]},{"n":20,"sphere":"Учреждения общего, начального, среднего и высшего специального образования","name":"Актовые залы, киноаудитории","rows":[{"surface":"Г-0,0","razryad":"д","eKomb":"","eObsh":"200","cyl":"75","disc":"90","puls":"","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":""}]},{"n":21,"sphere":"Учреждения общего, начального, среднего и высшего специального образования","name":"Эстрады актовых залов","rows":[{"surface":"В-1,5","razryad":"г","eKomb":"","eObsh":"300","cyl":"","disc":"","puls":"","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":""}]},{"n":22,"sphere":"Учреждения общего, начального, среднего и высшего специального образования","name":"Кабинеты и комнаты преподавателей","rows":[{"surface":"Г-0,8","razryad":"Б-1","eKomb":"","eObsh":"300","cyl":"","disc":"40","puls":"15","keoNatTop":"3,0","keoNatSide":"1,0","keoSovTop":"1,8","keoSovSide":"0,6"}]},{"n":23,"sphere":"Учреждения общего, начального, среднего и высшего специального образования","name":"Рекреации","rows":[{"surface":"Пол, Г-0,0","razryad":"Е","eKomb":"","eObsh":"150","cyl":"","disc":"90","puls":"","keoNatTop":"2,0","keoNatSide":"0,5","keoSovTop":"1,2","keoSovSide":"0,3"}]},{"n":24,"sphere":"Учреждения досугового назначения","name":"Залы многоцелевого назначения","rows":[{"surface":"Г-0,8","razryad":"А-2","eKomb":"","eObsh":"400","cyl":"100","disc":"40","puls":"10","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":""}]},{"n":25,"sphere":"Учреждения досугового назначения","name":"Зрительные залы театров, концертные залы","rows":[{"surface":"Г-0,8","razryad":"Г","eKomb":"","eObsh":"300","cyl":"100","disc":"60","puls":"","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":""}]},{"n":26,"sphere":"Учреждения досугового назначения","name":"Зрительные залы клубов, клуб-гостиная, помещение для досуговых занятий, собраний, фойе театров","rows":[{"surface":"Г-0,8","razryad":"Д","eKomb":"","eObsh":"200","cyl":"75","disc":"90","puls":"","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":""}]},{"n":27,"sphere":"Учреждения досугового назначения","name":"Выставочные залы","rows":[{"surface":"Г-0,8","razryad":"Д","eKomb":"","eObsh":"20033)","cyl":"75","disc":"90","puls":"","keoNatTop":"2,5","keoNatSide":"0,7","keoSovTop":"1,5","keoSovSide":"0,4"}]},{"n":28,"sphere":"Учреждения досугового назначения","name":"Зрительные залы","rows":[{"surface":"Г-0,8","razryad":"Ж-1","eKomb":"","eObsh":"75-","cyl":"","disc":"90","puls":"","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":""}]},{"n":29,"sphere":"Учреждения досугового назначения","name":"Фойе кинотеатров, клубов","rows":[{"surface":"Пол, Г-0,0","razryad":"Е","eKomb":"","eObsh":"150","cyl":"50","disc":"90","puls":"","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":""}]},{"n":30,"sphere":"Учреждения досугового назначения","name":"Комнаты кружков, музыкальные классы","rows":[{"surface":"Г-0,8","razryad":"Б-1","eKomb":"","eObsh":"300","cyl":"","disc":"60","puls":"20","keoNatTop":"3,0","keoNatSide":"1,0","keoSovTop":"1,8","keoSovSide":"0,6"}]},{"n":31,"sphere":"Учреждения досугового назначения","name":"Кино-, звуко- светоаппаратные","rows":[{"surface":"Г-0,8","razryad":"В-1","eKomb":"","eObsh":"150","cyl":"","disc":"60","puls":"20","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":""}]},{"n":32,"sphere":"Детские дошкольные учреждения (организации)","name":"Приемные","rows":[{"surface":"Пол, Г-0,0","razryad":"Б-2","eKomb":"","eObsh":"200","cyl":"","disc":"25","puls":"15","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":""}]},{"n":33,"sphere":"Детские дошкольные учреждения (организации)","name":"Раздевальные","rows":[{"surface":"Пол, Г-0,0","razryad":"Б-2","eKomb":"","eObsh":"200","cyl":"","disc":"60","puls":"15","keoNatTop":"2,5","keoNatSide":"0,7","keoSovTop":"1,5","keoSovSide":"0,4"}]},{"n":34,"sphere":"Детские дошкольные учреждения (организации)","name":"Групповые, игровые, столовые, комнаты музыкальных и гимнастических занятий","rows":[{"surface":"Пол, Г-0,0","razryad":"А-2","eKomb":"","eObsh":"400","cyl":"","disc":"15","puls":"10","keoNatTop":"4,02)","keoNatSide":"1,52)","keoSovTop":"","keoSovSide":""}]},{"n":35,"sphere":"Детские дошкольные учреждения (организации)","name":"Спальные","rows":[{"surface":"Пол, Г-0,0","razryad":"В-2","eKomb":"","eObsh":"150","cyl":"","disc":"25","puls":"15","keoNatTop":"2,0","keoNatSide":"0,5","keoSovTop":"","keoSovSide":""}]},{"n":36,"sphere":"Детские дошкольные учреждения (организации)","name":"Изоляторы, комнаты для заболевших детей","rows":[{"surface":"Пол, Г-0,0","razryad":"Б-2","eKomb":"","eObsh":"200","cyl":"","disc":"25","puls":"15","keoNatTop":"2,0","keoNatSide":"0,5","keoSovTop":"","keoSovSide":""}]},{"n":37,"sphere":"Санатории, дома отдыха","name":"Палаты, спальные комнаты","rows":[{"surface":"Пол, Г-0,0","razryad":"В-2","eKomb":"","eObsh":"100","cyl":"","disc":"25","puls":"15","keoNatTop":"2,0","keoNatSide":"0,5","keoSovTop":"","keoSovSide":""}]},{"n":38,"sphere":"Физкультурно-оздоровительные учреждения","name":"Залы спортивных игр","rows":[{"surface":"Г-0,0","razryad":"Б-1","eKomb":"","eObsh":"200","cyl":"","disc":"60","puls":"20","keoNatTop":"3,0","keoNatSide":"1,0","keoSovTop":"1,8","keoSovSide":"0,6"},{"surface":"В-2,0 с обеих сторон на продольной оси помещения","razryad":"","eKomb":"","eObsh":"75","cyl":"","disc":"","puls":"","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":""}]},{"n":39,"sphere":"Физкультурно-оздоровительные учреждения","name":"Зал бассейна","rows":[{"surface":"Г-поверхность воды","razryad":"В-1","eKomb":"","eObsh":"150","cyl":"","disc":"60","puls":"20","keoNatTop":"2,0","keoNatSide":"0,5","keoSovTop":"1,2","keoSovSide":"0,3"}]},{"n":40,"sphere":"Предприятия общественного питания","name":"Обеденные залы ресторанов, столовых","rows":[{"surface":"Г-0,8","razryad":"Б-2","eKomb":"","eObsh":"200","cyl":"","disc":"60","puls":"20","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":""}]},{"n":41,"sphere":"Предприятия общественного питания","name":"Раздаточные","rows":[{"surface":"Г-0,8","razryad":"Б-1","eKomb":"","eObsh":"300","cyl":"","disc":"40","puls":"15","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":""}]},{"n":42,"sphere":"Предприятия общественного питания","name":"Горячие цехи, холодные цехи, доготовочные и заготовительные цехи","rows":[{"surface":"Г-0,8","razryad":"Б-2","eKomb":"","eObsh":"200","cyl":"","disc":"60","puls":"20","keoNatTop":"","keoNatSide":"","keoSovTop":"1,2","keoSovSide":"0,3"}]},{"n":43,"sphere":"Предприятия общественного питания","name":"Моечные кухонной и столовой посуды, помещения для резки хлеба, помещение заведующего производством","rows":[{"surface":"Г-0,8","razryad":"Б-2","eKomb":"","eObsh":"200","cyl":"","disc":"60","puls":"20","keoNatTop":"","keoNatSide":"","keoSovTop":"1,5","keoSovSide":"0,4"}]},{"n":44,"sphere":"Магазины","name":"Торговые залы магазинов: книжных, готового платья, белья, обуви, тканей, меховых изделий, головных уборов, парфюмерных, галантерейных, ювелирных, электро-, радиотоваров, продовольствия без самообслуживания","rows":[{"surface":"Г-0,8","razryad":"Б-1","eKomb":"","eObsh":"300","cyl":"100","disc":"40","puls":"15","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":""}]},{"n":45,"sphere":"Магазины","name":"Торговые залы продовольственных магазинов самообслуживанием","rows":[{"surface":"Г-0,8","razryad":"А-2","eKomb":"","eObsh":"400","cyl":"100","disc":"40","puls":"10","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":""}]},{"n":46,"sphere":"Магазины","name":"Торговые залы магазинов: посудных, мебельных, спортивных товаров, стройматериалов, электробытовых, машин, игрушек и канцелярских товаров","rows":[{"surface":"Г-0,8","razryad":"Б-2","eKomb":"","eObsh":"200","cyl":"75","disc":"60","puls":"20","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":""}]},{"n":47,"sphere":"Магазины","name":"Примерочные кабины","rows":[{"surface":"В-1,5","razryad":"Б-1","eKomb":"","eObsh":"300","cyl":"","disc":"","puls":"20","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":""}]},{"n":48,"sphere":"Магазины","name":"Помещения отделов заказов, бюро обслуживания","rows":[{"surface":"Г-0,8","razryad":"Б-2","eKomb":"","eObsh":"200","cyl":"","disc":"60","puls":"20","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":""}]},{"n":49,"sphere":"Магазины","name":"Помещения главных касс","rows":[{"surface":"Г-0,8","razryad":"Б-1","eKomb":"","eObsh":"300","cyl":"","disc":"40","puls":"15","keoNatTop":"","keoNatSide":"","keoSovTop":"1,8","keoSovSide":"0,6"}]},{"n":50,"sphere":"Предприятия бытового обслуживания населения","name":"Бани","rows":[{"surface":"Г-0,8","razryad":"В-1","eKomb":"","eObsh":"150","cyl":"","disc":"90","puls":"","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":"","sub":"1) ожидальные, остывочные"},{"surface":"Пол, Г-0,0","razryad":"Ж-1","eKomb":"","eObsh":"75","cyl":"","disc":"","puls":"","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":"","sub":"2) раздевальные, моечные, душевые, парильные"},{"surface":"Пол, Г-0,0","razryad":"В-2","eKomb":"","eObsh":"100","cyl":"","disc":"","puls":"","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":"","sub":"3) бассейны"}]},{"n":51,"sphere":"Предприятия бытового обслуживания населения","name":"Парикмахерские","rows":[{"surface":"Г-0,8","razryad":"А-2","eKomb":"500/300","eObsh":"400","cyl":"","disc":"40","puls":"10/15","keoNatTop":"","keoNatSide":"","keoSovTop":"2,1","keoSovSide":"0,7"}]},{"n":52,"sphere":"Предприятия бытового обслуживания населения","name":"Фотографии","rows":[{"surface":"Г-0,8","razryad":"Б-2","eKomb":"","eObsh":"200","cyl":"","disc":"60","puls":"20","keoNatTop":"","keoNatSide":"","keoSovTop":"1,5","keoSovSide":"0,4","sub":"1) салоны приема и выдачи заказов"},{"surface":"Г-0,8","razryad":"В-2","eKomb":"","eObsh":"100","cyl":"","disc":"","puls":"20","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":"","sub":"2) съемочный зал фото ателье"},{"surface":"Г-0,8","razryad":"Б-2","eKomb":"","eObsh":"200","cyl":"","disc":"60","puls":"20","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":"","sub":"3) фотолаборатории, помещения для приготовления растворов и регенерации серебра"},{"surface":"Г-0,8","razryad":"III6","eKomb":"1000/200","eObsh":"","cyl":"","disc":"401)","puls":"15/20","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":"","sub":"4) помещения для ретуши"}]},{"n":53,"sphere":"Предприятия бытового обслуживания населения","name":"Прачечные","rows":[{"surface":"Г-0,8","razryad":"Б-2","eKomb":"","eObsh":"200","cyl":"","disc":"60","puls":"20","keoNatTop":"","keoNatSide":"","keoSovTop":"1,5","keoSovSide":"0,4","sub":"прием с меткой и учет, выдача"},{"surface":"В-1,0","razryad":"VIII6","eKomb":"","eObsh":"75","cyl":"","disc":"","puls":"","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":"","sub":"хранение белья"},{"surface":"Пол, Г-0,0","razryad":"VI","eKomb":"","eObsh":"200","cyl":"","disc":"401)","puls":"20","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":"","sub":"стирка, приготовление растворов"},{"surface":"Г-0,8","razryad":"VIIIB","eKomb":"","eObsh":"50","cyl":"","disc":"","puls":"","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":"","sub":"хранение стиральных материалов"},{"surface":"Г-0,8","razryad":"VI","eKomb":"","eObsh":"200","cyl":"","disc":"401)","puls":"20","keoNatTop":"","keoNatSide":"","keoSovTop":"1,8","keoSovSide":"0,6","sub":"механические"},{"surface":"Г-0,8","razryad":"IVa","eKomb":"","eObsh":"300","cyl":"","disc":"401)","puls":"20","keoNatTop":"","keoNatSide":"","keoSovTop":"2,4","keoSovSide":"0,9","sub":"ручные"},{"surface":"Г-0,8","razryad":"VI","eKomb":"","eObsh":"200","cyl":"","disc":"401)","puls":"20","keoNatTop":"","keoNatSide":"","keoSovTop":"1,8","keoSovSide":"0,6","sub":"4) отделения разборки и упаковки белья"},{"surface":"Г-0,8","razryad":"IIа","eKomb":"2000/750","eObsh":"750","cyl":"","disc":"201)","puls":"10/20","keoNatTop":"","keoNatSide":"","keoSovTop":"4,2","keoSovSide":"1,5","sub":"5) починка белья"}]},{"n":54,"sphere":"Предприятия бытового обслуживания населения","name":"Прачечные самообслуживания","rows":[{"surface":"Пол, Г-0,0","razryad":"Б-2","eKomb":"","eObsh":"200","cyl":"","disc":"60","puls":"20","keoNatTop":"","keoNatSide":"","keoSovTop":"1,5","keoSovSide":"0,4"}]},{"n":55,"sphere":"Предприятия бытового обслуживания населения","name":"Ателье химической чистки одежды","rows":[{"surface":"Г-0,8","razryad":"Б-2","eKomb":"","eObsh":"200","cyl":"","disc":"60","puls":"20","keoNatTop":"","keoNatSide":"","keoSovTop":"1,5","keoSovSide":"0,4","sub":"1) салон приема и выдачи одежды"},{"surface":"Г-0,8","razryad":"VI","eKomb":"","eObsh":"200","cyl":"","disc":"401)","puls":"20","keoNatTop":"","keoNatSide":"","keoSovTop":"1,8","keoSovSide":"0,6","sub":"2) помещения химической чистки"},{"surface":"Г-0,8","razryad":"IIIа","eKomb":"2000/200","eObsh":"500","cyl":"","disc":"401)","puls":"15/20","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":"","sub":"3) отделения выведения пятен"},{"surface":"Г-0,8","razryad":"VIIIB","eKomb":"","eObsh":"50","cyl":"","disc":"","puls":"","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":"","sub":"4) помещения для хранения химии катов"}]},{"n":56,"sphere":"Предприятия бытового обслуживания населения","name":"Ателье изготовления и ремонта одежды и трикотажных изделий","rows":[{"surface":"Г-0,8 на рабочих столах","razryad":"IIа","eKomb":"2000/ 7504)","eObsh":"750","cyl":"","disc":"201)","puls":"10/20","keoNatTop":"","keoNatSide":"","keoSovTop":"4,2","keoSovSide":"1,5","sub":"1) пошивочные цехи"},{"surface":"Г-0,8 на рабочих столах","razryad":"IIб","eKomb":"","eObsh":"750","cyl":"","disc":"201)","puls":"10","keoNatTop":"","keoNatSide":"","keoSovTop":"4,2","keoSovSide":"1,5","sub":"2) закройные отделения"},{"surface":"Г-0,8","razryad":"IIа","eKomb":"2000/7504)","eObsh":"750","cyl":"","disc":"201)","puls":"10/20","keoNatTop":"","keoNatSide":"","keoSovTop":"4,2","keoSovSide":"1,5","sub":"3) отделения ремонта одежды"},{"surface":"Г-0,8","razryad":"IVa","eKomb":"","eObsh":"300","cyl":"","disc":"401)","puls":"20","keoNatTop":"","keoNatSide":"","keoSovTop":"2,","keoSovSide":"0,9","sub":"4) отделения подготовки прикладных материалов"},{"surface":"Г-0,8","razryad":"IIв","eKomb":"","eObsh":"500","cyl":"","disc":"201)","puls":"10","keoNatTop":"","keoNatSide":"","keoSovTop":"4,2","keoSovSide":"1,5","sub":"5) отделения ручной и машинной вязки"},{"surface":"Г-0,8","razryad":"IVa","eKomb":"","eObsh":"300","cyl":"","disc":"401)","puls":"20","keoNatTop":"","keoNatSide":"","keoSovTop":"2,4","keoSovSide":"0,9","sub":"6) утюжные, декатировочные"}]},{"n":57,"sphere":"Предприятия бытового обслуживания населения","name":"Пункты проката","rows":[{"surface":"Г-0,8","razryad":"Б-2","eKomb":"","eObsh":"200","cyl":"","disc":"60","puls":"20","keoNatTop":"","keoNatSide":"","keoSovTop":"1,5","keoSovSide":"0,4","sub":"1) помещения для посетителей"},{"surface":"Г-0,8","razryad":"В-1","eKomb":"","eObsh":"150","cyl":"","disc":"","puls":"","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":"","sub":"2) кладовые"}]},{"n":58,"sphere":"Предприятия бытового обслуживания населения","name":"Ремонтные мастерские","rows":[{"surface":"Г-0,8","razryad":"IIа","eKomb":"2000/7504)","eObsh":"750","cyl":"","disc":"201)","puls":"10/20","keoNatTop":"","keoNatSide":"","keoSovTop":"4,2","keoSovSide":"1,5","sub":"1) изготовление и ремонт головных уборов, скорняжные работы"},{"surface":"Г-0,8","razryad":"IIIa","eKomb":"2000/ 3004)","eObsh":"","cyl":"","disc":"401)","puls":"10/15","keoNatTop":"","keoNatSide":"","keoSovTop":"3,0","keoSovSide":"1,2","sub":"2) ремонт обуви, галантереи, металлоизделий, изделий из пластмассы, бытовых электро- приборов"},{"surface":"Г-0,8","razryad":"IIб","eKomb":"3000/300","eObsh":"","cyl":"","disc":"201)","puls":"10/20","keoNatTop":"","keoNatSide":"","keoSovTop":"4,2","keoSovSide":"1,5","sub":"3) ремонт часов, ювелирные и граверные работы"},{"surface":"Г-0,8","razryad":"IIв","eKomb":"2000/200","eObsh":"","cyl":"","disc":"201)","puls":"10/20","keoNatTop":"","keoNatSide":"","keoSovTop":"4,2","keoSovSide":"1,5","sub":"4) ремонт фото-, кино-, радио- и телеаппаратуры"}]},{"n":59,"sphere":"Предприятия бытового обслуживания населения","name":"Студия звукозаписи","rows":[{"surface":"Г-0,8","razryad":"Б-2","eKomb":"","eObsh":"200","cyl":"","disc":"60","puls":"20","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":"","sub":"1) помещения для записи и прослушивания"},{"surface":"Г-0,8","razryad":"Б-2","eKomb":"","eObsh":"200","cyl":"","disc":"","puls":"","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":"","sub":"2) фонотеки"}]},{"n":60,"sphere":"Гостиницы","name":"Бюро обслуживания","rows":[{"surface":"Г-0,8","razryad":"Б-2","eKomb":"","eObsh":"200","cyl":"","disc":"60","puls":"20","keoNatTop":"","keoNatSide":"","keoSovTop":"1,5","keoSovSide":"0,4"}]},{"n":61,"sphere":"Гостиницы","name":"Помещения дежурного обслуживающего персонала","rows":[{"surface":"Г-0,8","razryad":"Б-2","eKomb":"","eObsh":"200","cyl":"","disc":"60","puls":"20","keoNatTop":"","keoNatSide":"","keoSovTop":"1,5","keoSovSide":"0,4"}]},{"n":62,"sphere":"Гостиницы","name":"Гостиные, номера","rows":[{"surface":"Г-0,0","razryad":"В-1","eKomb":"","eObsh":"150","cyl":"","disc":"","puls":"20","keoNatTop":"2,0","keoNatSide":"0,5","keoSovTop":"","keoSovSide":""}]},{"n":63,"sphere":"Жилые дома, общежития","name":"Жилые комнаты, гостиные, спальни","rows":[{"surface":"Пол, Г-0,0","razryad":"В-1","eKomb":"","eObsh":"150з)","cyl":"","disc":"","puls":"","keoNatTop":"2,0","keoNatSide":"0,5","keoSovTop":"","keoSovSide":""}]},{"n":64,"sphere":"Жилые дома, общежития","name":"Кухни","rows":[{"surface":"Пол, Г-0,0","razryad":"В-1","eKomb":"","eObsh":"150з)","cyl":"","disc":"","puls":"","keoNatTop":"2,0","keoNatSide":"0,5","keoSovTop":"1,2","keoSovSide":"0,3"}]},{"n":65,"sphere":"Жилые дома, общежития","name":"Коридоры, ванные, уборные","rows":[{"surface":"Пол, Г-0,0","razryad":"Ж-2","eKomb":"","eObsh":"1503)","cyl":"","disc":"","puls":"","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":""}]},{"n":66,"sphere":"Жилые дома, общежития","name":"Общедомовые помещения","rows":[{"surface":"Пол, Г-0,0","razryad":"3-1","eKomb":"","eObsh":"30","cyl":"","disc":"","puls":"","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":"","sub":"1) вестибюли"},{"surface":"Пол. Г-0,0","razryad":"3-2","eKomb":"","eObsh":"20","cyl":"","disc":"","puls":"","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":"","sub":"2) поэтажные коридоры и лифтовые холлы"},{"surface":"Пол (площадки, ступени)","razryad":"3-2","eKomb":"","eObsh":"204)","cyl":"","disc":"","puls":"","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":"0,14)","sub":"3) лестницы и лестничные площадки"}]},{"n":67,"sphere":"Вспомогательные здания и помещения","name":"Санитарно-бытовые помещения","rows":[{"surface":"Пол","razryad":"Ж-1","eKomb":"","eObsh":"75","cyl":"","disc":"","puls":"","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":"","sub":"1) умывальные, уборные, курительные"},{"surface":"Пол","razryad":"Ж-2","eKomb":"","eObsh":"50","cyl":"","disc":"","puls":"","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":"","sub":"2) душевые, гардеробные, помещения для сушки, обеспыливания и обезвреживания одежды и обуви, помещения для обогревания работающих"}]},{"n":68,"sphere":"Вспомогательные здания и помещения","name":"Здравпункты","rows":[{"surface":"Г-0,8","razryad":"Б-2","eKomb":"","eObsh":"200","cyl":"","disc":"60","puls":"20","keoNatTop":"","keoNatSide":"","keoSovTop":"1,5","keoSovSide":"0,4","sub":"1) ожидальные"},{"surface":"Г-0,8","razryad":"Б-2","eKomb":"","eObsh":"200","cyl":"","disc":"60","puls":"20","keoNatTop":"","keoNatSide":"0,7","keoSovTop":"1,5","keoSovSide":"0,4","sub":"2) регистратура, комнаты дежурного персонала"},{"surface":"Г-0,8","razryad":"Б-1","eKomb":"","eObsh":"300","cyl":"","disc":"40","puls":"15","keoNatTop":"3,0","keoNatSide":"1,0","keoSovTop":"1,8","keoSovSide":"0,6","sub":"3) кабинеты врачей, перевязочные"},{"surface":"Г-0,8","razryad":"А-1","eKomb":"","eObsh":"500","cyl":"","disc":"40","puls":"10","keoNatTop":"4,0","keoNatSide":"1,5","keoSovTop":"2,4","keoSovSide":"0,9","sub":"4) процедурные кабинеты"}]},{"n":69,"sphere":"Прочие помещения производственных, вспомогательных и общественных зданий","name":"Вестибюли и гардеробные уличной одежды","rows":[{"surface":"Пол","razryad":"Е","eKomb":"","eObsh":"150","cyl":"","disc":"","puls":"","keoNatTop":"","keoNatSide":"","keoSovTop":"1,2","keoSovSide":"0,3","sub":"1) в вузах, школах, театрах клубах, общежитиях, гостиницах и главных входах в крупные промышленные предприятия и общественные здания"},{"surface":"Пол","razryad":"Ж-1","eKomb":"","eObsh":"75","cyl":"","disc":"","puls":"","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":"","sub":"2) в прочих промышленных, вспомогательных и общественных зданиях"}]},{"n":70,"sphere":"Прочие помещения производственных, вспомогательных и общественных зданий","name":"Лестницы","rows":[{"surface":"Пол (площадки, ступени)","razryad":"В-2","eKomb":"","eObsh":"100","cyl":"","disc":"","puls":"","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":"0,24)","sub":"1) главные лестничные клетки общественных, производственных и вспомогательных зданий"},{"surface":"Пол, Г-0,0","razryad":"Ж-2","eKomb":"","eObsh":"50","cyl":"","disc":"","puls":"","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":"0,14)","sub":"2) остальные лестничные клетки"}]},{"n":71,"sphere":"Прочие помещения производственных, вспомогательных и общественных зданий","name":"Лифтовые холлы в общественных, производственных и вспомогательных зданиях","rows":[{"surface":"Пол, Г-0,0","razryad":"Ж-1","eKomb":"","eObsh":"75","cyl":"","disc":"","puls":"","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":""}]},{"n":72,"sphere":"Прочие помещения производственных, вспомогательных и общественных зданий","name":"Коридоры и проходы","rows":[{"surface":"Пол Г-0,0","razryad":"Ж-1","eKomb":"","eObsh":"75","cyl":"","disc":"","puls":"","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":"0,14)","sub":"1) главные коридоры и проходы"},{"surface":"Пол. Г-0,0","razryad":"3-2","eKomb":"","eObsh":"20","cyl":"","disc":"","puls":"","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":"","sub":"2) поэтажные коридоры жилых зданий"},{"surface":"Пол, Г-0,0","razryad":"Ж-2","eKomb":"","eObsh":"50","cyl":"","disc":"","puls":"","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":"","sub":"3) остальные коридоры"}]},{"n":73,"sphere":"Прочие помещения производственных, вспомогательных и общественных зданий","name":"Машинные отделения лифтов","rows":[{"surface":"Г-0,8","razryad":"3-1","eKomb":"","eObsh":"305)","cyl":"","disc":"","puls":"","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":"0,14)"}]},{"n":74,"sphere":"Прочие помещения производственных, вспомогательных и общественных зданий","name":"Чердаки","rows":[{"surface":"Пол, Г-0,0","razryad":"","eKomb":"","eObsh":"104);5)","cyl":"","disc":"","puls":"","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":"0,14)"}]}],"spheres":["Административные здания","Банковские и страховые учреждения","Учреждения общего, начального, среднего и высшего специального образования","Учреждения досугового назначения","Детские дошкольные учреждения (организации)","Санатории, дома отдыха","Физкультурно-оздоровительные учреждения","Предприятия общественного питания","Магазины","Предприятия бытового обслуживания населения","Гостиницы","Жилые дома, общежития","Вспомогательные здания и помещения","Прочие помещения производственных, вспомогательных и общественных зданий"]},"visual":{"items":[{"razryad":"I","char":"Наивысшей точности","size":"Менее 0,15","sub":[{"contrast":"Малый","bg":"Темный","eKombTot":"5000 4500","eKombObsh":"500 500","eObsh":"","oslepP":"20 10","pulsKp":"10 10","keoNatTop":"","keoNatSide":"","keoSovTop":"6,0","keoSovSide":"2,0","pod":"а"},{"contrast":"Малый Средний","bg":"Средний Темный","eKombTot":"4000 3500","eKombObsh":"400 400","eObsh":"1250 1000","oslepP":"20 10","pulsKp":"10 10","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":"","pod":"б"},{"contrast":"Малый Средний Большой","bg":"Светлый Средний Темный","eKombTot":"2500 2000","eKombObsh":"300 200","eObsh":"750 600","oslepP":"20 10","pulsKp":"10 10","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":"","pod":"в"},{"contrast":"Средний Большой «","bg":"Светлый « Средний","eKombTot":"1500 1250","eKombObsh":"200 200","eObsh":"400 300","oslepP":"20 10","pulsKp":"10 10","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":"","pod":"г"}]},{"razryad":"II","char":"Очень высокой точности","size":"От 0,15 до 0,30","sub":[{"contrast":"Малый","bg":"Темный","eKombTot":"4000 3500","eKombObsh":"400 400","eObsh":"","oslepP":"20 10","pulsKp":"10 10","keoNatTop":"","keoNatSide":"","keoSovTop":"4,2","keoSovSide":"1,5","pod":"а"},{"contrast":"Малый Средний","bg":"Средний Темный","eKombTot":"3000 2500","eKombObsh":"300 300","eObsh":"750 600","oslepP":"20 10","pulsKp":"10 10","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":"","pod":"б"},{"contrast":"Малый Средний Большой","bg":"Светлый Средний Темный","eKombTot":"2000 1500","eKombObsh":"200 200","eObsh":"500 400","oslepP":"20 10","pulsKp":"10 10","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":"","pod":"в"},{"contrast":"Средний Большой «","bg":"Светлый Светлый Средний","eKombTot":"1000 750","eKombObsh":"200 200","eObsh":"300 200","oslepP":"20 10","pulsKp":"10 10","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":"","pod":"г"}]},{"razryad":"III","char":"Высокой точности","size":"От 0,30 до 0,50","sub":[{"contrast":"Малый","bg":"Темный","eKombTot":"2000 1500","eKombObsh":"200 200","eObsh":"500 400","oslepP":"40 20","pulsKp":"15 15","keoNatTop":"","keoNatSide":"","keoSovTop":"3,0","keoSovSide":"1,2","pod":"а"},{"contrast":"Малый Средний","bg":"Средний Темный","eKombTot":"1000 750","eKombObsh":"200 200","eObsh":"300 200","oslepP":"40 20","pulsKp":"15 15","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":"","pod":"б"},{"contrast":"Малый Средний Большой","bg":"Светлый Средний Темный","eKombTot":"750 600","eKombObsh":"200 200","eObsh":"300 200","oslepP":"40 20","pulsKp":"15 15","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":"","pod":"в"},{"contrast":"Средний Большой «","bg":"Светлый « Средний","eKombTot":"400","eKombObsh":"200","eObsh":"200","oslepP":"40","pulsKp":"15","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":"","pod":"г"}]},{"razryad":"IV","char":"Средней точности","size":"Св. 0,5 до 1,0","sub":[{"contrast":"Малый","bg":"Темный","eKombTot":"750","eKombObsh":"200","eObsh":"300","oslepP":"40","pulsKp":"20","keoNatTop":"4","keoNatSide":"1,5","keoSovTop":"2,4","keoSovSide":"0,9","pod":"а"},{"contrast":"Малый Средний","bg":"Средний Темный","eKombTot":"500","eKombObsh":"200","eObsh":"200","oslepP":"40","pulsKp":"20","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":"","pod":"б"},{"contrast":"Малый Средний Большой","bg":"Светлый Средний Темный","eKombTot":"400","eKombObsh":"200","eObsh":"200","oslepP":"40","pulsKp":"20","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":"","pod":"в"},{"contrast":"Средний Большой «","bg":"Светлый « Средний","eKombTot":"","eKombObsh":"","eObsh":"200","oslepP":"40","pulsKp":"20","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":"","pod":"г"}]},{"razryad":"V","char":"Малой точности","size":"Св. 1 до 5","sub":[{"contrast":"Малый","bg":"Темный","eKombTot":"400","eKombObsh":"200","eObsh":"300","oslepP":"40","pulsKp":"20","keoNatTop":"3","keoNatSide":"1","keoSovTop":"1,8","keoSovSide":"0,6","pod":"а"},{"contrast":"Малый Средний","bg":"Средний Темный","eKombTot":"","eKombObsh":"","eObsh":"200","oslepP":"40","pulsKp":"20","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":"","pod":"б"},{"contrast":"Малый Средний Большой","bg":"Светлый Средний Темный","eKombTot":"","eKombObsh":"","eObsh":"200","oslepP":"40","pulsKp":"20","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":"","pod":"в"},{"contrast":"Средний Большой «","bg":"Светлый « Средний","eKombTot":"","eKombObsh":"","eObsh":"200","oslepP":"40","pulsKp":"20","keoNatTop":"","keoNatSide":"","keoSovTop":"","keoSovSide":"","pod":"г"}]},{"razryad":"VI","char":"Грубая (очень малой точности)","size":"Более 5","sub":[{"contrast":"Независимо от характеристик фона и контраста объекта с фоном","bg":"","eKombTot":"","eKombObsh":"200","eObsh":"40","oslepP":"20","pulsKp":"3","keoNatTop":"1","keoNatSide":"1,8","keoSovTop":"0,6","keoSovSide":"","pod":""}]},{"razryad":"VII","char":"Работа со светящимися материалами и изделиями в горячих цехах","size":"Более 0,5","sub":[{"contrast":"То же","bg":"","eKombTot":"","eKombObsh":"200","eObsh":"40","oslepP":"20","pulsKp":"3","keoNatTop":"1","keoNatSide":"1,8","keoSovTop":"0,6","keoSovSide":"","pod":""}]},{"razryad":"VIII","char":"Общее наблюдение за ходом производственного процесса: постоянное","size":"","sub":[{"contrast":"«","bg":"","eKombTot":"","eKombObsh":"200","eObsh":"40","oslepP":"20","pulsKp":"3","keoNatTop":"1","keoNatSide":"1,8","keoSovTop":"0,6","keoSovSide":"","pod":"а"},{"contrast":"«","bg":"","eKombTot":"","eKombObsh":"75","eObsh":"","oslepP":"","pulsKp":"1","keoNatTop":"0,3","keoNatSide":"0,7","keoSovTop":"0,2","keoSovSide":"","pod":"б"},{"contrast":"Независимо от характеристик фона и контраста объекта с фоном","bg":"","eKombTot":"","eKombObsh":"50","eObsh":"","oslepP":"","pulsKp":"0,7","keoNatTop":"0,2","keoNatSide":"0,5","keoSovTop":"0,2","keoSovSide":"","pod":"в"},{"contrast":"То же","bg":"","eKombTot":"","eKombObsh":"20","eObsh":"","oslepP":"","pulsKp":"0,3","keoNatTop":"0,1","keoNatSide":"0,2","keoSovTop":"0,1","keoSovSide":"","pod":"г"}]}]}}</script>
+<script>
+(function(){
+"use strict";
+var DATA=JSON.parse(document.getElementById('npa-data').textContent);
+var HEIGHT_MSG='osv-height';
+
+// ---- icons ----
+var IC={
+ back:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>',
+ home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>',
+ chev:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>',
+ search:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>',
+ x:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+ chevd:'<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>',
+ info:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>',
+ folder:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>',
+ bulb:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.4 1 2.5h6c0-1.1.4-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg>',
+ grid:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>'
+};
+
+// ---- source strings ----
+var SRC_MAIN='Приказ Министра здравоохранения РК от 16.02.2022 № ҚР ДСМ-15, приложение 3 «Оптимальные и допустимые показатели освещённости» (с изм. от 05.05.2025).';
+var DISCLAIMER='Сверьте с действующей редакцией; окончательное решение — по замерам/обследованию.';
+var TABLE_TITLE={
+ industrial:'Таблица 3. Нормируемые показатели освещения общепромышленных помещений и сооружений',
+ public:'Таблица 4. Нормируемые показатели освещения основных помещений общественных, жилых, вспомогательных зданий',
+ visual:'Таблица 2. Нормируемые показатели к освещению помещений промышленных предприятий (по разрядам зрительной работы)'
+};
+var CAT_META={
+ industrial:{title:'Промышленные помещения',desc:'Склады, электропомещения, котельные, инженерные сети, автосервис',icon:IC.folder},
+ public:{title:'Общественные, жилые, вспомогательные',desc:'Офисы, образование, торговля, общепит, быт, жильё',icon:IC.bulb},
+ visual:{title:'По разряду зрительной работы',desc:'Если известен размер объекта, контраст и фон (I–VIII)',icon:IC.grid}
+};
+var PRIM={
+ industrial:['<b>*</b> Освещённость снижена на ступень шкалы, так как оборудование не требует постоянного обслуживания либо из-за кратковременного пребывания людей.',
+  '<b>**</b> Освещённость приведена для ламп накаливания.',
+  '1. Наличие нормируемых значений в графах обеих систем указывает на возможность применения одной из них; предпочтительна система комбинированного освещения.',
+  '2. При дробном обозначении коэффициента пульсации: в числителе — для местного и общего освещения в системе комбинированного, в знаменателе — для местного и общего в системе общего.',
+  '3. Более подробные таблицы значений приводятся в отраслевых нормах.'],
+ public:['1) Приведён показатель ослеплённости.',
+  '2) Значения КЕО повышены в помещениях, специально предназначенных для работы и обучения детей и подростков.',
+  '3) В жилых домах и квартирах приведённые значения освещённости являются рекомендуемыми.',
+  '4) Значения установлены на основании экспертных оценок.',
+  '5) Норма освещённости дана для ламп накаливания.',
+  '<b>·</b> При дробной освещённости (гр. «комбинир.»): числитель — норма от общего и местного на рабочем месте, знаменатель — от общего по помещению.',
+  '<b>·</b> При дробном показателе дискомфорта: числитель — для общего в системе комбинированного, знаменатель — для одного общего.'],
+ visual:['Парные значения в ячейках соответствуют вариантам сочетаний контраста объекта с фоном и характеристики фона, а также допустимым сочетаниям показателя ослеплённости и коэффициента пульсации.',
+  'Наличие значений в графах обеих систем указывает на возможность применения одной из них; предпочтительно комбинированное освещение.',
+  'КЕО (коэффициент естественной освещённости) нормируется на уровне разряда.']
+};
+
+// ---- helpers ----
+function el(html){var d=document.createElement('div');d.innerHTML=html.trim();return d.firstChild;}
+function esc(s){return String(s==null?'':s).replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});}
+function cleanNum(v){v=(v||'').trim();return /^\d+(?:[.,]\d+)?(?:\s*\/\s*\d+(?:[.,]\d+)?)?$/.test(v)?v:'';}
+function norm(s){return (s||'').toLowerCase().replace(/ё/g,'е').replace(/\s+/g,' ').trim();}
+function kvRow(k,v){v=(v||'').trim();if(!v)return '';return '<tr><td class="k">'+esc(k)+'</td><td class="v">'+esc(v)+'</td></tr>';}
+
+// group items by key preserving order
+function groupBy(items,key){var m={},order=[];items.forEach(function(it){var g=it[key];if(!(g in m)){m[g]=[];order.push(g);}m[g].push(it);});return {m:m,order:order};}
+var IND_G=groupBy(DATA.industrial.items,'group');
+var PUB_S=groupBy(DATA.public.items,'sphere');
+
+// build search index (industrial + public + visual)
+var INDEX=[];
+DATA.industrial.items.forEach(function(it){INDEX.push({cat:'industrial',id:it.n,name:it.name,ctx:it.group,q:norm(it.name+' '+it.group)});});
+DATA.public.items.forEach(function(it){INDEX.push({cat:'public',id:it.n,name:it.name,ctx:it.sphere,q:norm(it.name+' '+it.sphere)});});
+DATA.visual.items.forEach(function(it){INDEX.push({cat:'visual',id:it.razryad,name:'Разряд '+it.razryad+' — '+it.char,ctx:'Размер объекта: '+(it.size||'—'),q:norm(it.char+' '+it.razryad+' '+it.size)});});
+
+// ---- navigation stack ----
+var stack=[{v:'home'}];
+function push(view){stack.push(view);render('right');}
+function back(){if(stack.length>1){stack.pop();render('left');}}
+function home(){stack=[{v:'home'}];render('left');}
+function current(){return stack[stack.length-1];}
+
+// ---- renderers ----
+function header(title,sub){
+  return '<div class="hdr">'
+    +'<button class="iconbtn" data-act="back" aria-label="Назад">'+IC.back+'</button>'
+    +'<div class="ttl">'+esc(title)+(sub?'<span class="sub">'+esc(sub)+'</span>':'')+'</div>'
+    +'<button class="iconbtn" data-act="home" aria-label="В начало">'+IC.home+'</button></div>';
+}
+function crumbs(parts){return '<div class="crumbs">'+parts.map(function(p,i){return i===parts.length-1?'<b>'+esc(p)+'</b>':esc(p);}).join(' › ')+'</div>';}
+function rowBtn(name,desc,attrs){return '<button class="row" '+attrs+'><div class="rt"><div class="rn">'+esc(name)+'</div>'+(desc?'<div class="rd">'+esc(desc)+'</div>':'')+'</div><span class="rc">'+IC.chev+'</span></button>';}
+
+function viewHome(){
+  var s=''
+   +'<div class="home-hero"><h1>Нормы освещённости</h1><p>Рабочие места и помещения по нормативам Республики Казахстан</p></div>'
+   +'<div class="search"><span class="si">'+IC.search+'</span>'
+   +'<input id="q" type="text" placeholder="Поиск по помещению или рабочему месту" autocomplete="off" enterkeyhint="search">'
+   +'<button class="iconbtn clr" data-act="clr" aria-label="Очистить" style="color:var(--faint);display:none">'+IC.x+'</button></div>'
+   +'<div id="results"></div>'
+   +'<div class="menu" id="cats"><div class="m-lbl">Выберите раздел</div>';
+  ['industrial','public','visual'].forEach(function(c){var m=CAT_META[c];
+    s+='<button class="row cat" data-act="cat" data-cat="'+c+'"><span class="ri">'+m.icon+'</span>'
+      +'<div class="rt"><div class="rn">'+esc(m.title)+'</div><div class="rd">'+esc(m.desc)+'</div></div>'
+      +'<span class="rc">'+IC.chev+'</span></button>';
+  });
+  s+='</div>'
+   +'<div class="foot"><button data-act="info">'+IC.info+' О нормативах и оговорка</button></div>';
+  return '<div class="screen" id="scr">'+s+'</div>';
+}
+
+function viewCat(cat){
+  var m=CAT_META[cat],body='';
+  if(cat==='industrial'){body=IND_G.order.map(function(g){return rowBtn(g,IND_G.m[g].length+' поз.','data-act="grp" data-cat="industrial" data-key="'+esc(g)+'"');}).join('');}
+  else if(cat==='public'){body=PUB_S.order.map(function(s){return rowBtn(s,PUB_S.m[s].length+' поз.','data-act="grp" data-cat="public" data-key="'+esc(s)+'"');}).join('');}
+  else{body=DATA.visual.items.map(function(it){return rowBtn('Разряд '+it.razryad+' — '+it.char,'Размер объекта: '+(it.size||'—'),'data-act="raz" data-key="'+esc(it.razryad)+'"');}).join('');}
+  return '<div class="screen" id="scr">'+header(m.title)+crumbs(['Начало',m.title])+'<div class="list">'+body+'</div><div style="height:8px"></div></div>';
+}
+
+function viewGroup(cat,key){
+  var items=(cat==='industrial'?IND_G.m[key]:PUB_S.m[key])||[];
+  var body=items.map(function(it){return rowBtn(it.name,null,'data-act="item" data-cat="'+cat+'" data-id="'+it.n+'"');}).join('');
+  var short=key.length>34?key.slice(0,32)+'…':key;
+  return '<div class="screen" id="scr">'+header(key)+crumbs(['Начало',CAT_META[cat].title,short])+'<div class="list">'+body+'</div><div style="height:8px"></div></div>';
+}
+
+function viewRaz(razryad){
+  var it=DATA.visual.items.filter(function(x){return x.razryad===razryad;})[0];
+  var body=it.sub.map(function(sr,i){
+    var label='Подразряд '+(sr.pod||('#'+(i+1)));
+    var d=[sr.contrast?('контраст: '+sr.contrast):'',sr.bg?('фон: '+sr.bg):''].filter(Boolean).join(' · ');
+    return rowBtn(label,d||null,'data-act="vitem" data-key="'+esc(razryad)+'" data-i="'+i+'"');
+  }).join('');
+  return '<div class="screen" id="scr">'+header('Разряд '+razryad,it.char)+crumbs(['Начало','По разряду','Разряд '+razryad])+'<div class="list">'+body+'</div><div style="height:8px"></div></div>';
+}
+
+function heroBlock(cards){
+  var out=cards.filter(function(c){return c.v;}).map(function(c){
+    return '<div class="hcard'+(c.alt?' alt':'')+'"><div class="hl">'+esc(c.l)+'</div><div class="hv">'+esc(c.v)+(c.u?' <small>'+esc(c.u)+'</small>':'')+'</div></div>';
+  }).join('');
+  return out?'<div class="hero">'+out+'</div>':'';
+}
+function primBlock(cat){
+  return '<details class="prim"><summary>Примечания к таблице (по НПА) '+IC.chevd+'</summary><div class="prim-body">'
+    +PRIM[cat].map(function(p){return '<p>'+p+'</p>';}).join('')+'</div></details>';
+}
+function srcBlock(cat){
+  return '<div class="src"><b>Источник:</b> '+esc(SRC_MAIN)+' '+esc(TABLE_TITLE[cat])+'.<br>'+esc(DISCLAIMER)+'</div>';
+}
+
+function viewItemInd(id){
+  var it=DATA.industrial.items.filter(function(x){return x.n===id;})[0];
+  var s='<div class="detail"><div class="d-name">'+esc(it.name)+'</div><div class="d-in">'+esc(it.group)+' · <span class="badge">Промышленные</span></div>';
+  it.rows.forEach(function(r,i){
+    var multi=it.rows.length>1;
+    if(multi)s+='<div class="rowblock">'+(r.surface?'<div class="rbh">'+esc(r.surface)+'</div>':'');
+    if(i===0){s+=heroBlock([
+      {l:'При общем освещении',v:cleanNum(r.eObsh),u:'лк'},
+      {l:'Комбинир. (всего)',v:cleanNum(r.eKombTot),u:'лк',alt:true}
+    ]);}
+    s+='<table class="kv">'
+      +kvRow('Рабочая поверхность, плоскость',r.surface)
+      +kvRow('Разряд зрительной работы',r.razryad)
+      +kvRow('Освещённость при общем, лк',r.eObsh)
+      +kvRow('Комбинированное — всего, лк',r.eKombTot)
+      +kvRow('Комбинированное — от общего, лк',r.eKombObsh)
+      +kvRow('Показатель ослеплённости, не более',r.oslep)
+      +kvRow('Коэффициент пульсации, %',r.puls)
+      +'</table>';
+    if(r.note)s+='<div class="note"><b>Указание:</b> '+esc(r.note)+'</div>';
+    if(multi)s+='</div>';
+  });
+  s+=primBlock('industrial')+srcBlock('industrial')+'</div>';
+  return '<div class="screen" id="scr">'+header(it.name.length>40?it.name.slice(0,38)+'…':it.name)+crumbs(['Начало','Промышленные',it.group.length>20?it.group.slice(0,18)+'…':it.group])+s+'</div>';
+}
+
+function viewItemPub(id){
+  var it=DATA.public.items.filter(function(x){return x.n===id;})[0];
+  var s='<div class="detail"><div class="d-name">'+esc(it.name)+'</div><div class="d-in">'+esc(it.sphere)+' · <span class="badge">Общественные</span></div>';
+  it.rows.forEach(function(r,i){
+    var multi=it.rows.length>1;
+    if(multi)s+='<div class="rowblock">'+(r.sub?'<div class="rbh">'+esc(r.sub)+'</div>':'');
+    if(i===0){s+=heroBlock([
+      {l:'При общем освещении',v:cleanNum(r.eObsh),u:'лк'},
+      {l:'Комбинированное',v:cleanNum(r.eKomb),u:'лк',alt:true}
+    ]);}
+    s+='<table class="kv">'
+      +kvRow('Плоскость нормирования',r.surface)
+      +kvRow('Разряд и подразряд',r.razryad)
+      +kvRow('Освещённость комбинир., лк',r.eKomb)
+      +kvRow('Освещённость при общем, лк',r.eObsh)
+      +kvRow('Цилиндрическая освещённость, лк',r.cyl)
+      +kvRow('Показатель дискомфорта, не более',r.disc)
+      +kvRow('Коэффициент пульсации, %',r.puls)
+      +kvRow('КЕО естеств.: верхнее/комбинир., %',r.keoNatTop)
+      +kvRow('КЕО естеств.: боковое, %',r.keoNatSide)
+      +kvRow('КЕО совмещ.: верхнее/комбинир., %',r.keoSovTop)
+      +kvRow('КЕО совмещ.: боковое, %',r.keoSovSide)
+      +'</table>';
+    if(multi)s+='</div>';
+  });
+  s+=primBlock('public')+srcBlock('public')+'</div>';
+  return '<div class="screen" id="scr">'+header(it.name.length>40?it.name.slice(0,38)+'…':it.name)+crumbs(['Начало','Общественные',it.sphere.length>18?it.sphere.slice(0,16)+'…':it.sphere])+s+'</div>';
+}
+
+function viewItemVis(razryad,i){
+  var it=DATA.visual.items.filter(function(x){return x.razryad===razryad;})[0];
+  var r=it.sub[i];
+  // КЕО at разряд level: take from any sub row that has it
+  var kNT='',kNS='',kST='',kSS='';
+  it.sub.forEach(function(x){if(x.keoNatTop)kNT=kNT||x.keoNatTop;if(x.keoNatSide)kNS=kNS||x.keoNatSide;if(x.keoSovTop)kST=kST||x.keoSovTop;if(x.keoSovSide)kSS=kSS||x.keoSovSide;});
+  var s='<div class="detail"><div class="d-name">Разряд '+esc(razryad)+', подразряд '+esc(r.pod||('#'+(i+1)))+'</div>'
+    +'<div class="d-in">'+esc(it.char)+' · размер объекта: '+esc(it.size||'—')+' мм</div>';
+  s+=heroBlock([
+    {l:'Комбинир. — всего',v:cleanNum(r.eKombTot),u:'лк'},
+    {l:'При общем',v:cleanNum(r.eObsh),u:'лк',alt:true}
+  ]);
+  s+='<table class="kv">'
+    +kvRow('Контраст объекта с фоном',r.contrast)
+    +kvRow('Характеристика фона',r.bg)
+    +kvRow('Комбинированное — всего, лк',r.eKombTot)
+    +kvRow('Комбинированное — от общего, лк',r.eKombObsh)
+    +kvRow('При системе общего освещения, лк',r.eObsh)
+    +kvRow('Показатель ослеплённости P',r.oslepP)
+    +kvRow('Коэффициент пульсации Kп, %',r.pulsKp)
+    +'</table>';
+  s+='<div class="sect">КЕО (нормируется на уровне разряда '+esc(razryad)+')</div>'
+    +'<table class="kv">'
+    +kvRow('Естеств.: верхнее/комбинир., %',kNT)
+    +kvRow('Естеств.: боковое, %',kNS)
+    +kvRow('Совмещ.: верхнее/комбинир., %',kST)
+    +kvRow('Совмещ.: боковое, %',kSS)
+    +'</table>';
+  s+='<div class="note">Если в ячейке два значения — это варианты сочетаний контраста и фона и допустимых сочетаний показателя ослеплённости и коэффициента пульсации. Выбор — по фактическим условиям зрительной работы.</div>';
+  s+=primBlock('visual')+srcBlock('visual')+'</div>';
+  return '<div class="screen" id="scr">'+header('Разряд '+razryad+' · '+(r.pod||''))+crumbs(['Начало','По разряду','Разряд '+razryad,'Подразряд '+(r.pod||'')])+s+'</div>';
+}
+
+function viewInfo(){
+  var s='<div class="detail info"><div class="d-name">О нормативах</div>'
+   +'<p>Значения освещённости приведены по действующему законодательству Республики Казахстан. Первоисточник для всех показателей — '+esc(SRC_MAIN)+'</p>'
+   +'<h4>Разделы инструмента</h4>'
+   +'<p><b>Промышленные помещения</b> — Таблица 3 приложения 3 (склады, электропомещения, котельные, инженерные сети, автосервис).</p>'
+   +'<p><b>Общественные, жилые, вспомогательные</b> — Таблица 4 приложения 3.</p>'
+   +'<p><b>По разряду зрительной работы</b> — Таблица 2 приложения 3 (разряды I–VIII), для расчёта по размеру объекта различения, контрасту и фону.</p>'
+   +'<h4>Связь с санитарными правилами</h4>'
+   +'<p>Приказ МЗ РК от 03.08.2021 № ҚР ДСМ-72 (санитарные требования к производственным зданиям) по показателям освещённости на рабочих местах прямо отсылает к ДСМ-15 (п. 40, 77) и отдельно требует при работах средней точности комбинированную освещённость не менее 500 лк (п. 76).</p>'
+   +'<div class="note"><b>Оговорка.</b> '+esc(DISCLAIMER)+' Настоящий инструмент носит справочный характер и не заменяет инструментальные замеры и заключение по результатам обследования.</div>'
+   +'</div>';
+  return '<div class="screen" id="scr">'+header('О нормативах')+crumbs(['Начало','О нормативах'])+s+'</div>';
+}
+
+// ---- search ----
+function renderResults(qraw){
+  var box=document.getElementById('results'),cats=document.getElementById('cats'),clr=document.querySelector('.clr');
+  var q=norm(qraw);
+  if(!q){box.innerHTML='';cats.style.display='';clr.style.display='none';postHeight();return;}
+  clr.style.display='';cats.style.display='none';
+  var res=INDEX.filter(function(x){return x.q.indexOf(q)>-1;}).slice(0,60);
+  if(!res.length){box.innerHTML='<div class="empty">'+IC.search+'<div>Ничего не найдено по запросу «'+esc(qraw.trim())+'».<br>Попробуйте другое слово или выберите раздел.</div></div>';postHeight();return;}
+  var badge={industrial:'Пром.',public:'Общ.',visual:'Разряд'};
+  var html='<div class="list" style="padding-top:8px">';
+  res.forEach(function(x){
+    var act=x.cat==='visual'?('data-act="raz" data-key="'+esc(x.id)+'"'):('data-act="item" data-cat="'+x.cat+'" data-id="'+x.id+'"');
+    html+='<button class="row" '+act+'><div class="rt"><div class="rn">'+esc(x.name)+'</div><div class="rd">'+esc(x.ctx)+' · '+badge[x.cat]+'</div></div><span class="rc">'+IC.chev+'</span></button>';
+  });
+  html+='</div>';
+  box.innerHTML=html;postHeight();
+}
+
+// ---- dispatch ----
+function render(dir){
+  var v=current(),html;
+  switch(v.v){
+    case 'home':html=viewHome();break;
+    case 'cat':html=viewCat(v.cat);break;
+    case 'group':html=viewGroup(v.cat,v.key);break;
+    case 'raz':html=viewRaz(v.key);break;
+    case 'item':html=(v.cat==='industrial')?viewItemInd(v.id):viewItemPub(v.id);break;
+    case 'vitem':html=viewItemVis(v.key,v.i);break;
+    case 'info':html=viewInfo();break;
+  }
+  var stage=document.getElementById('stage');
+  stage.innerHTML=html;
+  var scr=document.getElementById('scr');
+  scr.classList.add(dir==='left'?'in-left':'in-right');
+  scr.addEventListener('animationend',function(){scr.classList.remove('in-left','in-right');postHeight();},{once:true});
+  window.scrollTo(0,0);
+  postHeight();
+}
+
+// event delegation
+document.getElementById('stage').addEventListener('click',function(e){
+  var t=e.target.closest('[data-act]');if(!t)return;
+  var a=t.getAttribute('data-act');
+  if(a==='back')return back();
+  if(a==='home')return home();
+  if(a==='info')return push({v:'info'});
+  if(a==='cat')return push({v:'cat',cat:t.getAttribute('data-cat')});
+  if(a==='grp')return push({v:'group',cat:t.getAttribute('data-cat'),key:t.getAttribute('data-key')});
+  if(a==='raz')return push({v:'raz',key:t.getAttribute('data-key')});
+  if(a==='item')return push({v:'item',cat:t.getAttribute('data-cat'),id:parseInt(t.getAttribute('data-id'),10)});
+  if(a==='vitem')return push({v:'vitem',key:t.getAttribute('data-key'),i:parseInt(t.getAttribute('data-i'),10)});
+  if(a==='clr'){var q=document.getElementById('q');q.value='';q.focus();renderResults('');}
+});
+document.getElementById('stage').addEventListener('input',function(e){
+  if(e.target && e.target.id==='q')renderResults(e.target.value);
+});
+document.getElementById('stage').addEventListener('toggle',function(e){postHeight();},true);
+
+// ---- height to parent ----
+var lastH=0;
+function postHeight(){
+  requestAnimationFrame(function(){
+    var h=document.documentElement.getBoundingClientRect().height;
+    h=Math.ceil(h)+2;
+    if(h!==lastH){lastH=h;try{parent.postMessage({type:HEIGHT_MSG,height:h},'*');}catch(e){}}
+  });
+}
+window.addEventListener('resize',postHeight);
+window.addEventListener('load',postHeight);
+
+render('right');
+})();
+</script>
+</body>
+</html>
