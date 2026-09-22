@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  html{color-scheme:light dark}
+  body{margin:0}
+  img{max-width:100%}
+  [hidden]{display:none!important}
+</style>
+<title>Приказ № 1019 — сравнение редакций</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=PT+Serif:ital,wght@0,400;0,700;1,400&family=PT+Sans:wght@400;700&display=swap');
+
+  :root{
+    --bg:#f4f2ec;
+    --surface:#ffffff;
+    --surface-2:#faf8f2;
+    --ink:#20262b;
+    --ink-soft:#55606a;
+    --line:#e2ddd1;
+    --line-strong:#cfc8b8;
+    --accent:#0e6b60;
+    --accent-deep:#0a4d45;
+    --old-bg:#fbf3e6;
+    --old-line:#e7cfa3;
+    --old-ink:#8a5a1a;
+    --new-bg:#e9f3ec;
+    --new-line:#a9d2b7;
+    --new-ink:#1f6b40;
+    --tag-new-bg:#e2f0e6;--tag-new-ink:#1c6b3e;--tag-new-line:#9cccab;
+    --tag-chg-bg:#faeede;--tag-chg-ink:#9a6412;--tag-chg-line:#e3c088;
+    --tag-del-bg:#f6e6e3;--tag-del-ink:#9c3b2e;--tag-del-line:#e0b0a6;
+    --shadow:0 1px 2px rgba(30,25,15,.05),0 6px 20px rgba(30,25,15,.05);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#161a1d;
+      --surface:#1e2427;
+      --surface-2:#232a2d;
+      --ink:#e7e3d8;
+      --ink-soft:#a3aab0;
+      --line:#333c40;
+      --line-strong:#455055;
+      --accent:#38b9a8;
+      --accent-deep:#7fd9cc;
+      --old-bg:#2c2519;
+      --old-line:#5a4a2c;
+      --old-ink:#d8b26a;
+      --new-bg:#1c2a22;
+      --new-line:#2f5540;
+      --new-ink:#7ed3a0;
+      --tag-new-bg:#1e3327;--tag-new-ink:#8ad6a8;--tag-new-line:#356b49;
+      --tag-chg-bg:#33291a;--tag-chg-ink:#e0b877;--tag-chg-line:#6b532c;
+      --tag-del-bg:#331f1c;--tag-del-ink:#e0a094;--tag-del-line:#6b3c34;
+      --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.28);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#161a1d;--surface:#1e2427;--surface-2:#232a2d;--ink:#e7e3d8;--ink-soft:#a3aab0;
+    --line:#333c40;--line-strong:#455055;--accent:#38b9a8;--accent-deep:#7fd9cc;
+    --old-bg:#2c2519;--old-line:#5a4a2c;--old-ink:#d8b26a;
+    --new-bg:#1c2a22;--new-line:#2f5540;--new-ink:#7ed3a0;
+    --tag-new-bg:#1e3327;--tag-new-ink:#8ad6a8;--tag-new-line:#356b49;
+    --tag-chg-bg:#33291a;--tag-chg-ink:#e0b877;--tag-chg-line:#6b532c;
+    --tag-del-bg:#331f1c;--tag-del-ink:#e0a094;--tag-del-line:#6b3c34;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.28);
+  }
+
+  *{box-sizing:border-box}
+  body{background:var(--bg);color:var(--ink);font-family:"PT Sans","Segoe UI",system-ui,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1080px;margin:0 auto;padding-inline:16px;padding-block:0}
+
+  /* Header */
+  header.top{border-bottom:1px solid var(--line);background:linear-gradient(180deg,var(--surface-2),var(--bg))}
+  .eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:700;margin:0 0 8px}
+  h1{font-family:"PT Serif",Georgia,serif;font-weight:700;font-size:clamp(24px,4.4vw,38px);line-height:1.15;margin:0 0 10px;text-wrap:balance}
+  .sub{color:var(--ink-soft);font-size:15px;max-width:70ch;margin:0 0 22px}
+  .sub b{color:var(--ink)}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+  .stat{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 14px 12px;box-shadow:var(--shadow)}
+  .stat .n{font-family:"PT Serif",serif;font-weight:700;font-size:clamp(18px,3.4vw,26px);color:var(--accent-deep);font-variant-numeric:tabular-nums;line-height:1.05}
+  .stat .n small{color:var(--ink-soft);font-weight:400}
+  .stat .l{font-size:12.5px;color:var(--ink-soft);margin-top:4px}
+  @media(max-width:640px){.stats{grid-template-columns:repeat(2,1fr)}}
+
+  /* Controls */
+  .controls{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);border-bottom:1px solid var(--line);padding-block:12px;margin-bottom:6px}
+  .controls .wrap{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+  .search{flex:1 1 240px;min-width:0;display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line-strong);border-radius:10px;padding:9px 12px}
+  .search input{border:0;background:transparent;color:var(--ink);font:inherit;font-size:14px;width:100%;outline:none}
+  .search svg{flex:none;color:var(--ink-soft)}
+  .chips{display:flex;gap:8px;flex-wrap:wrap}
+  .chip{cursor:pointer;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink-soft);font:inherit;font-size:13px;font-weight:700;padding:8px 13px;border-radius:999px;display:inline-flex;align-items:center;gap:7px;transition:.15s}
+  .chip .dot{width:9px;height:9px;border-radius:50%;background:var(--ink-soft)}
+  .chip[data-k="new"] .dot{background:var(--tag-new-ink)}
+  .chip[data-k="chg"] .dot{background:var(--tag-chg-ink)}
+  .chip[data-k="del"] .dot{background:var(--tag-del-ink)}
+  .chip.on{color:var(--ink);border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+  .chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+  main{padding-bottom:60px}
+  section.block{margin-top:30px;scroll-margin-top:80px}
+  .block-head{display:flex;align-items:baseline;gap:12px;margin-bottom:6px;flex-wrap:wrap}
+  .block-head h2{font-family:"PT Serif",serif;font-size:clamp(19px,2.8vw,24px);font-weight:700;margin:0;color:var(--ink)}
+  .block-head .badge{font-size:11.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--accent);border:1px solid var(--accent);border-radius:6px;padding:2px 8px}
+  .block-desc{color:var(--ink-soft);font-size:14px;margin:0 0 16px;max-width:75ch}
+
+  .rows{display:flex;flex-direction:column;gap:14px}
+  .row{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)}
+  .row-top{display:flex;align-items:flex-start;gap:12px;padding:14px 16px 10px}
+  .row-theme{font-family:"PT Serif",serif;font-weight:700;font-size:16px;flex:1;line-height:1.3}
+  .tag{flex:none;font-size:11.5px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;padding:4px 9px;border-radius:999px;border:1px solid;white-space:nowrap}
+  .tag.new{background:var(--tag-new-bg);color:var(--tag-new-ink);border-color:var(--tag-new-line)}
+  .tag.chg{background:var(--tag-chg-bg);color:var(--tag-chg-ink);border-color:var(--tag-chg-line)}
+  .tag.del{background:var(--tag-del-bg);color:var(--tag-del-ink);border-color:var(--tag-del-line)}
+
+  .cmp{display:grid;grid-template-columns:1fr 1fr;gap:0;border-top:1px solid var(--line)}
+  .cell{padding:12px 16px 14px;font-size:14px}
+  .cell.old{background:var(--old-bg)}
+  .cell.new{background:var(--new-bg);border-left:1px solid var(--line)}
+  .cell .clabel{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+  .cell.old .clabel{color:var(--old-ink)}
+  .cell.new .clabel{color:var(--new-ink)}
+  .cell .clabel .yr{font-weight:400;letter-spacing:0;text-transform:none;color:var(--ink-soft);font-size:11px}
+  .cell p{margin:0}
+  .cell.old.dash{color:var(--ink-soft);font-style:italic}
+  @media(max-width:640px){.cmp{grid-template-columns:1fr}.cell.new{border-left:0;border-top:1px solid var(--line)}}
+
+  .note{padding:11px 16px;background:var(--surface-2);border-top:1px dashed var(--line-strong);font-size:13.5px;color:var(--ink-soft);display:flex;gap:9px;align-items:flex-start}
+  .note b{color:var(--accent-deep);font-weight:700}
+  .note svg{flex:none;color:var(--accent);margin-top:2px}
+
+  .empty{display:none;text-align:center;color:var(--ink-soft);padding:50px 20px;font-size:15px}
+  .empty.show{display:block}
+
+  /* appendix list */
+  .apx{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:700px){.apx{grid-template-columns:1fr}}
+  .apx-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px;box-shadow:var(--shadow)}
+  .apx-card h3{margin:0 0 12px;font-family:"PT Serif",serif;font-size:16px;display:flex;align-items:center;gap:9px}
+  .apx-card h3 .pill{font-family:"PT Sans",sans-serif;font-size:12px;font-weight:700;padding:2px 9px;border-radius:999px}
+  .apx-card.was h3 .pill{background:var(--old-bg);color:var(--old-ink);border:1px solid var(--old-line)}
+  .apx-card.now h3 .pill{background:var(--new-bg);color:var(--new-ink);border:1px solid var(--new-line)}
+  .apx-card ol{margin:0;padding-left:0;list-style:none;counter-reset:a;font-size:13.5px}
+  .apx-card li{counter-increment:a;padding:6px 0 6px 34px;position:relative;border-top:1px solid var(--line);line-height:1.35}
+  .apx-card li:first-child{border-top:0}
+  .apx-card li::before{content:counter(a);position:absolute;left:0;top:6px;width:24px;height:24px;border-radius:7px;background:var(--surface-2);border:1px solid var(--line-strong);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--ink-soft);font-variant-numeric:tabular-nums}
+  .apx-card li.isnew::before{background:var(--tag-new-bg);color:var(--tag-new-ink);border-color:var(--tag-new-line)}
+  .apx-card li .nw{font-size:10px;font-weight:700;color:var(--tag-new-ink);text-transform:uppercase;letter-spacing:.04em;margin-left:6px}
+
+  footer{border-top:1px solid var(--line);color:var(--ink-soft);font-size:12.5px;padding-block:22px;max-width:75ch}
+  footer a{color:var(--accent)}
+</style>
+
+</head>
+<body>
+<header class="top">
+  <div class="wrap" style="padding-block:26px 4px">
+    <p class="eyebrow">Сравнительный анализ · охрана труда РК</p>
+    <h1>Приказ № 1019: что изменилось с 12 июля 2026 года</h1>
+    <p class="sub">Правила и сроки проведения обучения, инструктирования и проверок знаний по вопросам безопасности и охраны труда. Сравнение <b>прежней редакции</b> (по состоянию на 06.09.2024, действовала до 12.07.2026) и <b>новой редакции</b>, изложенной приказом Министра труда и социальной защиты населения РК от <b>30.05.2026 № 223</b> (введён в действие с 12 июля 2026 года).</p>
+    <div class="stats">
+      <div class="stat"><div class="n">4&nbsp;<small>→</small>&nbsp;6</div><div class="l">глав в Правилах</div></div>
+      <div class="stat"><div class="n">59&nbsp;<small>→</small>&nbsp;81</div><div class="l">пунктов Правил</div></div>
+      <div class="stat"><div class="n">5&nbsp;<small>→</small>&nbsp;19</div><div class="l">приложений (форм)</div></div>
+      <div class="stat"><div class="n">ЕЦС</div><div class="l">полный переход в цифровую систему</div></div>
+    </div>
+  </div>
+</header>
+
+<div class="controls">
+  <div class="wrap">
+    <label class="search">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <input id="q" type="search" placeholder="Поиск по изменениям: сертификат, стажировка, тесты, апелляция…" aria-label="Поиск">
+    </label>
+    <div class="chips" role="group" aria-label="Фильтр по типу изменения">
+      <button class="chip on" data-k="all" aria-pressed="true">Все</button>
+      <button class="chip" data-k="new" aria-pressed="false"><span class="dot"></span>Новое</button>
+      <button class="chip" data-k="chg" aria-pressed="false"><span class="dot"></span>Изменено</button>
+      <button class="chip" data-k="del" aria-pressed="false"><span class="dot"></span>Исключено</button>
+    </div>
+  </div>
+</div>
+
+<main class="wrap" id="app"></main>
+
+<div class="empty" id="empty">Ничего не найдено. Измените запрос или сбросьте фильтр.</div>
+
+<footer class="wrap">
+  Материал подготовлен для редакционных целей и облегчения навигации по изменениям. При применении опирайтесь на официальный текст приказа Министра здравоохранения и социального развития РК от 25.12.2015 № 1019 в редакции приказа МТСЗН РК от 30.05.2026 № 223 в ИПС «Әділет». Нумерация пунктов указана по соответствующим редакциям.
+</footer>
+
+<script>
+const DATA = [
+  {
+    id:"struct", title:"Структура и статус документа", badge:"Основа",
+    desc:"Сам приказ № 1019 сохранён, но прилагаемые Правила полностью изложены в новой редакции. Изменились архитектура документа и базовый принцип — перевод процедур в единую цифровую систему.",
+    items:[
+      {t:"Основание новой редакции",tag:"chg",old:"Действовала редакция по приказам МТСЗН РК № 346 (28.08.2020) и № 137 (26.04.2022) с последующими точечными правками. Срок — до 12.07.2026.",new:"Правила полностью изложены в новой редакции приказом МТСЗН РК от 30.05.2026 № 223, введён в действие с 12 июля 2026 года.",note:"Переписаны именно Правила (приложение к приказу); реквизиты самого приказа № 1019 не менялись."},
+      {t:"Количество глав",tag:"chg",old:"4 главы: общие положения; обучение работников; обучение руководителей и ответственных лиц; инструктирование.",new:"6 глав: добавлены Глава 5 «Организация и проведение стажировки на рабочем месте» и Глава 6 «Порядок ведения Перечня обучающих организаций и Единого перечня сертификатов».",note:"Стажировка и ведение цифровых перечней впервые урегулированы на уровне Правил."},
+      {t:"Название Главы 2",tag:"chg",old:"«Порядок и сроки проведения обучения и проверки знаний … работников».",new:"«… работников, за исключением руководителей и лиц, ответственных за обеспечение безопасности и охраны труда».",note:"Чёткое разграничение двух потоков обучения: рядовые работники (Глава 2) и ответственные лица/руководители (Глава 3)."},
+      {t:"Цифровизация как сквозной принцип",tag:"new",old:"Локальный и преимущественно бумажный документооборот, обучение в «учебных центрах».",new:"Ключевые процедуры переведены в ЕЦС (единая цифровая система социально-трудовой сферы): личные кабинеты, электронные сертификаты с уникальным кодом, электронные протоколы, единые перечни, прокторинг, апелляции.",note:"Это главная идея реформы — прослеживаемость обучения и результатов в государственной системе."}
+    ]
+  },
+  {
+    id:"terms", title:"Терминология (Глава 1, пункт 2)", badge:"Понятия",
+    desc:"Обновлён и существенно расширен понятийный аппарат под цифровую модель и новые роли участников.",
+    items:[
+      {t:"«Учебный центр» → «Обучающая организация»",tag:"chg",old:"Учебный центр — организация, проводящая подготовку/переподготовку и повышение квалификации по БиОТ.",new:"Обучающая организация — организация, включённая в Перечень обучающих организаций по БиОТ (ведётся в ЕЦС).",note:"Ключевая замена термина по всему тексту: работать могут только организации из официального Перечня."},
+      {t:"Новые термины цифровой системы",tag:"new",old:"—",new:"Введены: ЕЦС; ЕУМЦ (Единый учебно-методический центр при РГП «РНИИ по охране труда»); Перечень обучающих организаций; Единый перечень сертификатов; электронный сертификат; удостоверение (как самостоятельное понятие).",note:"Задают инфраструктуру учёта обучения и выданных документов."},
+      {t:"Новые роли участников",tag:"new",old:"—",new:"Появились категории «лекторы по БиОТ» и «эксперты по оценке профессиональных рисков (эксперты ОПР)» с отдельными требованиями и сертификатами.",note:"Ранее лекторы и эксперты ОПР как отдельные сертифицируемые роли не выделялись."},
+      {t:"Наряд-допуск — переопределён",tag:"chg",old:"Задание на безопасное производство работы: содержание, место, время, меры безопасности, состав бригады.",new:"Документ в бумажной или электронной форме, разрешающий работы с повышенной опасностью; дополнительно включает результаты оценки рисков.",note:"Привязка к оценке профессиональных рисков и электронной форме."},
+      {t:"Дистанционное обучение",tag:"chg",old:"С применением информационно-коммуникационных технологий и телекоммуникационных средств.",new:"С применением цифровых технологий и телекоммуникационных средств.",note:"Терминологическое приведение к цифровому законодательству."},
+      {t:"Исключённые понятия",tag:"del",old:"Определялись: «сетевая технология», «мультимедиа», «территориальное подразделение уполномоченного госоргана по труду».",new:"—",note:"Устаревшие/избыточные термины убраны из Правил."}
+    ]
+  },
+  {
+    id:"workers", title:"Обучение и проверка знаний работников (Главы 1–2)", badge:"Работники",
+    desc:"Уточнён порядок обучения рядовых работников у работодателя, впервые нормированы часы и введены последствия за повторный «незачёт».",
+    items:[
+      {t:"Виды обучения по БиОТ — перечень",tag:"new",old:"Единого перечня видов обучения не было.",new:"Пункт 3: к обучению относятся инструктажи; стажировки на рабочем месте; обучение безопасным методам (навыкам) труда; повышение квалификации в области БиОТ.",note:"Систематизированы формы обучения."},
+      {t:"Продолжительность обучения работников",tag:"new",old:"Часы теоретического и производственного обучения не нормировались.",new:"Теоретическое обучение — не менее 10 академических часов; производственное — не менее 16 часов, на полигонах/тренажёрах/симуляторах.",note:"Появились минимальные объёмы обучения."},
+      {t:"Кто организует и проводит обучение у работодателя",tag:"chg",old:"Проводит работодатель с привлечением специалистов отраслей и ИТР с опытом не менее 3 лет и сертификатом (прил. 1).",new:"Организует служба БиОТ совместно с уполномоченным структурным подразделением; при его отсутствии привлекается обучающая организация из Перечня. Лекторы — с сертификатами по прил. 1 и 2.",note:"Формализована роль службы БиОТ и обучающих организаций."},
+      {t:"Перемещение работника без переобучения",tag:"chg",old:"Повторное обучение не требуется при перемещении в пределах должности, специальности, профессии, квалификации.",new:"Повторное обучение не требуется при перемещении в пределах профессии (должности) при условии сохранения условий труда работника.",note:"Добавлено условие «сохранения условий труда»."},
+      {t:"Последствия повторного «незачёта» работника",tag:"new",old:"Предусматривалось только отстранение от работы и повторное обучение.",new:"Пункт 20: при повторном непрохождении проверки знаний работодатель вправе расторгнуть трудовой договор (п. 5 ст. 52 Кодекса) либо направить на повторное обучение.",note:"Введено прямое основание для расторжения договора."},
+      {t:"Удостоверение и протокол работника",tag:"chg",old:"Удостоверение по проверке знаний (прил. 3); протокол экзаменационной комиссии (прил. 2).",new:"Удостоверение о прохождении экзамена (прил. 4) в бумажной/электронной форме, подписывается ЭЦП председателя; протокол — прил. 3.",note:"Появилась электронная форма документов с ЭЦП; перенумерованы приложения."}
+    ]
+  },
+  {
+    id:"resp", title:"Обучение руководителей и ответственных лиц (Глава 3)", badge:"Ответственные",
+    desc:"Самый переработанный блок. Изменены периодичность, привязка объёмов обучения к должности (а не к размеру бизнеса), тестирование, сертификаты и переход в ЕЦС.",
+    items:[
+      {t:"Где проходят обучение",tag:"chg",old:"В учебных центрах, очно или дистанционно по сетевой технологии в «on-line» режиме.",new:"В обучающих организациях (из Перечня), в очном или дистанционном формате.",note:"Обучать вправе только организации, включённые в Перечень в ЕЦС."},
+      {t:"Периодичность обучения — ключевое изменение",tag:"chg",old:"Общие компетенции — один раз, без повторного прохождения (сертификат бессрочно). Специальные компетенции — один раз в 3 года.",new:"И общие, и специальные компетенции — обучение и проверка знаний один раз в три года.",note:"Бессрочный сертификат по общим компетенциям отменён — теперь всё каждые 3 года."},
+      {t:"Продолжительность: общие компетенции",tag:"chg",old:"По размеру субъекта: крупный — ≥72 ч, средний — ≥40 ч, малый/микро — ≥24 ч.",new:"По роли: первые руководители, уполномоченные по БиОТ, ИП с наёмными работниками — ≥16 ч; руководители служб ОТ — ≥40 ч; технические инспекторы — ≥24 ч; председатели производственных советов — ≥24 ч.",note:"Принцип нормирования сменился с «размера бизнеса» на «должность/роль»."},
+      {t:"Продолжительность: специальные компетенции",tag:"chg",old:"По размеру субъекта: крупный — ≥40 ч, средний — ≥24 ч, малый/микро — ≥16 ч.",new:"Специалисты служб ОТ / ответственные — ≥40 ч (раз в 3 года); технические инспекторы — ≥40 ч (не реже 1 раза в год); председатели производственных советов — ≥40 ч.",note:"Для техинспекторов — ежегодное обучение по спецкомпетенциям."},
+      {t:"Обучение лекторов и экспертов ОПР",tag:"new",old:"—",new:"Лекторы по БиОТ — не менее 72 ак. часов (сертификат 5 лет); эксперты ОПР — не менее 80 ак. часов (сертификат 3 года).",note:"Новые обучаемые категории со своими объёмами и сроками."},
+      {t:"Академический час",tag:"new",old:"Продолжительность академического часа не задавалась.",new:"1 академический час равен не менее 40 минутам.",note:"Устранена неоднозначность в расчёте часов."},
+      {t:"Кто разрабатывает учебные программы",tag:"chg",old:"Программы разрабатывают учебные центры и/или на основе программы, рекомендованной Республиканской трёхсторонней комиссией; отраслевые ассоциации вносят предложения.",new:"Типовые программы (общие компетенции) разрабатывает ЕУМЦ и согласует с уполномоченным органом; специальные — разрабатываются на основе типовых и утверждаются руководителем обучающей организации.",note:"Централизация методологии в ЕУМЦ вместо трёхсторонней комиссии."},
+      {t:"Требования к лекторам/преподавателям",tag:"chg",old:"Высшее (послевузовское) образование, опыт ≥5 лет и сертификат; к процессу привлекается госинспектор труда по согласованию.",new:"Специалисты с электронными сертификатами лектора по БиОТ (прил. 5).",note:"Обязательное привлечение госинспектора труда из формулировки исключено."},
+      {t:"Тесты: количество вопросов",tag:"chg",old:"Общее количество вопросов — не более 80 (единое для всех).",new:"По категориям: первые руководители/уполномоченные/ИП — ≥50; председатели советов и техинспекторы — ≤60; руководители служб ОТ — ≥80; лекторы — ≤80; эксперты ОПР — ≥80.",note:"Дифференциация теста по ролям."},
+      {t:"Тесты: время и порог",tag:"chg",old:"Время — 60 минут; порог — не менее 70% правильных ответов.",new:"Время — 90 минут (категории 1–2) или 120 минут (категории 3–5); для спецкомпетенций — 120 минут. Порог — 70% (без изменений).",note:"Увеличено время на тестирование."},
+      {t:"Актуализация тестов",tag:"new",old:"—",new:"Экзаменационные тесты ежегодно обновляются не менее чем на 10% от общего количества.",note:"Введено обязательное обновление банка вопросов."},
+      {t:"Контроль тестирования → прокторинг",tag:"chg",old:"Процесс фиксируется видео- и аудиозаписью; запись хранится 6 месяцев.",new:"Система прокторинга с видео-/аудиофиксацией; требования к оборудованию (интернет ≥5 Мб/с, веб-камера, микрофон, освещение); отчёт прокторинга хранится 6 месяцев; обработка персональных данных по Закону РК «О персональных данных и их защите».",note:"Формализована технология прокторинга и защита данных."},
+      {t:"Заявка на проверку знаний",tag:"new",old:"Отдельной процедуры подачи заявки не было.",new:"Обучающая организация подаёт заявку со списком лиц через личный кабинет в ЕЦС (ЭЦП) не позднее 1 рабочего дня до проверки (прил. 6).",note:"Появился регламент допуска к тестированию через ЕЦС."},
+      {t:"Допуск к проверке знаний",tag:"new",old:"Специальных требований не было.",new:"Допускаются только лица с ИИН; обязательно ознакомление с инструкцией по прохождению проверки знаний (прил. 7).",note:"Идентификация по ИИН."},
+      {t:"Протокол результатов",tag:"chg",old:"Протокол экзаменационной комиссии учебного центра, бумажный/электронный (прил. 2).",new:"Электронный протокол формируется в ЕЦС (прил. 8); выдача сертификатов и протоколов в ЕЦС — не позднее 1 рабочего дня с момента проверки.",note:"Результат фиксируется автоматически в госсистеме."},
+      {t:"Сертификат ответственного работника",tag:"chg",old:"Сертификат (прил. 1): общие компетенции — бессрочно, специальные — 3 года.",new:"Электронный сертификат (прил. 2) с уникальным кодом в Едином перечне сертификатов, срок действия — 3 года со дня выдачи.",note:"Единый срок 3 года и обязательная регистрация в перечне."},
+      {t:"Повторная проверка при «незачёте»",tag:"new",old:"Общее правило о повторной проверке без детализации сроков по категориям.",new:"Категории 1–3 — повторно в течение 1 месяца; лекторы и эксперты ОПР — в течение 6 месяцев; при повторной неудаче выдаётся справка о результате ниже порога (прил. 10) с возможностью пересдачи.",note:"Дифференцированы сроки пересдачи."},
+      {t:"Последствия для руководителя/ответственного",tag:"new",old:"Отстранение от работы до повторного прохождения.",new:"Пункт 41: при повторном непрохождении работодатель вправе расторгнуть трудовой договор (п. 5 ст. 52 Кодекса).",note:"Симметрично с работниками введено основание расторжения."},
+      {t:"Хранение результатов",tag:"new",old:"—",new:"Результаты проверки знаний хранятся в ЕЦС три года (до следующей проверки).",note:"Централизованное хранение результатов."}
+    ]
+  },
+  {
+    id:"appeal", title:"Апелляция — новый институт (Глава 3, пп. 43–50)", badge:"Новое",
+    desc:"Впервые предусмотрен порядок оспаривания результатов проверки знаний через ЕЦС с апелляционной комиссией и независимыми наблюдателями.",
+    items:[
+      {t:"Право и срок подачи апелляции",tag:"new",old:"Механизма апелляции не было.",new:"Заявление подаётся в разделе «Апелляция» в ЕЦС в течение 24 часов после проверки знаний (прил. 14). Основания: сбой прокторинга, технические неисправности системы, иные причины.",note:"Появился быстрый цифровой канал оспаривания."},
+      {t:"Апелляционная комиссия",tag:"new",old:"—",new:"Комиссия из 3 членов — разработчиков тестов ЕУМЦ; состав утверждает руководитель ЕУМЦ; решение большинством голосов, правомочно при 2/3 членов; протокол (прил. 15) хранится 1 год.",note:"Независимый разбор спорных результатов."},
+      {t:"Независимые наблюдатели",tag:"new",old:"—",new:"Не менее 5 наблюдателей (госорганы, СМИ, НПО, профсоюзы, вузы) ведут ежемесячный мониторинг работы апелляционной комиссии.",note:"Внешний контроль объективности."},
+      {t:"Сроки и результат",tag:"new",old:"—",new:"Апелляция рассматривается 5 рабочих дней; при положительном решении назначается пересдача (не более одного раза); формируется электронный протокол апелляции в ЕЦС.",note:"Пересдача по апелляции — однократная."}
+    ]
+  },
+  {
+    id:"instr", title:"Инструктирование (Глава 4)", badge:"Инструктажи",
+    desc:"Виды инструктажей сохранены (вводный, первичный, повторный, внеплановый, целевой), но уточнены содержание, основания и ведение журналов.",
+    items:[
+      {t:"Вводный инструктаж — проверка знаний",tag:"new",old:"Завершение вводного инструктажа проверкой знаний не предусматривалось.",new:"Вводный инструктаж завершается проверкой знаний (опросом).",note:"Добавлен контроль усвоения по итогам вводного инструктажа."},
+      {t:"Форма дистанционного проведения",tag:"chg",old:"Дистанционно по сетевой технологии в «on-line» режиме.",new:"Дистанционно в «on-line» формате.",note:"Терминологическое упрощение."},
+      {t:"Первичный инструктаж — охват",tag:"chg",old:"Проводится с работниками по программам подразделений.",new:"Прямо указано: для всех работников организации до начала самостоятельной работы, а также для лиц, проходящих производственную практику.",note:"Уточнён обязательный охват."},
+      {t:"Внеплановый инструктаж — новые основания",tag:"chg",old:"Основания: новые/переработанные нормы; изменение техпроцесса или оборудования; нарушение требований, приведшее к ЧП; требование контролирующих органов.",new:"Добавлены: выявление дополнительных вредных/опасных факторов в рамках оценки профрисков (ОПР); требование лиц производственного контроля; перерыв в работе более 60 календарных дней.",note:"Появилась привязка к ОПР и чёткий срок перерыва (60 дней)."},
+      {t:"Целевой инструктаж при ЧС",tag:"new",old:"Отдельного порядка при ликвидации ЧС не было.",new:"Пункт 68: при ликвидации последствий ЧС целевой инструктаж проводится руководителем работ оперативно; допускается без регистрации записей.",note:"Учтена специфика аварийных работ."},
+      {t:"Ведение журналов инструктажа",tag:"chg",old:"Журнал ведётся в бумажном/электронном виде с учётом Закона об электронном документе и ЭЦП.",new:"Журнал ведётся с учётом требований Цифрового кодекса РК; при электронном ведении — удостоверение сведений ЭЦП.",note:"Приведено к Цифровому кодексу РК."},
+      {t:"Порядок ведения бумажного журнала",tag:"new",old:"Кратко: журнал нумеруется, прошнуровывается, выдаётся под роспись.",new:"Пп. 71–72: детальный порядок — нумерация, прошнуровка, заверительный лист с печатью; правила исправлений («исправленному верить»); журнал ведёт ответственный работник, имеющий сертификат (прил. 1).",note:"Формализованы требования к оформлению журнала."}
+    ]
+  },
+  {
+    id:"internship", title:"Стажировка на рабочем месте (Глава 5) — новая", badge:"Новое",
+    desc:"Впервые на уровне Правил урегулирована стажировка: цели, продолжительность, руководство, тренировки и учения.",
+    items:[
+      {t:"Цель и допуск к стажировке",tag:"new",old:"Стажировка отдельно не регламентировалась.",new:"Стажировка — для приобретения практических навыков безопасных методов работы по профессии (должности). К ней допускаются работники, прошедшие вводный (первичный) инструктаж.",note:"Стажировка встроена в систему допуска к самостоятельной работе."},
+      {t:"Продолжительность стажировки",tag:"new",old:"—",new:"Неквалифицированные работники — не менее 16 часов; квалифицированные — от 40 до 160 часов. Сроки зависят от вида/сложности работ, оборудования, перерыва в работе.",note:"Введены нормированные сроки."},
+      {t:"Руководитель стажировки",tag:"new",old:"—",new:"Стажировка проходит под руководством высококвалифицированного работника со стажем по профессии не менее 3 лет, назначенного руководителем подразделения.",note:"Определены требования к наставнику."},
+      {t:"Тренировки и учения",tag:"new",old:"—",new:"По решению работодателя для отдельных видов работ (в т.ч. спасательных) — периодические тренировки/учения с отработкой применения СИЗ.",note:"Практическая отработка навыков и СИЗ."}
+    ]
+  },
+  {
+    id:"registry", title:"Перечень обучающих организаций и Единый перечень сертификатов (Глава 6) — новая", badge:"Новое",
+    desc:"Введён порядок допуска обучающих организаций и ведения цифровых перечней, а также квалификационные требования к лекторам и экспертам ОПР.",
+    items:[
+      {t:"Включение в Перечень обучающих организаций",tag:"new",old:"Обучение мог проводить любой «учебный центр», отвечающий материально-техническим требованиям; официального реестра не было.",new:"Заявление и документы подаются через ЕЦС (прил. 18): устав; справка о госрегистрации с подтверждением ≥3 лет опыта; не менее 2 лекторов с электронными сертификатами по БиОТ; отсутствие в реестрах неблагонадёжных налогоплательщиков и недобросовестных поставщиков; учебный класс, портал, учебные материалы на казахском и русском.",note:"Допуск к деятельности стал разрешительно-реестровым."},
+      {t:"Рассмотрение заявления",tag:"new",old:"—",new:"ЕУМЦ рассматривает заявление в течение 5 рабочих дней; уведомление о включении/отказе через ЕЦС; при отказе организация устраняет причины и подаёт новую заявку.",note:"Введена процедура и сроки рассмотрения."},
+      {t:"Единый перечень сертификатов",tag:"new",old:"Единой базы выданных сертификатов не было.",new:"Формируется в ЕЦС автоматически после успешной проверки знаний, с присвоением уникального кода (прил. 2, 5, 13, 19).",note:"Полная прослеживаемость выданных документов."},
+      {t:"Требования к лекторам по БиОТ",tag:"new",old:"—",new:"Высшее (профильное; либо непрофильное + переподготовка) образование; опыт ≥3 лет в области БиОТ/на ОПО/в обучающей организации; сертификат обучения ≥40 ак. часов за последние 3 года. Международные сертификаты приравниваются после проверки знаний норм РК.",note:"Формализованы квалификационные критерии лектора."},
+      {t:"Требования к экспертам ОПР",tag:"new",old:"—",new:"Высшее образование; опыт ≥3 лет; сертификат обучения ≥40 ак. часов за 3 года; удостоверения по промышленной безопасности и пожарно-техническому минимуму.",note:"Новая сертифицируемая роль в системе оценки профрисков."}
+    ]
+  }
+];
+
+const APX_OLD = [
+  "Сертификат (учебного центра)",
+  "Протокол заседания экзаменационной комиссии",
+  "Удостоверение по проверке знаний правил, норм и инструкций",
+  "Журнал регистрации вводного инструктажа",
+  "Журнал регистрации инструктажа на рабочем месте"
+];
+const APX_NEW = [
+  "Сертификат — специальные профессиональные компетенции",
+  "Сертификат — общие профессиональные компетенции (ЕЦС)",
+  "Протокол комиссии — по рабочим профессиям",
+  "Удостоверение о прохождении экзамена",
+  "Сертификат лектора по БиОТ",
+  "Заявка на проверку знаний (ЕЦС)",
+  "Инструкция по прохождению проверки знаний (прокторинг)",
+  "Электронный протокол результатов (ЕЦС)",
+  "Итоговый протокол (лекторы / эксперты ОПР)",
+  "Справка о результате ниже порогового значения",
+  "Отчёт о прошедших обучение и проверку знаний",
+  "Протокол — специальные профессиональные компетенции",
+  "Сертификат эксперта по оценке профрисков (ОПР)",
+  "Заявление на апелляцию",
+  "Протокол апелляционной комиссии",
+  "Журнал регистрации вводного инструктажа",
+  "Журнал регистрации инструктажа на рабочем месте",
+  "Перечень обучающих организаций по БиОТ",
+  "Единый перечень сертификатов по БиОТ"
+];
+// index (0-based) of new appendices that are genuinely new by content
+const APX_NEW_FLAG = [false,true,false,false,true,true,true,true,true,true,true,true,true,true,true,false,false,true,true];
+
+const TAGLABEL = {new:"Новое", chg:"Изменено", del:"Исключено"};
+const app = document.getElementById('app');
+const empty = document.getElementById('empty');
+
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+const infoIcon = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>';
+
+function render(){
+  let html='';
+  DATA.forEach(block=>{
+    const rows = block.items.map(it=>`
+      <article class="row" data-tag="${it.tag}" data-text="${esc((it.t+' '+it.old+' '+it.new+' '+(it.note||'')).toLowerCase())}">
+        <div class="row-top">
+          <div class="row-theme">${esc(it.t)}</div>
+          <span class="tag ${it.tag}">${TAGLABEL[it.tag]}</span>
+        </div>
+        <div class="cmp">
+          <div class="cell old${it.old==='—'?' dash':''}">
+            <div class="clabel">Было <span class="yr">ред. до 12.07.2026</span></div>
+            <p>${esc(it.old)}</p>
+          </div>
+          <div class="cell new">
+            <div class="clabel">Стало <span class="yr">ред. с 12.07.2026</span></div>
+            <p>${esc(it.new)}</p>
+          </div>
+        </div>
+        ${it.note?`<div class="note">${infoIcon}<div><b>Суть:</b> ${esc(it.note)}</div></div>`:''}
+      </article>`).join('');
+    html+=`<section class="block" id="${block.id}">
+      <div class="block-head"><h2>${esc(block.title)}</h2><span class="badge">${esc(block.badge)}</span></div>
+      <p class="block-desc">${esc(block.desc)}</p>
+      <div class="rows">${rows}</div>
+    </section>`;
+  });
+
+  // appendices block
+  const oldList = APX_OLD.map(x=>`<li>${esc(x)}</li>`).join('');
+  const newList = APX_NEW.map((x,i)=>`<li class="${APX_NEW_FLAG[i]?'isnew':''}">${esc(x)}${APX_NEW_FLAG[i]?'<span class="nw">новое</span>':''}</li>`).join('');
+  html+=`<section class="block" id="apx">
+    <div class="block-head"><h2>Приложения (формы)</h2><span class="badge">5 → 19</span></div>
+    <p class="block-desc">Число форм выросло с 5 до 19 — под электронные сертификаты, протоколы ЕЦС, прокторинг, апелляцию и ведение перечней.</p>
+    <div class="apx">
+      <div class="apx-card was"><h3><span class="pill">Было · 5</span> Прежняя редакция</h3><ol>${oldList}</ol></div>
+      <div class="apx-card now"><h3><span class="pill">Стало · 19</span> Новая редакция</h3><ol>${newList}</ol></div>
+    </div>
+  </section>`;
+
+  app.innerHTML=html;
+}
+render();
+
+let activeTag='all', query='';
+function applyFilter(){
+  const q=query.trim().toLowerCase();
+  let anyVisible=false;
+  document.querySelectorAll('#app .block').forEach(sec=>{
+    if(sec.id==='apx'){ // appendix block only responds to search, not tag chips (except del)
+      const match = (activeTag==='all'||activeTag==='new') && (q===''|| 'приложения формы сертификат протокол журнал апелляция отчет справка заявка перечень'.includes(q) || sec.textContent.toLowerCase().includes(q));
+      sec.hidden=!match; if(match)anyVisible=true; return;
+    }
+    let visibleRows=0;
+    sec.querySelectorAll('.row').forEach(r=>{
+      const okTag = activeTag==='all'||r.dataset.tag===activeTag;
+      const okQ = q===''||r.dataset.text.includes(q);
+      const show=okTag&&okQ;
+      r.hidden=!show; if(show)visibleRows++;
+    });
+    sec.hidden=visibleRows===0;
+    if(visibleRows>0)anyVisible=true;
+  });
+  empty.classList.toggle('show',!anyVisible);
+}
+
+document.querySelectorAll('.chip').forEach(ch=>{
+  ch.addEventListener('click',()=>{
+    document.querySelectorAll('.chip').forEach(c=>{c.classList.remove('on');c.setAttribute('aria-pressed','false')});
+    ch.classList.add('on');ch.setAttribute('aria-pressed','true');
+    activeTag=ch.dataset.k;applyFilter();
+  });
+});
+document.getElementById('q').addEventListener('input',e=>{query=e.target.value;applyFilter();});
+</script>
+
+</body>
+</html>
