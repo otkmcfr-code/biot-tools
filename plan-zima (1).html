@@ -1,0 +1,586 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>План подготовки к зиме</title>
+<meta name="description" content="Чек-лист и примерный календарь дел специалиста по БиОТ на октябрь – ноябрь: подготовка к зиме и годовые задачи">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --ground:#F2F6F5; --surface:#FFFFFF; --surface-2:#E9F0EE; --line:#D3DFDB;
+  --ink:#15302A; --muted:#566B65; --accent:#0E6B5C; --accent-ink:#FFFFFF; --accent-soft:#DCEEE9;
+  --warn:#9A4A12; --warn-soft:#FBEBDD; --urgent:#B3261E; --urgent-soft:#FBE4E2; --done:#7F948E;
+  --shadow:0 1px 2px rgba(21,48,42,.06),0 6px 20px rgba(21,48,42,.06);
+  --sans:"Golos Text",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  color-scheme:dark;
+  --ground:#0E1917; --surface:#15221F; --surface-2:#1B2B27; --line:#2A3D38;
+  --ink:#E3EDEA; --muted:#98ADA7; --accent:#52C2A8; --accent-ink:#08201B; --accent-soft:#1C3832;
+  --warn:#F0A76B; --warn-soft:#3A2A1C; --urgent:#F28B82; --urgent-soft:#3B201E; --done:#6E817C; --shadow:none;
+}}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --ground:#0E1917; --surface:#15221F; --surface-2:#1B2B27; --line:#2A3D38;
+  --ink:#E3EDEA; --muted:#98ADA7; --accent:#52C2A8; --accent-ink:#08201B; --accent-soft:#1C3832;
+  --warn:#F0A76B; --warn-soft:#3A2A1C; --urgent:#F28B82; --urgent-soft:#3B201E; --done:#6E817C; --shadow:none;
+}
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.5;margin:0}
+.wrap{max-width:1180px;margin:0 auto;padding:24px 16px 48px}
+h1,h2,h3{text-wrap:balance;margin:0}
+button,select,input{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.top{display:grid;gap:14px;margin-bottom:20px}
+.eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);font-weight:600}
+h1{font-size:clamp(26px,4vw,34px);line-height:1.12;font-weight:700;letter-spacing:-.01em;max-width:26ch}
+.lede{color:var(--muted);max-width:74ch;margin:0}
+.notes{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:10px}
+.note{display:flex;gap:10px;align-items:flex-start;background:var(--surface-2);border-radius:10px;padding:12px 14px;font-size:14px}
+.note.rent{background:var(--warn-soft)}
+.note svg{flex:none;margin-top:2px;color:var(--accent)} .note.rent svg{color:var(--warn)}
+.note p{margin:0}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);margin-bottom:16px}
+.card-h{padding:14px 18px 4px;display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.card-h h2{font-size:17px;font-weight:700}
+.card-h .sub{font-size:13px;color:var(--muted)}
+.linkbtn{background:none;border:0;color:var(--accent);font-weight:500;cursor:pointer;padding:2px 0;font-size:14px}
+.linkbtn:hover{text-decoration:underline}
+.exb{font-size:12px;background:var(--warn-soft);color:var(--warn);padding:2px 8px;border-radius:6px;font-weight:500}
+
+.qgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:0;padding:4px 6px 10px}
+.q{padding:10px 12px;display:grid;gap:7px;align-content:start}
+.q-label{font-weight:600;font-size:14px;line-height:1.3}
+.q-hint{font-size:12.5px;color:var(--muted);margin-top:-3px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-size:13.5px;cursor:pointer;line-height:1.2}
+.chip:hover{border-color:var(--accent)}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:500}
+select.sel,input.txt{width:100%;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:7px 10px;font-size:14px}
+.zone{font-size:12.5px;color:var(--muted)}
+
+.step{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-size:13px;font-weight:700;margin-right:9px;vertical-align:2px}
+h2.sec{font-size:17px;font-weight:700;margin:6px 2px 12px}
+.rstat{font-size:13px;font-weight:600;border-radius:6px;padding:2px 8px}
+.rstat.warn{background:var(--warn-soft);color:var(--warn)} .rstat.ok{background:var(--accent-soft);color:var(--accent)}
+.rcell.unset{border-color:var(--warn);background:var(--warn-soft)}
+#respCard.collapsed .rgrid,#respCard.collapsed #respHint{display:none}
+#respCard.collapsed{padding-bottom:6px}
+button.pill.who.none{border:0;cursor:pointer;text-decoration:underline dotted;font:inherit;font-size:12.5px}
+.flash{animation:flash 1.2s ease-out}
+@keyframes flash{0%{box-shadow:0 0 0 3px var(--warn)}100%{box-shadow:0 0 0 0 transparent}}
+@media (prefers-reduced-motion:reduce){.flash{animation:none}}
+details.resp{border-top:1px solid var(--line)}
+details.resp>summary{list-style:none;cursor:pointer;padding:12px 18px;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+details.resp>summary::-webkit-details-marker{display:none}
+details.resp>summary h2{font-size:15px;font-weight:700}
+details.resp>summary .sub{font-size:13px;color:var(--muted)}
+details.resp>summary::after{content:"Показать";margin-left:auto;color:var(--accent);font-size:13.5px;font-weight:500}
+details.resp[open]>summary::after{content:"Свернуть"}
+.rgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;padding:0 18px 16px}
+.rcell{border:1px solid var(--line);border-radius:10px;padding:9px 10px;display:grid;gap:6px;align-content:start}
+.rname{font-size:13.5px;font-weight:600;display:flex;justify-content:space-between;gap:8px}
+.rname span{font-weight:400;color:var(--muted);font-size:12px;white-space:nowrap}
+
+/* календарь */
+.cal{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-bottom:14px}
+.slot{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px;text-align:left;cursor:pointer;display:grid;gap:4px}
+.slot:hover{border-color:var(--accent)}
+.slot[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);background:var(--accent-soft)}
+.slot .when{font-family:var(--mono);font-size:12.5px;color:var(--accent);font-weight:500}
+.slot .what{font-size:12.5px;color:var(--muted);line-height:1.3}
+.slot .num{font-size:13px;font-weight:600;font-variant-numeric:tabular-nums}
+.slot .num b{color:var(--urgent)}
+.prog{height:4px;border-radius:2px;background:var(--surface-2);overflow:hidden}
+.prog i{display:block;height:100%;background:var(--accent)}
+
+.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:12px}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+.btn{border:1px solid var(--accent);background:var(--accent);color:var(--accent-ink);border-radius:9px;padding:8px 14px;font-weight:600;font-size:14px;cursor:pointer}
+.btn.ghost{background:var(--surface);color:var(--accent)}
+.toggle{display:flex;gap:4px;background:var(--surface-2);padding:3px;border-radius:9px}
+.toggle button{border:0;background:none;padding:5px 10px;border-radius:7px;font-size:13px;cursor:pointer;color:var(--muted)}
+.toggle button[aria-pressed="true"]{background:var(--surface);color:var(--ink);font-weight:600;box-shadow:var(--shadow)}
+.opts{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+.chk{font-size:13px;color:var(--muted);display:flex;gap:6px;align-items:center;cursor:pointer}
+.filter{font-size:13px;background:var(--accent-soft);border-radius:8px;padding:6px 10px;margin-bottom:10px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+
+.group{margin-bottom:18px}
+.group-h{display:flex;align-items:baseline;gap:10px;padding:4px 2px 8px;flex-wrap:wrap}
+.group-h h3{font-size:15px;font-weight:700}
+.group-h .tag{font-size:12.5px;color:var(--accent);background:var(--accent-soft);padding:2px 8px;border-radius:6px}
+.group-h .cnt{font-size:12.5px;color:var(--muted);margin-left:auto}
+.list{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr));gap:8px}
+.task{background:var(--surface);border:1px solid var(--line);border-radius:12px;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;padding:12px 14px;align-content:start}
+.task.urgent{border-left:4px solid var(--urgent);padding-left:11px}
+.task input[type=checkbox]{width:18px;height:18px;margin:2px 0 0;accent-color:var(--accent);cursor:pointer}
+.t-title{font-weight:600;font-size:14.5px;line-height:1.35;cursor:pointer}
+.task.is-done .t-title{color:var(--done);text-decoration:line-through;text-decoration-thickness:1px}
+.meta{grid-column:2;display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:12.5px}
+.pill{border-radius:6px;padding:2px 7px;background:var(--surface-2);color:var(--muted)}
+.pill.area{color:var(--ink)}
+.pill.who{background:var(--accent-soft);color:var(--ink)}
+.pill.who.none{background:var(--warn-soft);color:var(--warn);font-weight:500}
+.pill.urg{background:var(--urgent-soft);color:var(--urgent);font-weight:600}
+.pill.note{background:transparent;border:1px solid var(--line)}
+.due{display:inline-flex;align-items:center;gap:4px;border-radius:6px;padding:0 2px 0 7px;background:var(--surface-2);color:var(--muted)}
+.due input{border:0;background:transparent;font-family:var(--mono);font-size:12px;color:var(--ink);padding:2px;width:8.6em}
+.due.changed{background:var(--warn-soft)} .due.changed input{color:var(--warn)}
+.more{grid-column:2;font-size:13.5px;color:var(--muted)}
+.more summary{cursor:pointer;color:var(--accent);font-weight:500;list-style:none;width:max-content}
+.more summary::-webkit-details-marker{display:none}
+.more summary::before{content:"+ "} .more[open] summary::before{content:"– "}
+.more dl{display:grid;grid-template-columns:max-content 1fr;gap:4px 12px;margin:8px 0 2px}
+.more dt{color:var(--muted)} .more dd{margin:0;color:var(--ink)}
+.more .ref{font-family:var(--mono);font-size:12.5px}
+.empty{padding:18px;border:1px dashed var(--line);border-radius:12px;color:var(--muted);text-align:center}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--surface);padding:9px 16px;border-radius:9px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s;max-width:calc(100% - 32px)}
+.toast.show{opacity:1}
+.foot{margin-top:26px;font-size:12.5px;color:var(--muted);max-width:880px}
+@media (prefers-reduced-motion:reduce){.toast{transition:none}}
+@media (max-width:560px){.more dl{grid-template-columns:1fr}.more dt{margin-top:4px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="eyebrow">Охрана труда. Казахстан · интерактив к статье</div>
+    <h1>Чек-лист и календарь подготовки к зиме для вашей организации</h1>
+    <p class="lede">Ответьте на несколько вопросов об организации – в перечне останутся только подходящие дела. Отмечайте выполненное, меняйте сроки под погоду в регионе и скачайте готовый перечень для Word, чтобы использовать его как приложение к приказу.</p>
+    <div class="notes">
+      <div class="note" role="note">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v5M12 16h.01"/></svg>
+        <p><b>Это примерный перечень, а не исчерпывающий.</b> Сроки рекомендуемые: сначала то, что нужно до первых морозов, затем задачи на октябрь, в конце – годовые, которые при нехватке времени можно перенести на первую половину ноября. Состав дел сверяйте с отраслевыми правилами и локальными актами организации.</p>
+      </div>
+      <div class="note rent" role="note">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>
+        <p><b>План рассчитан на собственные здания и помещения.</b> Если они арендуемые, часть мероприятий – по содержанию здания, кровли, прилегающей территории, отопления и противопожарных систем – может выполнять арендодатель, если это предусмотрено договором аренды. Такие пункты сверьте с договором. Обязанности работодателя перед своими работниками при аренде сохраняются.</p>
+      </div>
+    </div>
+  </header>
+
+  <section class="card" aria-labelledby="profH">
+    <div class="card-h"><h2 id="profH"><span class="step">1</span>Расскажите об организации</h2><span class="exb" id="exBadge" hidden>Пример ответов</span><button class="linkbtn" id="resetBtn" type="button">Сбросить ответы</button></div>
+    <div class="qgrid" id="questions"></div>
+  </section>
+
+  <section class="card" id="respCard" aria-labelledby="respH">
+    <div class="card-h"><h2 id="respH"><span class="step">2</span>Укажите, кто у вас отвечает</h2><span class="rstat" id="respSub"></span><button class="linkbtn" id="respToggle" type="button" aria-expanded="true" aria-controls="resp">Свернуть</button></div>
+    <p class="q-hint" id="respHint" style="padding:0 18px;margin:2px 0 10px">Выберите ответственного по каждому направлению или впишите подразделение, должность – они попадут в перечень и в файл для Word. Где ответственный не выбран, в перечне будет пометка «Определить ответственного».</p>
+    <div class="rgrid" id="resp"></div>
+  </section>
+
+  <h2 class="sec"><span class="step">3</span>Отмечайте выполненное</h2>
+  <main aria-label="Перечень дел">
+    <div class="cal" id="cal" role="group" aria-label="Календарь по периодам"></div>
+    <div class="bar">
+      <div class="toggle" role="group" aria-label="Группировка">
+        <button type="button" id="gDate" aria-pressed="true">По срокам</button>
+        <button type="button" id="gArea" aria-pressed="false">По направлениям</button>
+      </div>
+      <div class="opts">
+        <label class="chk"><input type="checkbox" id="onlyUrg"> Только до первых морозов</label>
+        <label class="chk"><input type="checkbox" id="hideDone"> Скрыть выполненные</label>
+        <button class="linkbtn" type="button" id="resetDates" style="font-size:13px">Вернуть рекомендуемые сроки</button>
+      </div>
+      <div class="btns">
+        <button class="btn" type="button" id="dlBtn">Скачать для Word</button>
+        <button class="btn ghost" type="button" id="copyBtn">Копировать таблицу</button>
+      </div>
+    </div>
+    <div id="filterInfo"></div>
+    <div id="plan"></div>
+  </main>
+
+  <p class="foot">Перечень примерный и не заменяет требований отраслевых правил, графиков и предписаний вашей организации. Нормы приведены по данным ИПС «Әділет». Перед обучением и проверкой знаний уточните, какая редакция Правил обучения действует на эту дату. Отметки о выполнении, ответы и изменённые сроки сохраняются только в этом браузере.</p>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+"use strict";
+
+/* ---------- сроки ---------- */
+const YEAR=(function(){const d=new Date();return d.getMonth()===11?d.getFullYear()+1:d.getFullYear();})();
+const DL={
+  d9:{date:YEAR+"-10-09"}, d16:{date:YEAR+"-10-16"}, d23:{date:YEAR+"-10-23"}, d30:{date:YEAR+"-10-30"},
+  n6:{date:YEAR+"-11-06"}, n15:{date:YEAR+"-11-15"},
+  dec1:{date:YEAR+"-12-01",locked:true,lockNote:"Не позднее 1 декабря – срок установлен пп. 1) п. 20 Правил медосмотров"}
+};
+const SLOTS=[
+  {id:"s1",to:YEAR+"-10-09",label:"1–9 октября",what:"Приказ, осмотр, инвентаризация"},
+  {id:"s2",to:YEAR+"-10-16",label:"10–16 октября",what:"Территория, кровли, обходы"},
+  {id:"s3",to:YEAR+"-10-23",label:"17–23 октября",what:"СИЗ, обогрев, водители"},
+  {id:"s4",to:YEAR+"-10-30",label:"24–30 октября",what:"Сроки конца года"},
+  {id:"s5",to:YEAR+"-11-15",label:"До 15 ноября",what:"Самопроверка, план, бюджет"},
+  {id:"s6",to:YEAR+"-12-01",label:"До 1 декабря",what:"Список на медосмотр"}
+];
+const MONTHS=["января","февраля","марта","апреля","мая","июня","июля","августа","сентября","октября","ноября","декабря"];
+const fmtLong=iso=>{const[y,m,d]=iso.split("-").map(Number);return d+" "+MONTHS[m-1];};
+const fmtShort=iso=>{const[y,m,d]=iso.split("-");return d+"."+m+"."+y;};
+
+/* ---------- направления ---------- */
+const AREAS=[
+  {id:"org",name:"Организация работ"},
+  {id:"build",name:"Здания и кровли"},
+  {id:"terr",name:"Территория: снег и гололёд"},
+  {id:"heat",name:"Отопление и электроприборы"},
+  {id:"fire",name:"Пожарная безопасность"},
+  {id:"siz",name:"Зимние СИЗ",cond:s=>s.siz!=="no"},
+  {id:"cold",name:"Работа на холоде",cond:s=>s.outdoor==="yes"},
+  {id:"trans",name:"Транспорт и водители",cond:s=>s.transport==="yes"},
+  {id:"train",name:"Обучение и проверка знаний"},
+  {id:"med",name:"Медосмотры",cond:s=>s.harmful==="yes"},
+  {id:"pk",name:"Производственный контроль",cond:s=>s.pkProg==="yes"},
+  {id:"terms",name:"Сроки конца года"},
+  {id:"year",name:"Годовой план и бюджет"}
+];
+
+const REGIONS=[
+  ["Абай","abai","abai"],["Акмолинская","akm","3"],["Актюбинская","akt","2"],["Алматинская","alm","1"],["Атырауская","atr","2"],
+  ["Восточно-Казахстанская","vko","vko"],["Жамбылская","zhm","1"],["Жетісу","zhetisu","zhetisu"],["Западно-Казахстанская","zko","2"],
+  ["Карагандинская","krg","3"],["Костанайская","kost","kost"],["Кызылординская","kzo","1"],["Мангистауская","mng","2"],
+  ["Павлодарская","pvl","3"],["Северо-Казахстанская","sko","3"],["Туркестанская","trk","1"],["Ұлытау","ulytau","ulytau"],
+  ["г. Астана","astana","astana"],["г. Алматы","almaty","almaty"],["г. Шымкент","shym","shym"]
+];
+const ZONE_TERM={"1":"3 года","2":"2,5 года","3":"2 года"};
+function zoneText(rid){
+  const reg=REGIONS.find(r=>r[1]===rid); if(!reg) return ""; const c=reg[2];
+  if(ZONE_TERM[c]) return "Климатический пояс "+c+", срок носки тёплой спецодежды и спецобуви – "+ZONE_TERM[c]+" (п. 4 примечания к Нормам № 943).";
+  const map={
+    vko:"Восточно-Казахстанская область делится по широте: южнее 50° с. ш. – 2-й пояс (2,5 года), севернее – 3-й пояс (2 года).",
+    kost:"Костанайская область делится по широте: южнее 50° с. ш. – 2-й пояс (2,5 года), севернее – 3-й пояс (2 года).",
+    abai:"Области Абай нет в таблице Норм № 943: территория раньше входила в Восточно-Казахстанскую область, пояс определяют по широте (южнее 50° с. ш. – 2-й, севернее – 3-й). Решение стоит закрепить в акте работодателя.",
+    zhetisu:"Области Жетісу нет в таблице Норм № 943: территория раньше входила в Алматинскую область (1-й пояс, 3 года). Решение стоит закрепить в акте работодателя.",
+    ulytau:"Области Ұлытау нет в таблице Норм № 943: территория раньше входила в Карагандинскую область (3-й пояс, 2 года). Решение стоит закрепить в акте работодателя.",
+    astana:"Города в таблице Норм № 943 не названы. Астана расположена на территории Акмолинской области (3-й пояс, 2 года) – решение стоит закрепить в акте работодателя.",
+    almaty:"Города в таблице Норм № 943 не названы. Алматы расположен на территории Алматинской области (1-й пояс, 3 года) – решение стоит закрепить в акте работодателя.",
+    shym:"Города в таблице Норм № 943 не названы. Шымкент расположен на территории Туркестанской области (1-й пояс, 3 года) – решение стоит закрепить в акте работодателя."
+  };
+  return map[c]||"";
+}
+
+const QUESTIONS=[
+  {id:"siz",label:"Работникам выдают спецодежду, спецобувь и другие СИЗ?",hint:"Например, в офисе или филиале только с офисными работниками зимние СИЗ могут не требоваться",opts:[["yes","Да"],["no","Нет"]]},
+  {id:"outdoor",label:"Есть работы на открытом воздухе или в неотапливаемых помещениях?",hint:"Включая погрузочно-разгрузочные работы",opts:[["yes","Да"],["no","Нет"]]},
+  {id:"heat",label:"Какое отопление используется?",hint:"Можно выбрать несколько",multi:true,
+   opts:[["central","Централизованное"],["boiler","Своя котельная"],["stove","Печи, теплогенераторы"],["electric","Электрообогреватели"]]},
+  {id:"roof",label:"Кто очищает кровли от снега и наледи?",
+   opts:[["own","Свои работники"],["contractor","Подрядчик"],["none","Не требуется"]]},
+  {id:"transport",label:"Есть собственный транспорт или погрузчики?",opts:[["yes","Да"],["no","Нет"]]},
+  {id:"harmful",label:"Есть работники, которые проходят периодические медосмотры?",opts:[["yes","Да"],["no","Нет"]]},
+  {id:"pkProg",label:"Есть программа производственного контроля с замерами?",hint:"Микроклимат, освещённость, шум и другие факторы",opts:[["yes","Да"],["no","Нет"]]},
+  {id:"region",label:"Где работают сотрудники?",select:true}
+];
+
+/* ---------- дела ----------
+   when – рекомендуемый срок; urgent – до первых морозов */
+const TASKS=[
+  {id:"order",area:"org",when:"d9",
+   title:"При необходимости подготовить приказ о подготовке к осенне-зимнему периоду с перечнем мероприятий, ответственными и сроками",
+   why:"Приказ превращает подготовку к зиме в поручения, исполнение которых можно проверить. Для каждой строки: что сделать, кто отвечает, срок, чем подтверждается исполнение. Этот перечень можно скачать для Word и использовать как приложение к приказу.",
+   proof:"Приказ с приложением – перечнем мероприятий",ref:"Положение о СУОТ организации",note:"При необходимости"},
+  {id:"resp",area:"org",when:"d9",
+   title:"Уточнить, кто отвечает за каждое направление подготовки к зиме, и предложить руководителю назначить ответственных там, где их нет",
+   why:"Большую часть сезонных задач выполняют другие службы. Роль специалиста по БиОТ – организовать работу, согласовать сроки, проконтролировать результат и довести выявленные нарушения до устранения.",
+   proof:"Приказы о назначении ответственных",ref:"Положение о СУОТ организации"},
+  {id:"bld",area:"build",when:"d9",urgent:true,
+   title:"Убедиться, что проведён осенний осмотр зданий, а по опасным дефектам назначены сроки и временные меры",
+   why:"Осмотр проводят до снега. Выявленные недостатки делят на три группы: устранить немедленно, включить в текущий ремонт, направить на обследование. Для дефектов, которые не успеют устранить до снега, – ограждение, перенос прохода или проезда.",
+   proof:"Акт осмотра с перечнем дефектов и сроками",ref:"п. 1 ст. 184, пп. 19) п. 2 ст. 182 ТК РК"},
+  {id:"terr",area:"terr",when:"d16",urgent:true,
+   title:"Решить организационные вопросы до первого снегопада: кто убирает территорию, запас противогололёдного материала, опасные участки, освещение, места складирования снега",
+   why:"Опасные зоны обозначают, снег не должен перекрывать проходы, проезды, гидранты и эвакуационные выходы.",
+   proof:"Распоряжение, схема уборки территории",ref:"п. 4 ст. 184 ТК РК; п. 164 ППБ"},
+  {id:"roofOwn",area:"build",when:"d16",urgent:true,cond:s=>s.roof==="own",
+   title:"Подготовить очистку кровель своими силами: включить её в перечень работ повышенной опасности, проверить обучение работам на высоте, проверку знаний, медосмотр, страховочные системы и каски",
+   why:"Работу выполняют по наряду-допуску. Перед допуском осматривают конструкции кровли и ограждения, определяют места крепления страховочных систем, ограждают опасную зону внизу.",
+   proof:"Перечень работ повышенной опасности, форма наряда-допуска",ref:"Правила обучения; локальные акты организации"},
+  {id:"roofCon",area:"build",when:"d16",urgent:true,cond:s=>s.roof==="contractor",
+   title:"Заключить договор с подрядчиком на очистку кровель: требования к персоналу, порядок допуска на объект, ограждение зоны под кровлей",
+   why:"Договор лучше заключить до первого снегопада, а порядок – довести до своих работников: кто и как ограждает зону под кровлей.",
+   proof:"Договор с подрядчиком, порядок допуска",ref:"Договор, внутренний порядок допуска подрядчиков"},
+  {id:"sizInv",area:"siz",when:"d9",
+   title:"Провести инвентаризацию зимних СИЗ и сверить списки работников с нормами выдачи",
+   why:"Чаще всего пропускают работников, принятых или переведённых после прошлой зимы, и ИТР, которые регулярно бывают в цехах и на участках, – им СИЗ выдают по нормам основных профессий этих участков. Комплекты с прошлого сезона возвращают тем же работникам.",
+   proof:"Ведомость потребности в СИЗ",ref:"п. 3 примечания к Нормам № 943; п. 21 Правил № 1054",zone:true},
+  {id:"sizIss",area:"siz",when:"d23",urgent:true,
+   title:"Выдать зимние СИЗ по фактической погоде и оформить выдачу в личных карточках",
+   why:"Сроки законодательство не устанавливает – ориентируйтесь на погоду и условия работы, а начало и окончание холодного периода удобно закрепить в акте работодателя.",
+   proof:"Личные карточки учёта выдачи СИЗ",ref:"пп. 4) п. 2 ст. 182 ТК РК; п. 14 Правил № 1054",zone:true},
+  {id:"sizFb",area:"siz",when:"n6",
+   title:"Через две-три недели после выдачи собрать обратную связь: хватает ли защиты от холода, не промокает ли обувь, удобно ли в перчатках",
+   why:"Короткий опрос или разговор на планёрке выявит проблемы раньше, чем работники начнут заменять спецодежду личной.",
+   proof:"Замечания по СИЗ и меры по ним",ref:"Правила № 1054"},
+  {id:"heat",area:"heat",when:"d9",urgent:true,cond:s=>s.heat.includes("stove")||s.heat.includes("boiler"),
+   title:"Проверить, что организовано обслуживание отопительных приборов и очистка дымоходов перед отопительным сезоном",
+   why:"Неисправные печи и приборы к эксплуатации не допускаются. В сезон дымоходы очищают: отопительные печи – не реже раза в три месяца, печи непрерывного действия – раза в два месяца, кухонные плиты и печи долговременной топки – раз в месяц.",
+   proof:"Акт обслуживания, отметка об очистке",ref:"п. 104 ППБ"},
+  {id:"heaters",area:"heat",when:"d16",cond:s=>s.heat.includes("electric")||s.outdoor==="yes",
+   title:"Попросить руководителей подразделений передать список электрообогревателей, которые используются на их участках",
+   why:"«Временный» обогреватель часто появляется без ведома службы БиОТ. Список упростит обход и покажет, где нужно решать проблему отопления, а не запрещать приборы.",
+   proof:"Список электрообогревателей по подразделениям",ref:"пп. 3), 5) п. 86 ППБ"},
+  {id:"elec",area:"heat",when:"d16",urgent:true,
+   title:"Провести обход помещений: самодельные обогреватели, повреждённые удлинители и провода, временная проводка, приборы рядом с горючими материалами",
+   why:"Особое внимание – проходным, мастерским, бытовкам, складам и постам охраны. О нарушениях сообщают ответственному за пожарную безопасность со сроком устранения.",
+   proof:"Перечень несоответствий со сроками",ref:"пп. 3), 5) п. 86 ППБ"},
+  {id:"fire",area:"fire",when:"d16",urgent:true,
+   title:"Проверить, не загромождены ли пути эвакуации сезонным хранением коробок, инвентаря и оборудования",
+   why:"Проверку систем противопожарной защиты проводит ответственный за пожарную безопасность; специалист по БиОТ передаёт ему то, что замечает при обходах.",
+   proof:"Отметка ответственного за пожарную безопасность",ref:"п. 9, пп. 6) п. 24 ППБ"},
+  {id:"coldAct",area:"cold",when:"d23",urgent:true,cond:s=>s.outdoor==="yes",
+   title:"Проверить акт о перерывах для обогрева и помещениях для обогрева: профессии и участки, температура и ветер, условия приостановки работ, помещения, кто контролирует",
+   why:"Перерывы для обогрева включают в рабочее время, работодатель обязан оборудовать помещения для обогрева. Порядок определяют коллективный договор или акт работодателя. Образец приказа – в электронной версии журнала.",
+   proof:"Акт работодателя или раздел коллективного договора",ref:"п. 2 ст. 82 ТК РК; п. 26 Правил № 1054"},
+  {id:"trans",area:"trans",when:"d23",cond:s=>s.transport==="yes",
+   title:"Напомнить ответственным о подготовке водителей к зиме: провести инструктаж по работе в зимних условиях, определить места стоянки и прогрева, учесть снег в маршрутах",
+   why:"Техническую подготовку транспорта организует механик или начальник гаража. В декабре, январе и феврале эксплуатировать транспорт без зимних шин нельзя.",
+   proof:"Запись об инструктаже в журнале регистрации",ref:"п. 5.5 приложения 8 к ТР ТС 018/2011"},
+  {id:"trList",area:"train",when:"d9",
+   title:"Составить список работников, у которых срок ежегодной проверки знаний приходится на ноябрь – декабрь",
+   why:"Об обучении и проверке знаний работников уведомляют не менее чем за месяц.",
+   proof:"Список работников, график",ref:"Правила обучения"},
+  {id:"trNotify",area:"train",when:"d16",urgent:true,
+   title:"Направить уведомления о проверке знаний в ноябре – декабре и проверить состав экзаменационной комиссии и сроки сертификатов её членов",
+   why:"В декабре из-за отпусков комиссию бывает трудно собрать в полном составе. Перед проверкой уточните, какая редакция Правил обучения действует на эту дату.",
+   proof:"Уведомления работникам, приказ о комиссии",ref:"Правила обучения"},
+  {id:"medCheck",area:"med",when:"d23",cond:s=>s.harmful==="yes",
+   title:"Проверить, все ли прошли медосмотр в этом году, не выпал ли из списка кто-то из принятых или переведённых, выполнены ли рекомендации заключительного акта",
+   why:"Если часть работников ещё должна пройти осмотр, договоритесь с медицинской организацией сейчас: в декабре согласовать сроки сложнее.",
+   proof:"Заключительный акт, отметки об исполнении",ref:"Правила медосмотров"},
+  {id:"medList",area:"med",when:"dec1",cond:s=>s.harmful==="yes",
+   title:"Подготовить список лиц, подлежащих периодическому медосмотру в следующем году",
+   why:"Если появились новые рабочие места или профессии, начните готовить список заранее.",
+   proof:"Согласованный список",ref:"пп. 1) п. 20 Правил медосмотров",note:"Срок установлен Правилами медосмотров"},
+  {id:"pk",area:"pk",when:"d30",cond:s=>s.pkProg==="yes",
+   title:"При необходимости согласовать с лабораторией сроки замеров холодного периода по программе производственного контроля",
+   why:"Замеры холодного периода проводят, когда установится отопительный режим, а не только потому, что по календарю наступил октябрь.",
+   proof:"Договор с лабораторией, график замеров",ref:"Программа производственного контроля; Санитарные правила № 62",note:"При необходимости"},
+  {id:"osns",area:"terms",when:"d30",
+   title:"Проверить дату окончания договора обязательного страхования работников от несчастных случаев",
+   why:"Если срок наступает в ноябре – январе, новый договор лучше заключить заранее, чтобы между договорами не было разрыва.",
+   proof:"Действующий договор ОСНС",ref:"пп. 14) п. 2 ст. 182 ТК РК"},
+  {id:"att",area:"terms",when:"d30",
+   title:"Проверить срок аттестации производственных объектов по условиям труда и при необходимости заложить её в бюджет следующего года",
+   why:"Аттестацию проводят не реже одного раза в пять лет. Если срок наступает в следующем году, начните выбирать организацию.",
+   proof:"Сведения о сроке аттестации",ref:"пп. 12) п. 2 ст. 182 ТК РК"},
+  {id:"sizTest",area:"terms",when:"d30",cond:s=>s.siz!=="no",
+   title:"Сверить сроки испытаний СИЗ: диэлектрических средств, страховочных систем, касок и других, особенно для зимних работ на высоте",
+   why:"Если срок испытаний наступает в ноябре – январе, организуйте их заранее – до начала очистки кровель.",
+   proof:"Отметки о сроках испытаний",ref:"п. 16 Правил № 1054"},
+  {id:"suot",area:"year",when:"n15",
+   title:"Проверить СУОТ на пробелы: Положение о СУОТ, приказы и инструкции, обучение, обеспеченность СИЗ, выполнение предписаний",
+   why:"Самопроверка покажет, что потребует расходов в следующем году. При нехватке времени её можно перенести на первую половину ноября.",
+   proof:"Перечень пробелов с мерами",ref:"Положение о СУОТ организации"},
+  {id:"plan",area:"year",when:"n15",
+   title:"Сверить выполнение годового плана мероприятий по БиОТ: выполнено, в работе, выполнимо до конца года, переносится",
+   why:"Перенос на следующий год не должен закрывать проблему на бумаге: если опасность действует сейчас, нужны временные меры. Сведения о нарушениях удобно вести в одной таблице несоответствий – её можно скачать в электронной версии журнала.",
+   proof:"Справка руководителю",ref:"Положение о СУОТ организации"},
+  {id:"budget",area:"year",when:"n15",
+   title:"Если время позволяет, начать предварительно планировать мероприятия и расходы по БиОТ на следующий год",
+   why:"Запросите предложения у подразделений и добавьте то, что выявила самопроверка. Каждую крупную статью расходов связывайте с конкретной опасностью, требованием или несоответствием.",
+   proof:"Предложения в бюджет",ref:"п. 3 ст. 180 ТК РК",note:"Если время позволяет"}
+];
+
+/* ---------- состояние ---------- */
+const EXAMPLE={siz:"yes",outdoor:"yes",heat:["central","electric"],roof:"contractor",transport:"yes",harmful:"yes",pkProg:"yes",region:"krg",
+  resp:{org:{m:"biot"},build:{m:"other",t:"Служба эксплуатации"},terr:{m:"other",t:"АХО"},heat:{m:"other",t:"Главный энергетик"},fire:{m:"none"},
+        siz:{m:"other",t:"Склад, руководители подразделений"},cold:{m:"none"},trans:{m:"other",t:"Начальник гаража"},train:{m:"biot"},
+        med:{m:"other",t:"Отдел кадров"},pk:{m:"none"},terms:{m:"biot"},year:{m:"biot"}},
+  done:{},dates:{},group:"date",hideDone:false,onlyUrg:false,slot:"",example:true};
+const BLANK={siz:"",outdoor:"",heat:[],roof:"",transport:"",harmful:"",pkProg:"",region:"",resp:{},done:{},dates:{},group:"date",hideDone:false,onlyUrg:false,slot:""};
+const KEY="biot-winter-plan-v4";
+let S=null;
+try{S=JSON.parse(localStorage.getItem(KEY));}catch(e){S=null;}
+if(!S) S=JSON.parse(JSON.stringify(EXAMPLE));
+["resp","done","dates"].forEach(k=>{S[k]=S[k]||{};}); S.heat=S.heat||[];
+function save(){S.example=false;exampleBadge();try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+
+/* ---------- утилиты ---------- */
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function toast(m){const t=$("toast");t.textContent=m;t.classList.add("show");clearTimeout(toast._t);toast._t=setTimeout(()=>t.classList.remove("show"),2400);}
+const areaVisible=a=>!a.cond||a.cond(S);
+function respOf(id){return S.resp[id]||{m:"none"};}
+function whoOf(t){
+  const r=respOf(t.area);
+  if(r.m==="biot") return {text:"Служба БиОТ"};
+  if(r.m==="other") return {text:(r.t&&r.t.trim())||"Ответственное подразделение"};
+  return {text:"Определить ответственного",none:true};
+}
+const titleOf=t=>t.title;
+const noteOf=t=>t.note||"";
+const dueOf=t=>S.dates[t.id]||DL[t.when].date;
+const dueChanged=t=>!!S.dates[t.id]&&S.dates[t.id]!==DL[t.when].date;
+const areaName=id=>AREAS.find(a=>a.id===id).name;
+function activeTasks(){return TASKS.filter(t=>(!t.cond||t.cond(S))&&areaVisible(AREAS.find(a=>a.id===t.area)));}
+function slotOf(t){const d=dueOf(t);for(const s of SLOTS){if(d<=s.to)return s.id;}return SLOTS[SLOTS.length-1].id;}
+function plural(n,a,b,c){const m10=n%10,m100=n%100;if(m10===1&&m100!==11)return a;if(m10>=2&&m10<=4&&(m100<10||m100>=20))return b;return c;}
+
+/* ---------- вопросы ---------- */
+function renderQuestions(){
+  const box=$("questions"); box.innerHTML="";
+  QUESTIONS.forEach(q=>{
+    const d=document.createElement("div"); d.className="q";
+    let h='<div class="q-label" id="ql-'+q.id+'">'+esc(q.label)+'</div>';
+    if(q.hint) h+='<div class="q-hint">'+esc(q.hint)+'</div>';
+    if(q.select){
+      h+='<select class="sel" id="q-region" aria-labelledby="ql-region"><option value="">Выберите область или город</option>'+
+        REGIONS.map(r=>'<option value="'+r[1]+'"'+(S.region===r[1]?" selected":"")+'>'+esc(r[0])+'</option>').join("")+'</select><div class="zone" id="zoneInfo"></div>';
+    } else {
+      h+='<div class="chips" role="group" aria-labelledby="ql-'+q.id+'">'+q.opts.filter(o=>!o[2]||o[2](S)).map(o=>{
+        const on=q.multi?S[q.id].includes(o[0]):S[q.id]===o[0];
+        return '<button type="button" class="chip" data-q="'+q.id+'" data-v="'+o[0]+'" aria-pressed="'+on+'">'+esc(o[1])+'</button>';
+      }).join("")+'</div>';
+    }
+    d.innerHTML=h; box.appendChild(d);
+  });
+  box.querySelectorAll(".chip").forEach(b=>b.addEventListener("click",()=>{
+    const q=QUESTIONS.find(x=>x.id===b.dataset.q),v=b.dataset.v;
+    if(q.multi){const a=S[q.id];const i=a.indexOf(v);i>=0?a.splice(i,1):a.push(v);} else S[q.id]=v;
+    save(); renderAll();
+  }));
+  $("q-region").addEventListener("change",e=>{S.region=e.target.value;save();updateZone();renderPlan();});
+  updateZone();
+}
+function updateZone(){const z=$("zoneInfo");if(z)z.textContent=zoneText(S.region)||"От области зависит срок носки тёплой спецодежды.";}
+
+/* ---------- ответственные ---------- */
+function renderResp(){
+  const box=$("resp"); box.innerHTML=""; const tasks=activeTasks(); let none=0;
+  AREAS.filter(areaVisible).forEach(a=>{
+    const r=S.resp[a.id]||(S.resp[a.id]={m:"none"});
+    if(r.m==="none") none++;
+    const opts=[["none","Не определено"],["biot","Служба БиОТ"],["other","Другое – вписать"]];
+    const n=tasks.filter(t=>t.area===a.id).length;
+    const c=document.createElement("div"); c.className="rcell"+(r.m==="none"?" unset":""); c.id="rc-"+a.id;
+    c.innerHTML='<label class="rname" for="rs-'+a.id+'">'+esc(a.name)+'<span>'+n+' '+plural(n,"дело","дела","дел")+'</span></label>'+
+      '<select class="sel" id="rs-'+a.id+'" data-a="'+a.id+'">'+opts.map(o=>'<option value="'+o[0]+'"'+(r.m===o[0]?" selected":"")+'>'+o[1]+'</option>').join("")+'</select>'+
+      (r.m==="other"?'<input class="txt" id="rt-'+a.id+'" data-a="'+a.id+'" placeholder="Подразделение или должность" value="'+esc(r.t||"")+'" aria-label="Ответственный: '+esc(a.name)+'">':"");
+    box.appendChild(c);
+  });
+  const rs=$("respSub"); rs.textContent=none?("не определено: "+none+" из "+AREAS.filter(areaVisible).length):"все направления распределены"; rs.className="rstat "+(none?"warn":"ok");
+  box.querySelectorAll("select").forEach(s=>s.addEventListener("change",()=>{S.resp[s.dataset.a].m=s.value;save();renderResp();renderPlan();if(s.value==="other"){const i=$("rt-"+s.dataset.a);if(i)i.focus();}}));
+  box.querySelectorAll("input.txt").forEach(i=>i.addEventListener("input",()=>{S.resp[i.dataset.a].t=i.value;save();renderPlan();}));
+}
+
+function setResp(open){const c=$("respCard"),b=$("respToggle");c.classList.toggle("collapsed",!open);b.textContent=open?"Свернуть":"Развернуть";b.setAttribute("aria-expanded",open);S.respClosed=!open;}
+$("respToggle").addEventListener("click",()=>{setResp(S.respClosed);save();});
+function goResp(id){setResp(true);const cell=$("rc-"+id),sel=$("rs-"+id);if(!cell)return;cell.scrollIntoView({behavior:"smooth",block:"center"});cell.classList.remove("flash");void cell.offsetWidth;cell.classList.add("flash");setTimeout(()=>sel&&sel.focus({preventScroll:true}),400);}
+
+/* ---------- календарь ---------- */
+function renderCal(){
+  const tasks=activeTasks();
+  $("cal").innerHTML=SLOTS.map(s=>{
+    const it=tasks.filter(t=>slotOf(t)===s.id); if(!it.length) return "";
+    const d=it.filter(t=>S.done[t.id]).length, u=it.filter(t=>t.urgent&&!S.done[t.id]).length;
+    return '<button type="button" class="slot" data-s="'+s.id+'" aria-pressed="'+(S.slot===s.id)+'">'+
+      '<span class="when">'+s.label+'</span><span class="what">'+s.what+'</span>'+
+      '<span class="num">'+d+' из '+it.length+(u?' · <b>'+u+' до морозов</b>':'')+'</span>'+
+      '<span class="prog"><i style="width:'+Math.round(d/it.length*100)+'%"></i></span></button>';
+  }).join("");
+  $("cal").querySelectorAll(".slot").forEach(b=>b.addEventListener("click",()=>{S.slot=S.slot===b.dataset.s?"":b.dataset.s;save();renderPlan();}));
+}
+
+/* ---------- перечень ---------- */
+function renderPlan(){
+  renderCal();
+  const all=activeTasks();
+  $("gDate").setAttribute("aria-pressed",S.group==="date"); $("gArea").setAttribute("aria-pressed",S.group==="area");
+  $("hideDone").checked=!!S.hideDone; $("onlyUrg").checked=!!S.onlyUrg;
+  let list=all.filter(t=>!(S.hideDone&&S.done[t.id])&&!(S.onlyUrg&&!t.urgent)&&!(S.slot&&slotOf(t)!==S.slot));
+  const sl=SLOTS.find(s=>s.id===S.slot);
+  $("filterInfo").innerHTML=sl?'<div class="filter">Показаны дела периода «'+sl.label+'» <button class="linkbtn" type="button" id="clrSlot">Показать все</button></div>':"";
+  if(sl) $("clrSlot").addEventListener("click",()=>{S.slot="";save();renderPlan();});
+  const groups=[];
+  if(S.group==="date"){
+    const keys=[...new Set(list.map(dueOf))].sort();
+    keys.forEach(k=>{const items=list.filter(t=>dueOf(t)===k);const lock=items.some(t=>DL[t.when].locked&&!S.dates[t.id]);
+      groups.push({title:(lock?"Не позднее ":"До ")+fmtLong(k),tag:lock?"срок по Правилам медосмотров":"",items});});
+  } else {
+    AREAS.filter(areaVisible).forEach(a=>{const items=list.filter(t=>t.area===a.id).sort((x,y)=>dueOf(x)<dueOf(y)?-1:1);if(items.length)groups.push({title:a.name,tag:whoOf(items[0]).text,items});});
+  }
+  const box=$("plan");
+  if(!groups.length){box.innerHTML='<div class="empty">Под выбранные фильтры дел нет. Снимите фильтры, чтобы увидеть весь перечень.</div>';return;}
+  box.innerHTML=groups.map(g=>{const d=g.items.filter(t=>S.done[t.id]).length;
+    return '<section class="group"><div class="group-h"><h3>'+esc(g.title)+'</h3>'+(g.tag?'<span class="tag">'+esc(g.tag)+'</span>':'')+'<span class="cnt">'+d+' из '+g.items.length+'</span></div><div class="list">'+g.items.map(taskHtml).join("")+'</div></section>';}).join("");
+  box.querySelectorAll('button[data-go]').forEach(b=>b.addEventListener("click",()=>goResp(b.dataset.go)));
+  box.querySelectorAll('input[type=checkbox][data-t]').forEach(c=>c.addEventListener("change",()=>{if(c.checked)S.done[c.dataset.t]=true;else delete S.done[c.dataset.t];save();renderPlan();}));
+  box.querySelectorAll('input[type=date][data-t]').forEach(inp=>inp.addEventListener("change",()=>{
+    const t=TASKS.find(x=>x.id===inp.dataset.t),def=DL[t.when],v=inp.value;
+    if(!v||v===def.date) delete S.dates[t.id];
+    else if(def.locked&&v>def.date){toast("Список на медосмотр готовят не позднее 1 декабря");delete S.dates[t.id];}
+    else S.dates[t.id]=v;
+    save(); renderPlan();
+  }));
+}
+function taskHtml(t){
+  const who=whoOf(t),done=!!S.done[t.id],due=dueOf(t),def=DL[t.when],note=noteOf(t);
+  const zone=t.zone&&S.region?'<dt>Регион</dt><dd>'+esc(zoneText(S.region))+'</dd>':"";
+  return '<article class="task'+(t.urgent?" urgent":"")+(done?" is-done":"")+'">'+
+    '<input type="checkbox" id="c-'+t.id+'" data-t="'+t.id+'"'+(done?" checked":"")+'>'+
+    '<label class="t-title" for="c-'+t.id+'">'+esc(titleOf(t))+'</label>'+
+    '<div class="meta"><span class="due'+(dueChanged(t)?" changed":"")+'" title="'+esc(def.locked?def.lockNote:"Срок можно изменить")+'">'+(def.locked?"не позднее":"до")+
+      '<input type="date" data-t="'+t.id+'" value="'+due+'"'+(def.locked?' max="'+def.date+'"':'')+' aria-label="Срок: '+esc(titleOf(t))+'"></span>'+
+      (S.group==="date"?'<span class="pill area">'+esc(areaName(t.area))+'</span>':'')+
+      (who.none?'<button type="button" class="pill who none" data-go="'+t.area+'" title="Перейти к выбору ответственного">'+esc(who.text)+'</button>':'<span class="pill who">'+esc(who.text)+'</span>')+
+      (note?'<span class="pill note">'+esc(note)+'</span>':'')+
+      (t.urgent?'<span class="pill urg">до первых морозов</span>':'')+
+    '</div><details class="more"><summary>Подробнее и нормы</summary><dl>'+
+      '<dt>Зачем</dt><dd>'+esc(t.why)+'</dd>'+zone+
+      '<dt>Результат</dt><dd>'+esc(t.proof)+'</dd><dt>Нормы</dt><dd class="ref">'+esc(t.ref)+'</dd></dl></details></article>';
+}
+
+/* ---------- экспорт ---------- */
+function exportRows(){
+  return activeTasks().slice().sort((a,b)=>dueOf(a)<dueOf(b)?-1:dueOf(a)>dueOf(b)?1:0).map((t,i)=>{
+    const who=whoOf(t),def=DL[t.when];
+    return [String(i+1),titleOf(t),who.none?"":who.text,(def.locked?"не позднее ":"до ")+fmtShort(dueOf(t)),t.proof,[t.urgent?"До первых морозов":"",noteOf(t)].filter(Boolean).join("; "),S.done[t.id]?"выполнено":""];
+  });
+}
+const HEAD=["№","Мероприятие","Ответственный","Срок","Чем подтверждается выполнение","Примечание","Отметка"];
+function tableHtml(){
+  const th='style="border:1px solid #777;padding:4pt;background:#E3EEEB;font-weight:bold;font-size:10pt"',td='style="border:1px solid #777;padding:4pt;font-size:10pt;vertical-align:top"';
+  return '<table style="border-collapse:collapse;width:100%"><tr>'+HEAD.map(h=>'<th '+th+'>'+h+'</th>').join("")+'</tr>'+exportRows().map(r=>'<tr>'+r.map(c=>'<td '+td+'>'+esc(c)+'</td>').join("")+'</tr>').join("")+'</table>';
+}
+function docHtml(){
+  return '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word"><head><meta charset="utf-8"><title>Перечень мероприятий</title>'+
+  '<style>@page{size:29.7cm 21cm;mso-page-orientation:landscape;margin:1.5cm}body{font-family:Arial;font-size:11pt}p{margin:0 0 6pt}</style></head><body>'+
+  '<p style="text-align:right">Приложение к приказу от «___» __________ 20__ г. № ____</p>'+
+  '<p style="text-align:center;font-weight:bold;font-size:13pt">Перечень мероприятий по подготовке к осенне-зимнему периоду</p>'+
+  '<p style="text-align:center">__________________________________________<br><span style="font-size:9pt">(наименование организации)</span></p>'+tableHtml()+
+  '<p style="font-size:9pt;margin-top:10pt">Перечень составлен на основе примерного плана и дополняется с учётом отраслевых нормативных актов, графиков и локальных актов организации. Незаполненная графа «Ответственный» означает, что ответственный не определён. Сроки рекомендуемые, кроме срока подготовки списка на медосмотр (не позднее 1 декабря).</p></body></html>';
+}
+$("dlBtn").addEventListener("click",()=>{
+  try{const blob=new Blob(["﻿"+docHtml()],{type:"application/msword"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="Перечень_мероприятий_осенне-зимний_период.doc";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);toast("Файл для Word сформирован");}
+  catch(e){toast("Не удалось скачать – скопируйте таблицу и вставьте в Word");}
+});
+$("copyBtn").addEventListener("click",()=>{
+  const plain=[HEAD].concat(exportRows()).map(r=>r.join("\t")).join("\n"),html=tableHtml();
+  const ok=()=>toast("Таблица скопирована – вставьте её в Word или Excel"),fail=()=>toast("Браузер не разрешил копирование");
+  try{
+    if(window.ClipboardItem&&navigator.clipboard&&navigator.clipboard.write){navigator.clipboard.write([new ClipboardItem({"text/html":new Blob([html],{type:"text/html"}),"text/plain":new Blob([plain],{type:"text/plain"})})]).then(ok).catch(()=>navigator.clipboard.writeText(plain).then(ok).catch(fail));}
+    else if(navigator.clipboard){navigator.clipboard.writeText(plain).then(ok).catch(fail);} else fail();
+  }catch(e){fail();}
+});
+
+/* ---------- управление ---------- */
+$("gDate").addEventListener("click",()=>{S.group="date";save();renderPlan();});
+$("gArea").addEventListener("click",()=>{S.group="area";save();renderPlan();});
+$("hideDone").addEventListener("change",e=>{S.hideDone=e.target.checked;save();renderPlan();});
+$("onlyUrg").addEventListener("change",e=>{S.onlyUrg=e.target.checked;save();renderPlan();});
+$("resetDates").addEventListener("click",()=>{S.dates={};save();renderPlan();toast("Рекомендуемые сроки восстановлены");});
+$("resetBtn").addEventListener("click",()=>{S=JSON.parse(JSON.stringify(BLANK));save();renderAll();toast("Ответы сброшены");});
+function exampleBadge(){const b=$("exBadge");if(b)b.hidden=!S.example;}
+function renderAll(){renderQuestions();renderResp();setResp(!S.respClosed);renderPlan();exampleBadge();}
+renderAll();
+})();
+</script>
+</body>
+</html>
