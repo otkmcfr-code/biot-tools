@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Календарь праздников РК 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Макет: зелёная шапка с месяцем → полоса месяцев + поиск → сетка месяца | список событий (на узком экране — друг под другом) */
+:root{
+  --brand:#007760;        /* фирменный цвет журнала */
+  --brand-dark:#005a49;
+  --brand-tint:#e6f2ef;
+  --hol:#c0392b;          /* праздничные (выходные) дни */
+  --hol-tint:#f9dedb;
+  --data:#2e62b8;         /* праздничные даты */
+  --data-tint:#eaf0fa;
+  --ink:#1d2a27;
+  --muted:#5f6e6a;
+  --line:#dde5e3;
+  --bg:#ffffff;
+  --panel:#f5f8f7;
+  --font:"Golos Text",-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.4}
+button{font-family:inherit}
+.wrap{max-width:800px;margin:0 auto;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--bg)}
+
+/* шапка */
+.head{background:var(--brand);color:#fff;display:flex;align-items:center;gap:8px;padding:12px 12px}
+.head .ttl{flex:1;text-align:center;min-width:0}
+.head .m{font-size:24px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;line-height:1.1}
+.head .y{font-size:12px;opacity:.8;letter-spacing:.08em;text-transform:uppercase;margin-top:2px}
+.nav{width:38px;height:38px;border-radius:50%;border:1.5px solid rgba(255,255,255,.7);background:transparent;color:#fff;cursor:pointer;display:grid;place-items:center;flex:none}
+.nav:hover{background:rgba(255,255,255,.14)}
+.nav:disabled{opacity:.3;cursor:default;background:transparent}
+.nav svg{width:18px;height:18px}
+:focus-visible{outline:2px solid #f2b705;outline-offset:2px}
+
+/* полоса месяцев */
+.months{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;padding:10px 12px;background:var(--panel);border-bottom:1px solid var(--line)}
+.months button{border:1px solid transparent;background:transparent;border-radius:4px;padding:6px 0;font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);cursor:pointer}
+.months button:hover{color:var(--brand);background:var(--bg)}
+.months button[aria-current="true"]{background:var(--brand);color:#fff}
+
+/* поиск */
+.search{padding:10px 12px 0;display:flex;gap:8px}
+.search label{position:absolute;left:-9999px}
+.search input{flex:1;min-width:0;height:38px;border:1px solid var(--line);border-radius:4px;padding:0 12px;font:inherit;font-size:14px;color:var(--ink);background:var(--bg)}
+.search input:focus{border-color:var(--brand);outline:none;box-shadow:0 0 0 3px var(--brand-tint)}
+
+/* основная часть */
+.main{display:grid;grid-template-columns:1fr;gap:0}
+.cal{padding:12px 12px 8px}
+.dow,.grid{display:grid;grid-template-columns:repeat(7,1fr);text-align:center}
+.dow div{font-size:13px;font-weight:700;color:var(--brand);padding:4px 0 6px;letter-spacing:.04em}
+.dow div.we{color:var(--brand-dark)}
+.grid{row-gap:4px}
+.cell{position:relative;height:46px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.day{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-size:16px;font-variant-numeric:tabular-nums;color:var(--ink);border:2px solid transparent;background:transparent;padding:0;position:relative}
+.cell.out .day{color:#c7d1ce}
+.cell.we .day{color:var(--brand)}
+button.day{cursor:pointer}
+button.day:hover{background:var(--panel)}
+button.day.hol:hover{background:var(--hol-tint);box-shadow:0 0 0 2px var(--hol-tint)}
+.day.prof{border-color:var(--brand)}
+.day.hol{background:var(--hol-tint);color:var(--hol)!important;font-weight:700}
+.day.per{color:var(--hol)!important;border-style:dashed;border-color:var(--hol)}
+.day.hol.prof{border-color:var(--hol)}
+.day.sel{box-shadow:0 0 0 3px var(--brand-tint),0 0 0 5px var(--brand)}
+.day.today::after{content:"";position:absolute;left:50%;bottom:-6px;width:14px;height:2px;margin-left:-7px;background:var(--ink);border-radius:1px}
+.dots{position:absolute;top:3px;right:3px;display:flex;gap:2px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--data);border:1.5px solid var(--bg)}
+
+.legend{display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;margin-top:10px;padding-top:10px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
+.legend span{display:flex;align-items:center;gap:8px;line-height:1.25}
+.lg{flex:none;width:20px;height:20px;border-radius:50%;border:2px solid transparent;position:relative}
+.lg.hol{background:var(--hol-tint);border-color:var(--hol-tint)}
+.lg.per{border:2px dashed var(--hol)}
+.lg.prof{border-color:var(--brand)}
+.lg.data{border-color:var(--line)}
+.lg.data::after{content:"";position:absolute;top:-3px;right:-4px;width:7px;height:7px;border-radius:50%;background:var(--data);border:1.5px solid var(--bg)}
+
+/* список событий */
+.listcol{border-top:1px solid var(--line);background:var(--bg)}
+.listin{padding:10px 12px 12px}
+.lhead{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:6px}
+.lhead h2{margin:0;font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.lhead .cnt{font-size:12px;color:var(--muted);white-space:nowrap}
+.linkbtn{border:0;background:none;color:var(--brand);font-size:12px;font-weight:600;cursor:pointer;padding:2px 0;text-decoration:underline;text-underline-offset:2px}
+.grp{display:grid;grid-template-columns:52px 1fr;gap:10px;padding:8px 6px;border-radius:4px;border-bottom:1px solid var(--line);cursor:pointer}
+.grp:last-child{border-bottom:0}
+.grp:hover{background:var(--panel)}
+.grp.sel{background:var(--brand-tint);border-bottom-color:transparent}
+.gd{text-align:center;line-height:1.1}
+.gd b{display:block;font-size:22px;font-weight:700;font-variant-numeric:tabular-nums}
+.gd small{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.gd.hol b{color:var(--hol)}
+.items{display:flex;flex-direction:column;gap:6px;min-width:0}
+.it{display:grid;grid-template-columns:10px 1fr;gap:8px;align-items:start}
+.mk{width:10px;height:10px;border-radius:50%;margin-top:5px}
+.mk.hol,.mk.nac{background:var(--hol)}
+.mk.per{border:2px dashed var(--hol)}
+.mk.prof{background:var(--brand)}
+.mk.data{background:var(--data)}
+.it .nm{font-size:14px;font-weight:500}
+.it .nt{display:block;font-size:12px;color:var(--muted);margin-top:1px}
+.empty{font-size:14px;color:var(--muted);padding:12px 6px}
+
+/* всплывающая подсказка (мышь) */
+.tip{position:absolute;z-index:5;max-width:260px;background:var(--ink);color:#fff;font-size:13px;line-height:1.35;padding:8px 10px;border-radius:4px;pointer-events:none;box-shadow:0 4px 14px rgba(0,0,0,.18)}
+.tip div+div{margin-top:4px;padding-top:4px;border-top:1px solid rgba(255,255,255,.2)}
+
+.src{font-size:11.5px;line-height:1.45;color:var(--muted);padding:10px 12px 12px;border-top:1px solid var(--line);background:var(--panel)}
+.src b{color:var(--ink);font-weight:600}
+
+@media (min-width:600px){
+  .months{grid-template-columns:repeat(12,1fr)}
+  .head .m{font-size:28px}
+}
+@media (min-width:680px){
+  .main{grid-template-columns:minmax(330px,46%) 1fr}
+  .listcol{border-top:0;border-left:1px solid var(--line);position:relative}
+  .listin{position:absolute;inset:0;overflow:auto}
+  .cal{padding:14px 16px 12px}
+  .cell{height:50px}
+  .day{width:40px;height:40px}
+}
+@media (prefers-reduced-motion:no-preference){
+  .day,.grp,.months button{transition:background-color .15s,box-shadow .15s}
+}
+</style>
+</head>
+<body>
+<div class="wrap" id="app">
+  <div class="head">
+    <button class="nav" id="prev" aria-label="Предыдущий месяц"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <div class="ttl"><div class="m" id="mTitle"></div><div class="y" id="yTitle"></div></div>
+    <button class="nav" id="next" aria-label="Следующий месяц"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+  </div>
+  <div class="months" id="months" role="tablist" aria-label="Месяцы"></div>
+  <div class="search">
+    <label for="q">Поиск праздника</label>
+    <input id="q" type="search" placeholder="Найти праздник: например, строитель, энергетик" autocomplete="off">
+  </div>
+  <div class="main">
+    <div class="cal">
+      <div class="dow"><div>ПН</div><div>ВТ</div><div>СР</div><div>ЧТ</div><div>ПТ</div><div class="we">СБ</div><div class="we">ВС</div></div>
+      <div class="grid" id="grid"></div>
+      <div class="legend">
+        <span><i class="lg hol"></i>праздничный день (выходной)</span>
+        <span><i class="lg per"></i>выходной, перенесённый по ст. 5 Закона</span>
+        <span><i class="lg prof"></i>профессиональный праздник</span>
+        <span><i class="lg data"></i>праздничная дата</span>
+      </div>
+    </div>
+    <div class="listcol"><div class="listin" id="list"></div></div>
+  </div>
+  <div class="src">
+    <b>Источники:</b> Закон РК от 13.12.2001 № 267-II «О праздниках в Республике Казахстан» (ред. по сост. на 01.07.2026), ст. 2, 3, 5; постановление Правительства РК от 31.10.2017 № 689 «Об утверждении перечня праздничных дат в Республике Казахстан» (ред. по сост. на 28.04.2026); приказ Министра труда и социальной защиты населения РК от 29.06.2023 № 258 «Об утверждении перечня профессиональных праздников» (ред. по сост. на 12.07.2026). Даты с правилом «n-е воскресенье месяца» рассчитаны на 2026 год. Сверьте с действующей редакцией НПА; переносы выходных дней по решению Правительства в календаре не учтены.
+  </div>
+</div>
+
+<script>
+/* ===================== ДАННЫЕ (правьте здесь) ===================== */
+const YEAR = 2026;
+const MSG_TYPE = 'prazdniki-height';
+
+/* Правило даты:
+   d: [месяц, число]                         — фиксированная дата
+   n: [месяц, день недели, номер]            — день недели: 0=вс … 6=сб; номер 1–4 или -1 (последний)
+   rule — формулировка из НПА (показывается под названием) */
+
+/* Национальный и государственные праздники — Закон № 267-II, ст. 2–3 */
+const HOLIDAYS = [
+  {name:'Новый год', d:[1,1], kind:'hol'},
+  {name:'Новый год', d:[1,2], kind:'hol'},
+  {name:'Международный женский день', d:[3,8], kind:'hol'},
+  {name:'День Конституции Республики Казахстан', d:[3,15], kind:'hol'},
+  {name:'Наурыз мейрамы', d:[3,21], kind:'hol'},
+  {name:'Наурыз мейрамы', d:[3,22], kind:'hol'},
+  {name:'Наурыз мейрамы', d:[3,23], kind:'hol'},
+  {name:'Праздник единства народа Казахстана', d:[5,1], kind:'hol'},
+  {name:'День защитника Отечества', d:[5,7], kind:'hol'},
+  {name:'День Победы', d:[5,9], kind:'hol'},
+  {name:'День Столицы', d:[7,6], kind:'hol'},
+  {name:'День Республики Казахстан', d:[10,25], kind:'nac'},
+  {name:'День Независимости', d:[12,16], kind:'hol'}
+];
+
+/* Праздничные даты — постановление Правительства РК № 689 */
+const DATES = [
+  {name:'Национальный день печати', d:[2,2]},
+  {name:'День вывода ограниченного контингента советских войск из Демократической Республики Афганистан', d:[2,15]},
+  {name:'День благодарности', d:[3,1]},
+  {name:'Национальный день книги', d:[4,23]},
+  {name:'День матерей', n:[5,0,2], rule:'второе воскресенье мая'},
+  {name:'День памяти жертв политических репрессий и голода', d:[5,31]},
+  {name:'День государственных символов Республики Казахстан', d:[6,4]},
+  {name:'День отцов', n:[6,0,3], rule:'третье воскресенье июня'},
+  {name:'Национальный день домбры', n:[7,0,1], rule:'первое воскресенье июля'},
+  {name:'День Абая', d:[8,10]},
+  {name:'День спорта', n:[8,0,3], rule:'третье воскресенье августа'},
+  {name:'День закрытия Семипалатинского испытательного ядерного полигона', d:[8,29]},
+  {name:'День знаний', d:[9,1]},
+  {name:'День казахского тазы и тобета', d:[9,3]},
+  {name:'День семьи', n:[9,0,2], rule:'второе воскресенье сентября'},
+  {name:'День языков народа Казахстана', d:[9,5]},
+  {name:'День труда', n:[9,0,-1], rule:'последнее воскресенье сентября'},
+  {name:'День пожилых людей', d:[10,1]},
+  {name:'День радио', d:[10,1]},
+  {name:'День хлеба', d:[10,16]},
+  {name:'День энергосбережения', d:[11,11]},
+  {name:'День национальной валюты — тенге', d:[11,15]},
+  {name:'День Первого Президента Республики Казахстан', d:[12,1]}
+];
+
+/* Профессиональные праздники — приказ МТСЗН РК № 258 (п. 55 исключён приказом № 120 от 03.04.2026) */
+const PROF = [
+  {name:'День Национальной гвардии Республики Казахстан', d:[1,10]},
+  {name:'День органов по финансовому мониторингу', d:[1,28]},
+  {name:'День работников гражданской авиации Республики Казахстан', d:[2,1]},
+  {name:'День землеустройства, геодезии и картографии', n:[3,6,2], rule:'вторая суббота марта'},
+  {name:'День работников в сфере оказания государственных услуг', d:[4,7]},
+  {name:'День геолога', n:[4,0,1], rule:'первое воскресенье апреля'},
+  {name:'День работников науки', d:[4,12]},
+  {name:'День работников сферы жилищно-коммунального хозяйства', d:[4,16]},
+  {name:'День Службы государственной охраны Республики Казахстан', d:[4,21]},
+  {name:'День библиотекаря', d:[4,23]},
+  {name:'День работников связи', d:[5,17]},
+  {name:'День работников метрологии', d:[5,20]},
+  {name:'День работников культуры и искусства', d:[5,21]},
+  {name:'День работников химической промышленности', n:[5,0,-1], rule:'последнее воскресенье мая'},
+  {name:'День эколога', d:[6,5]},
+  {name:'День работников антимонопольного органа', d:[6,7]},
+  {name:'День военнослужащего и сотрудника подразделений специального назначения государственных органов', d:[6,9]},
+  {name:'День работников легкой промышленности', n:[6,0,2], rule:'второе воскресенье июня'},
+  {name:'День животноводов', n:[6,0,2], rule:'второе воскресенье июня'},
+  {name:'День медицинского работника', n:[6,0,3], rule:'третье воскресенье июня'},
+  {name:'День полиции', d:[6,23]},
+  {name:'День государственного служащего', d:[6,23]},
+  {name:'День судьи и работника суда', d:[6,24]},
+  {name:'День работников средств массовой информации', d:[6,28]},
+  {name:'День дипломатической службы', d:[7,2]},
+  {name:'День ремесленников Республики Казахстан', d:[7,7]},
+  {name:'День работников водного хозяйства', d:[7,9]},
+  {name:'День работников сферы естественных монополий', d:[7,9]},
+  {name:'День ветеринарного работника', d:[7,10]},
+  {name:'День органов национальной безопасности Республики Казахстан', d:[7,13]},
+  {name:'День нотариата', d:[7,14]},
+  {name:'День работников морского и речного транспорта', n:[7,0,1], rule:'первое воскресенье июля'},
+  {name:'День работников рыбного хозяйства', n:[7,0,2], rule:'второе воскресенье июля'},
+  {name:'День металлурга', n:[7,0,3], rule:'третье воскресенье июля'},
+  {name:'День работников торговли', n:[7,0,4], rule:'четвертое воскресенье июля'},
+  {name:'День работников железнодорожного транспорта', n:[8,0,1], rule:'первое воскресенье августа'},
+  {name:'День строителя', n:[8,0,2], rule:'второе воскресенье августа'},
+  {name:'День пограничника', d:[8,18]},
+  {name:'День шахтера', n:[8,0,-1], rule:'последнее воскресенье августа'},
+  {name:'День работника охотничьего хозяйства', n:[9,6,1], rule:'первая суббота сентября'},
+  {name:'День работников нефтегазового комплекса', n:[9,0,1], rule:'первое воскресенье сентября'},
+  {name:'День работников в сфере контрольно-измерительных приборов и автоматики', n:[9,0,2], rule:'второе воскресенье сентября'},
+  {name:'День работника санитарно-эпидемиологической службы', d:[9,15]},
+  {name:'День работников атомной отрасли', d:[9,28]},
+  {name:'День работников органов юстиции', d:[9,30]},
+  {name:'День машиностроителя', n:[9,0,-1], rule:'последнее воскресенье сентября'},
+  {name:'День работников высшего образования Республики Казахстан', d:[10,1]},
+  {name:'День работников технического и профессионального, послесреднего образования Республики Казахстан', d:[10,2]},
+  {name:'День учителя', d:[10,5]},
+  {name:'День работников оборонной промышленности', d:[10,6]},
+  {name:'День профессиональных союзов Республики Казахстан', d:[10,10]},
+  {name:'День работников стандартизации', d:[10,14]},
+  {name:'День спасателя', d:[10,19]},
+  {name:'День работника сферы общественного питания', d:[10,20]},
+  {name:'День работника лесного хозяйства', n:[10,0,3], rule:'третье воскресенье октября'},
+  {name:'День работников системы социальной защиты', n:[10,0,-1], rule:'последнее воскресенье октября'},
+  {name:'День работников автомобильного транспорта', n:[10,0,-1], rule:'последнее воскресенье октября'},
+  {name:'День работников автодорожной отрасли', n:[10,0,-1], rule:'последнее воскресенье октября'},
+  {name:'День работников охранных организаций', d:[10,29]},
+  {name:'День предпринимателей Республики Казахстан', d:[10,29]},
+  {name:'День внешней разведки', d:[11,5]},
+  {name:'День статистика', d:[11,8]},
+  {name:'День работников цифровизации и цифровых технологий', d:[11,10]},
+  {name:'День работников сферы бухгалтерского учета и аудита', d:[11,10]},
+  {name:'День работников финансовой системы Республики Казахстан', d:[11,15]},
+  {name:'День буровика', n:[11,6,3], rule:'третья суббота ноября'},
+  {name:'День работников сельского хозяйства, пищевой и перерабатывающей промышленности', n:[11,0,3], rule:'третье воскресенье ноября'},
+  {name:'День органов антикоррупционной службы', d:[11,18]},
+  {name:'День адвокатуры', d:[12,5]},
+  {name:'День прокуратуры', d:[12,6]},
+  {name:'День работников уголовно-исполнительной системы', d:[12,13]},
+  {name:'День Государственной фельдъегерской службы Республики Казахстан', d:[12,20]},
+  {name:'День энергетика', d:[12,22]},
+  {name:'День архивиста', d:[12,22]}
+];
+/* ================================================================= */
+
+const MONTHS = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+const MONTHS_SHORT = ['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек'];
+const MONTHS_GEN = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+const DOW = ['вс','пн','вт','ср','чт','пт','сб'];
+const ORDER = {nac:0, hol:1, per:2, prof:3, data:4};
+const NOTE = {
+  nac:'Национальный праздник, выходной день',
+  hol:'Государственный праздник, выходной день'
+};
+
+function resolve(e){
+  if(e.d) return new Date(YEAR, e.d[0]-1, e.d[1]);
+  const [m, wd, nth] = e.n;
+  if(nth > 0){
+    const first = new Date(YEAR, m-1, 1);
+    const shift = (wd - first.getDay() + 7) % 7;
+    return new Date(YEAR, m-1, 1 + shift + (nth-1)*7);
+  }
+  const last = new Date(YEAR, m, 0);
+  const shift = (last.getDay() - wd + 7) % 7;
+  return new Date(YEAR, m-1, last.getDate() - shift);
+}
+const key = dt => dt.getMonth()*100 + dt.getDate();
+
+/* сборка всех событий года */
+const EVENTS = [];
+HOLIDAYS.forEach(e => EVENTS.push({name:e.name, kind:e.kind, date:resolve(e), note:NOTE[e.kind]}));
+DATES.forEach(e => EVENTS.push({name:e.name, kind:'data', date:resolve(e), note:e.rule || ''}));
+PROF.forEach(e => EVENTS.push({name:e.name, kind:'prof', date:resolve(e), note:e.rule || ''}));
+
+/* ст. 5 Закона: при совпадении выходного и праздничного дня выходным является следующий после праздничного рабочий день */
+(function transfers(){
+  const hol = HOLIDAYS.map(resolve).sort((a,b)=>a-b);
+  const busy = new Set(hol.map(key));
+  const isWe = d => d.getDay()===0 || d.getDay()===6;
+  hol.forEach(h => {
+    if(!isWe(h)) return;
+    const c = new Date(h);
+    do { c.setDate(c.getDate()+1); } while(isWe(c) || busy.has(key(c)));
+    busy.add(key(c));
+    EVENTS.push({name:'Выходной день', kind:'per', date:new Date(c),
+      note:'перенос с ' + h.getDate() + ' ' + MONTHS_GEN[h.getMonth()] + ' (ст. 5 Закона о праздниках)'});
+  });
+})();
+
+const BY_DAY = new Map();
+EVENTS.forEach(e => {
+  const k = key(e.date);
+  if(!BY_DAY.has(k)) BY_DAY.set(k, []);
+  BY_DAY.get(k).push(e);
+});
+BY_DAY.forEach(a => a.sort((x,y) => ORDER[x.kind]-ORDER[y.kind]));
+
+/* ===================== ИНТЕРФЕЙС ===================== */
+const $ = id => document.getElementById(id);
+const now = new Date();
+const today = now.getFullYear()===YEAR ? key(now) : -1;
+let month = now.getFullYear()===YEAR ? now.getMonth() : 0;
+let selected = null;
+let query = '';
+
+function esc(s){ return s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+function renderMonths(){
+  $('months').innerHTML = MONTHS_SHORT.map((m,i) =>
+    `<button role="tab" data-m="${i}" aria-current="${i===month}" aria-label="${MONTHS[i]}">${m}</button>`).join('');
+}
+
+function renderGrid(){
+  $('mTitle').textContent = MONTHS[month];
+  $('yTitle').textContent = YEAR + ' год';
+  $('prev').disabled = month===0;
+  $('next').disabled = month===11;
+  const first = new Date(YEAR, month, 1);
+  const lead = (first.getDay()+6)%7;
+  const start = new Date(YEAR, month, 1-lead);
+  const weeks = Math.ceil((lead + new Date(YEAR, month+1, 0).getDate())/7);
+  let html = '';
+  for(let i=0;i<weeks*7;i++){
+    const d = new Date(start); d.setDate(start.getDate()+i);
+    const out = d.getMonth()!==month;
+    const we = d.getDay()===0 || d.getDay()===6;
+    const k = key(d);
+    const ev = out ? null : BY_DAY.get(k);
+    let cls = [];
+    if(ev){
+      if(ev.some(e=>e.kind==='hol'||e.kind==='nac')) cls.push('hol');
+      if(ev.some(e=>e.kind==='per')) cls.push('per');
+      if(ev.some(e=>e.kind==='prof')) cls.push('prof');
+      if(k===selected) cls.push('sel');
+    }
+    if(!out && k===today) cls.push('today');
+    const dots = ev && ev.some(e=>e.kind==='data') ? '<span class="dots"><i class="dot"></i></span>' : '';
+    const inner = ev
+      ? `<button class="day ${cls.join(' ')}" data-k="${k}" aria-label="${d.getDate()} ${MONTHS_GEN[month]}: ${esc(ev.map(e=>e.name).join('; '))}">${d.getDate()}${dots}</button>`
+      : `<span class="day ${cls.join(' ')}">${d.getDate()}</span>`;
+    html += `<div class="cell${out?' out':''}${we?' we':''}">${inner}</div>`;
+  }
+  $('grid').innerHTML = html;
+}
+
+function groupHTML(k, evs, showMonth){
+  const d = evs[0].date;
+  const hol = evs.some(e=>e.kind==='hol'||e.kind==='nac'||e.kind==='per');
+  const items = evs.map(e =>
+    `<div class="it"><i class="mk ${e.kind}"></i><div><span class="nm">${esc(e.name)}</span>${e.note?`<span class="nt">${esc(e.note)}</span>`:''}</div></div>`).join('');
+  const sub = showMonth ? MONTHS_SHORT[d.getMonth()].toLowerCase() + ', ' + DOW[d.getDay()] : DOW[d.getDay()];
+  return `<div class="grp${k===selected?' sel':''}" data-k="${k}"><div class="gd${hol?' hol':''}"><b>${d.getDate()}</b><small>${sub}</small></div><div class="items">${items}</div></div>`;
+}
+
+function renderList(){
+  const L = $('list');
+  if(query){
+    const q = query.toLowerCase();
+    const hits = EVENTS.filter(e => e.kind!=='per' && e.name.toLowerCase().includes(q)).sort((a,b)=>a.date-b.date);
+    const groups = new Map();
+    hits.forEach(e => { const k=key(e.date); if(!groups.has(k)) groups.set(k,[]); groups.get(k).push(e); });
+    let html = `<div class="lhead"><h2>Поиск</h2><button class="linkbtn" id="clr">Сбросить</button></div>`;
+    html += hits.length ? [...groups].map(([k,a]) => groupHTML(k,a,true)).join('')
+                        : `<div class="empty">Ничего не найдено. Попробуйте часть слова: «строит», «энерг», «медиц».</div>`;
+    L.innerHTML = html;
+    return;
+  }
+  const keys = [...BY_DAY.keys()].filter(k => Math.floor(k/100)===month).sort((a,b)=>a-b);
+  const total = keys.reduce((s,k)=>s+BY_DAY.get(k).filter(e=>e.kind!=='per').length,0);
+  let html = `<div class="lhead"><h2>${MONTHS[month]}</h2><span class="cnt">${total} ${plural(total)}</span></div>`;
+  html += keys.length ? keys.map(k => groupHTML(k, BY_DAY.get(k), false)).join('') : '<div class="empty">В этом месяце праздников нет.</div>';
+  L.innerHTML = html;
+}
+function plural(n){
+  const a=n%10, b=n%100;
+  if(a===1&&b!==11) return 'событие';
+  if(a>=2&&a<=4&&(b<12||b>14)) return 'события';
+  return 'событий';
+}
+
+function render(){ renderMonths(); renderGrid(); renderList(); postHeight(); }
+
+function go(m, sel){
+  month = Math.max(0, Math.min(11, m));
+  selected = sel ?? null;
+  render();
+}
+
+/* события */
+$('prev').onclick = () => go(month-1);
+$('next').onclick = () => go(month+1);
+$('months').addEventListener('click', e => { const b=e.target.closest('button'); if(b){ query=''; $('q').value=''; go(+b.dataset.m); } });
+$('grid').addEventListener('click', e => {
+  const b = e.target.closest('button.day'); if(!b) return;
+  const k = +b.dataset.k;
+  if(query){ query=''; $('q').value=''; }
+  selected = selected===k ? null : k;
+  renderGrid(); renderList(); postHeight();
+  const g = $('list').querySelector('.grp.sel');
+  if(g && window.matchMedia('(min-width:680px)').matches){
+    const box = $('list'); box.scrollTop = g.offsetTop - box.offsetTop - 8;
+  }
+});
+$('list').addEventListener('click', e => {
+  if(e.target.id==='clr'){ query=''; $('q').value=''; render(); return; }
+  const g = e.target.closest('.grp'); if(!g) return;
+  const k = +g.dataset.k;
+  if(query){ query=''; $('q').value=''; go(Math.floor(k/100), k); return; }
+  selected = selected===k ? null : k;
+  renderGrid(); renderList();
+});
+$('q').addEventListener('input', e => { query = e.target.value.trim(); renderList(); postHeight(); });
+
+/* подсказка при наведении мышью */
+const tip = document.createElement('div'); tip.className='tip'; tip.hidden=true; document.body.appendChild(tip);
+$('grid').addEventListener('mouseover', e => {
+  const b = e.target.closest('button.day'); if(!b || !window.matchMedia('(hover:hover)').matches) return;
+  const evs = BY_DAY.get(+b.dataset.k);
+  tip.innerHTML = evs.map(x => `<div>${esc(x.name)}${x.kind==='per'?' ('+esc(x.note)+')':(x.note && x.kind!=='hol' && x.kind!=='nac' ? ' ('+esc(x.note)+')':'')}</div>`).join('');
+  tip.hidden = false;
+  const r = b.getBoundingClientRect(), app = $('app').getBoundingClientRect();
+  const w = tip.offsetWidth;
+  let left = r.left + r.width/2 - w/2 + window.scrollX;
+  left = Math.max(app.left + 6 + window.scrollX, Math.min(left, app.right - w - 6 + window.scrollX));
+  let top = r.top + window.scrollY - tip.offsetHeight - 8;
+  if(top < window.scrollY + 4) top = r.bottom + window.scrollY + 8;
+  tip.style.left = left+'px'; tip.style.top = top+'px';
+});
+$('grid').addEventListener('mouseout', e => { if(e.target.closest('button.day')) tip.hidden = true; });
+
+/* авто-высота для iframe */
+function postHeight(){
+  const h = Math.ceil(document.documentElement.getBoundingClientRect().height);
+  if(window.parent !== window) window.parent.postMessage({type:MSG_TYPE, height:h}, '*');
+}
+if('ResizeObserver' in window) new ResizeObserver(postHeight).observe(document.body);
+window.addEventListener('load', postHeight);
+
+/* стартовое выделение: сегодня, если в этот день есть события */
+if(today>=0 && BY_DAY.has(today)) selected = today;
+render();
+</script>
+</body>
+</html>
