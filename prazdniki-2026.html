@@ -62,7 +62,7 @@ button{font-family:inherit}
 .grid{row-gap:4px}
 .cell{position:relative;height:46px;display:flex;flex-direction:column;align-items:center;justify-content:center}
 .day{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-size:16px;font-variant-numeric:tabular-nums;color:var(--ink);border:2px solid transparent;background:transparent;padding:0;position:relative}
-.cell.out .day{color:#c7d1ce}
+.cell.out .day, .cell.out.we .day{color:#c7d1ce}
 .cell.we .day{color:var(--brand)}
 button.day{cursor:pointer}
 button.day:hover{background:var(--panel)}
