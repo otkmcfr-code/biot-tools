@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Не пропустите срок — тренажёр</title>
+<style>
+:root{
+  --ink:#1b2333; --muted:#5d6779; --line:#dfe3ea; --bg:#ffffff; --soft:#f4f6f9;
+  --accent:#c2410c; --ok:#15803d; --ok-soft:#ecfdf3; --bad:#b91c1c; --bad-soft:#fef2f2;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg)}
+body{font-family:"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);font-size:15px;line-height:1.45;-webkit-font-smoothing:antialiased}
+.wrap{max-width:600px;margin:0 auto;padding:16px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
+h1{font-size:20px;line-height:1.25;margin:4px 0 6px}
+.lead{color:var(--muted);font-size:14px}
+.progress{display:flex;align-items:center;gap:10px;margin:14px 0 12px;font-size:13px;color:var(--muted)}
+.bar{flex:1;height:6px;background:var(--soft);border-radius:3px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s}
+.case{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--soft)}
+.case .tag{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;color:var(--accent);margin-bottom:6px}
+.case .tag svg{width:15px;height:15px}
+.case p{font-size:15px}
+.case .q{font-weight:700;margin-top:8px}
+.opts{display:grid;gap:8px;margin-top:12px}
+.opt{display:flex;align-items:flex-start;gap:10px;width:100%;text-align:left;font:inherit;font-size:14.5px;color:var(--ink);background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:9px 12px;cursor:pointer;transition:border-color .15s,background .15s}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt:focus-visible{outline:3px solid #fdba74;outline-offset:1px}
+.opt .k{flex:none;width:22px;height:22px;margin-top:1px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-size:12px;font-weight:700;color:var(--muted)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok);background:var(--ok-soft)}
+.opt.correct .k{background:var(--ok);border-color:var(--ok);color:#fff}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.opt.wrong .k{background:var(--bad);border-color:var(--bad);color:#fff}
+.opt.dim{opacity:.55}
+.fb{margin-top:12px;border-radius:10px;padding:12px 14px;font-size:14px;display:none}
+.fb.show{display:block}
+.fb.ok{background:var(--ok-soft);border-left:4px solid var(--ok)}
+.fb.bad{background:var(--bad-soft);border-left:4px solid var(--bad)}
+.fb b{display:block;margin-bottom:3px}
+.nav{display:flex;justify-content:flex-end;margin-top:12px}
+.btn{font:inherit;font-weight:600;border:0;border-radius:10px;padding:10px 18px;cursor:pointer;background:var(--accent);color:#fff}
+.btn:focus-visible{outline:3px solid #fdba74;outline-offset:2px}
+.btn.ghost{background:#fff;color:var(--accent);border:1.5px solid var(--accent)}
+.btn[hidden]{display:none}
+.score{display:flex;align-items:baseline;gap:8px;margin:14px 0 4px}
+.score .n{font-size:34px;font-weight:800;color:var(--accent);white-space:nowrap}
+.memo{margin-top:12px;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.memo h3{font-size:14px;padding:10px 14px;background:var(--soft);border-bottom:1px solid var(--line)}
+.row{display:grid;grid-template-columns:150px 1fr;gap:10px;padding:9px 14px;border-bottom:1px solid var(--line);font-size:14px}
+.row:last-child{border-bottom:0}
+.row b{color:var(--accent)}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.hint{font-size:12px;color:var(--muted);margin-top:10px}
+@media (max-width:420px){.wrap{padding:12px}h1{font-size:18px}.row{grid-template-columns:1fr;gap:2px}}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<script>
+const CAL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>';
+const CASES = [
+  {tag:'Новый работник',
+   text:'Газоэлектросварщика приняли на работу 3 ноября 2026 года.',
+   q:'До какой даты он должен пройти ПТМ в учебном центре?',
+   opts:['До выхода на работу — 3 ноября 2026 года','Не позднее 3 декабря 2026 года','До 31 декабря 2026 года','До 3 ноября 2027 года'],
+   a:1,
+   ex:'Работники, обязанные проходить ПТМ в учебном центре, обучаются в течение месяца после приёма на работу. Сварщика нужно обучить не позднее 3 декабря.'},
+  {tag:'Повторное обучение',
+   text:'Ответственный за пожарную безопасность прошёл ПТМ в учебном центре 20 ноября 2023 года.',
+   q:'Когда ему нужно пройти обучение снова?',
+   opts:['До конца 2026 года — в любой месяц','Не позднее 20 ноября 2026 года','В 2027 году — три полных календарных года','Ежегодно, срок уже пропущен'],
+   a:1,
+   ex:'Повторное обучение в учебном центре проходят не реже одного раза в три года со дня последнего обучения. Отсчёт идёт от даты обучения, а не от начала или конца года.'},
+  {tag:'Экзамен не сдан',
+   text:'Кладовщик склада с помещениями категории Б не сдал квалификационный экзамен в учебном центре 10 декабря.',
+   q:'Что верно?',
+   opts:['Пересдать не позднее 10 января, до пересдачи работать самостоятельно нельзя','Пересдать не позднее 10 января, а пока работать как обычно','Пересдать в течение трёх месяцев, работать под присмотром мастера','Пройти внеплановый инструктаж вместо пересдачи'],
+   a:0,
+   ex:'Лицо, не сдавшее экзамен, пересдаёт его не позднее месяца со дня экзамена. До повторной проверки работник к самостоятельной работе не допускается.'},
+  {tag:'Новый ответственный',
+   text:'Специалиста по БиОТ назначили ответственным за пожарную безопасность. ПТМ в учебном центре он не проходил. Руководитель хочет, чтобы со следующей недели он провёл ПТМ для электриков.',
+   q:'Можно ли это сделать?',
+   opts:['Да, достаточно приказа о назначении ответственным','Да, если он пройдёт внеплановый противопожарный инструктаж','Нет, сначала он должен пройти ПТМ в учебном центре','Да, если ПТМ для электриков проведут в присутствии руководителя'],
+   a:2,
+   ex:'Ответственные за пожарную безопасность сами проходят ПТМ в учебном центре. Проводить ПТМ в организации может только руководитель или ответственный, который прошёл обучение в учебном центре.'},
+  {tag:'Планирование',
+   text:'У руководителя организации срок обучения ПТМ истекает 15 января. Учебный центр, с которым есть договор, предлагает ближайшую группу только с 20 января.',
+   q:'Как поступить?',
+   opts:['Записать в группу с 20 января — пять дней не критичны','Найти группу или другой учебный центр, чтобы обучение прошло до 15 января','Перенести обучение на следующий год','Попросить учебный центр выдать удостоверение заранее'],
+   a:1,
+   ex:'Срок «не реже одного раза в три года» — предельный. Даже несколько дней просрочки означают, что руководитель работает без действующего обучения. Планируйте обучение заранее, чтобы оставался запас по времени.'}
+];
+const LET = ['А','Б','В','Г'];
+const app=document.getElementById('app');
+let order,i,answers;
+
+function start(list){order=list;i=0;answers={};render();}
+
+function render(){
+  if(i>=order.length) return renderEnd();
+  const c=CASES[order[i]];
+  app.innerHTML=`
+    <div class="eyebrow">Тренажёр</div>
+    <h1>Не пропустите срок</h1>
+    ${i===0?`<p class="lead">Разберите ситуации и выберите верный срок или действие.</p>`:''}
+    <div class="progress"><div class="bar"><i style="width:${i/order.length*100}%"></i></div><span>Ситуация ${i+1} из ${order.length}</span></div>
+    <div class="case"><div class="tag">${CAL}${c.tag}</div><p>${c.text}</p><p class="q">${c.q}</p></div>
+    <div class="opts" role="group" aria-label="Варианты ответа">
+      ${c.opts.map((o,n)=>`<button class="opt" data-n="${n}"><span class="k">${LET[n]}</span><span>${o}</span></button>`).join('')}
+    </div>
+    <div class="fb" id="fb" aria-live="polite"></div>
+    <div class="nav"><button class="btn" id="next" hidden>${i+1<order.length?'Следующая ситуация →':'Посмотреть результат →'}</button></div>`;
+  app.querySelectorAll('.opt').forEach(b=>b.onclick=()=>choose(+b.dataset.n));
+  document.getElementById('next').onclick=()=>{i++;render();};
+}
+
+function choose(n){
+  const idx=order[i]; if(idx in answers) return;
+  const c=CASES[idx], ok=n===c.a; answers[idx]=ok;
+  app.querySelectorAll('.opt').forEach(b=>{
+    const m=+b.dataset.n; b.disabled=true;
+    if(m===c.a) b.classList.add('correct'); else if(m===n) b.classList.add('wrong'); else b.classList.add('dim');
+  });
+  const fb=document.getElementById('fb');
+  fb.className='fb show '+(ok?'ok':'bad');
+  fb.innerHTML=`<b>${ok?'Верно.':'Не совсем. Правильный ответ — '+LET[c.a]+'.'}</b>${c.ex}`;
+  const nx=document.getElementById('next'); nx.hidden=false; nx.focus({preventScroll:true});
+}
+
+function renderEnd(){
+  const right=order.filter(k=>answers[k]).length, misses=order.filter(k=>!answers[k]);
+  app.innerHTML=`
+    <div class="eyebrow">Тренажёр</div>
+    <h1>Результат</h1>
+    <div class="score"><span class="n">${right} из ${order.length}</span><span class="lead">${right===order.length?'Все сроки определены верно.':'Перечитайте пояснения и попробуйте ещё раз.'}</span></div>
+    <div class="memo">
+      <h3>Памятка по срокам ПТМ</h3>
+      <div class="row"><b>Новый работник</b><span>В учебном центре — в течение месяца после приёма на работу</span></div>
+      <div class="row"><b>Повторно</b><span>В учебном центре — не реже раза в 3 года со дня последнего обучения</span></div>
+      <div class="row"><b>Экзамен не сдан</b><span>Пересдача не позднее месяца; до неё — без самостоятельной работы</span></div>
+      <div class="row"><b>В организации</b><span>Без отрыва от производства — не реже раза в год</span></div>
+    </div>
+    <div class="actions">
+      ${misses.length?'<button class="btn" id="retryMiss">Повторить ошибки</button>':''}
+      <button class="btn ${misses.length?'ghost':''}" id="retryAll">Пройти заново</button>
+    </div>`;
+  const rm=document.getElementById('retryMiss'); if(rm) rm.onclick=()=>start(misses);
+  document.getElementById('retryAll').onclick=()=>start(CASES.map((_,k)=>k));
+}
+
+document.addEventListener('keydown',e=>{
+  const map={'1':0,'2':1,'3':2,'4':3};
+  if(e.key in map){const b=app.querySelectorAll('.opt')[map[e.key]]; if(b&&!b.disabled) b.click();}
+  if(e.key==='Enter'){const nx=document.getElementById('next'); if(nx&&!nx.hidden&&document.activeElement!==nx){e.preventDefault();nx.click();}}
+});
+start(CASES.map((_,k)=>k));
+</script>
+</body>
+</html>
