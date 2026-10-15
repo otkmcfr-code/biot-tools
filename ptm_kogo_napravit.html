@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Кого направить в учебный центр — тренажёр</title>
+<style>
+:root{
+  --ink:#1b2333; --muted:#5d6779; --line:#dfe3ea; --bg:#ffffff; --soft:#f4f6f9;
+  --accent:#c2410c; --accent-soft:#fff1e8;
+  --ok:#15803d; --ok-soft:#ecfdf3; --bad:#b91c1c; --bad-soft:#fef2f2;
+  --c1:#c2410c; --c2:#1d4ed8; --c3:#6b7280;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg)}
+body{font-family:"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);font-size:15px;line-height:1.45;-webkit-font-smoothing:antialiased}
+.wrap{max-width:600px;margin:0 auto;padding:16px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
+h1{font-size:20px;line-height:1.25;margin:4px 0 6px}
+.lead{color:var(--muted);font-size:14px}
+.progress{display:flex;align-items:center;gap:10px;margin:14px 0 12px;font-size:13px;color:var(--muted)}
+.bar{flex:1;height:6px;background:var(--soft);border-radius:3px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s}
+.card{border:1px solid var(--line);border-radius:12px;padding:16px 18px;background:var(--soft)}
+.card .who{font-size:17px;font-weight:700;line-height:1.3}
+.card .det{margin-top:6px;color:var(--muted);font-size:14px}
+.opts{display:grid;gap:8px;margin-top:12px}
+.opt{display:flex;align-items:center;gap:10px;width:100%;text-align:left;font:inherit;color:var(--ink);background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:11px 14px;cursor:pointer;transition:border-color .15s,background .15s}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt:focus-visible{outline:3px solid #fdba74;outline-offset:1px}
+.opt .k{flex:none;width:24px;height:24px;border-radius:6px;display:grid;place-items:center;font-size:12px;font-weight:700;color:#fff}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok);background:var(--ok-soft)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.opt.dim{opacity:.55}
+.fb{margin-top:12px;border-radius:10px;padding:12px 14px;font-size:14px;display:none}
+.fb.show{display:block}
+.fb.ok{background:var(--ok-soft);border-left:4px solid var(--ok)}
+.fb.bad{background:var(--bad-soft);border-left:4px solid var(--bad)}
+.fb b{display:block;margin-bottom:3px}
+.nav{display:flex;justify-content:flex-end;margin-top:12px}
+.btn{font:inherit;font-weight:600;border:0;border-radius:10px;padding:10px 18px;cursor:pointer;background:var(--accent);color:#fff}
+.btn:focus-visible{outline:3px solid #fdba74;outline-offset:2px}
+.btn.ghost{background:#fff;color:var(--accent);border:1.5px solid var(--accent)}
+.btn[hidden]{display:none}
+.score{display:flex;align-items:baseline;gap:8px;margin:14px 0 4px}
+.score .n{font-size:34px;font-weight:800;color:var(--accent)}
+.memo{display:grid;gap:8px;margin-top:12px}
+.col{border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.col h3{font-size:14px;display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.col h3 .dot{width:10px;height:10px;border-radius:50%}
+.col ul{list-style:none;font-size:13.5px;color:var(--ink)}
+.col li{padding:2px 0 2px 14px;position:relative}
+.col li::before{content:"";position:absolute;left:2px;top:10px;width:5px;height:5px;border-radius:50%;background:var(--line)}
+.col li.miss{color:var(--bad)}
+.col li.miss::after{content:" — была ошибка";font-size:12px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.hint{font-size:12px;color:var(--muted);margin-top:10px}
+@media (max-width:420px){.wrap{padding:12px}h1{font-size:18px}.card{padding:14px}}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<script>
+const CATS = [
+  {id:'uc',  label:'Учебный центр', sub:'ПТМ с отрывом от производства', color:'var(--c1)'},
+  {id:'org', label:'В организации', sub:'ПТМ без отрыва от производства', color:'var(--c2)'}
+];
+const CARDS = [
+  {who:'Директор ТОО', det:'Наёмных работников нет, офис в аренде.', a:'uc',
+   ex:'Руководители организаций проходят ПТМ в учебном центре. МЧС разъяснило: руководитель без наёмных работников от обучения не освобождается (разъяснение от 14.04.2026).'},
+  {who:'Электрик бизнес-центра', det:'Обслуживает электрооборудование здания.', a:'org',
+   ex:'Электриков обучают ПТМ без отрыва от производства, внутри организации, не реже раза в год.'},
+  {who:'Газоэлектросварщик ремонтного цеха', det:'Ведёт сварочные работы на территории предприятия.', a:'uc',
+   ex:'Работники, которые выполняют электрогазосварочные и другие работы с выделением тепла и искр, проходят ПТМ в учебном центре.'},
+  {who:'Учитель начальных классов', det:'Работает в общеобразовательной школе.', a:'org',
+   ex:'Педагогических работников обучают ПТМ внутри организации, без отрыва от производства.'},
+  {who:'Кладовщик склада', det:'На складе есть помещения категории Б по взрывопожарной и пожарной опасности.', a:'uc',
+   ex:'Работники объектов с помещениями категорий А и Б проходят ПТМ в учебном центре. Исключение — вспомогательный персонал, чья работа не связана с назначением объекта.'},
+  {who:'Продавец-консультант', det:'Работает в торговом центре — объекте с массовым пребыванием людей. Ответственным за пожарную безопасность не назначен.', a:'org',
+   ex:'Работников объектов с массовым пребыванием людей обучают внутри организации. В учебный центр направляют только тех из них, кто назначен ответственным за пожарную безопасность.'},
+  {who:'Инженер по пожарной автоматике', det:'Отвечает за эксплуатацию автоматической пожарной сигнализации и пожаротушения.', a:'uc',
+   ex:'Работники, ответственные за эксплуатацию систем и установок пожарной автоматики, проходят ПТМ в учебном центре.'},
+  {who:'Администратор торгово-развлекательного центра', det:'Приказом назначен ответственным за пожарную безопасность на этаже.', a:'uc',
+   ex:'Работники объектов с массовым пребыванием людей, ответственные за пожарную безопасность, в том числе на отдельных участках, проходят ПТМ в учебном центре.'},
+  {who:'Агроном', det:'Работает в сельскохозяйственном предприятии.', a:'org',
+   ex:'Работников сельскохозяйственных организаций обучают ПТМ без отрыва от производства.'},
+  {who:'Охранник завода', det:'Работает в штате завода, охраняет территорию.', a:'org',
+   ex:'Работников, которые осуществляют охрану организации, обучают ПТМ внутри организации. Исключение — охранники частных охранных организаций.'}
+];
+
+const app = document.getElementById('app');
+let order, i, answers, mode;
+
+function start(list){ order = list; i = 0; answers = {}; render(); }
+const catById = id => CATS.find(c=>c.id===id);
+
+function render(){
+  if(i >= order.length) return renderEnd();
+  const c = CARDS[order[i]];
+  app.innerHTML = `
+    <div class="eyebrow">Тренажёр</div>
+    <h1>Кого направить в учебный центр?</h1>
+    ${i===0?`<p class="lead">Определите, где каждый работник проходит пожарно-технический минимум.</p>`:''}
+    <div class="progress"><div class="bar"><i style="width:${i/order.length*100}%"></i></div><span>${i+1} из ${order.length}</span></div>
+    <div class="card"><div class="who">${c.who}</div><div class="det">${c.det}</div></div>
+    <div class="opts" role="group" aria-label="Варианты ответа">
+      ${CATS.map((k,n)=>`<button class="opt" data-id="${k.id}"><span class="k" style="background:${k.color}">${n+1}</span><span><b>${k.label}</b>${k.sub?`<br><small style="color:var(--muted)">${k.sub}</small>`:''}</span></button>`).join('')}
+    </div>
+    <div class="fb" id="fb" aria-live="polite"></div>
+    <div class="nav"><button class="btn" id="next" hidden>${i+1<order.length?'Следующая карточка →':'Посмотреть результат →'}</button></div>
+    ${i===0?'<p class="hint">Можно отвечать клавишами 1 и 2 и переходить дальше клавишей Enter.</p>':''}`;
+  app.querySelectorAll('.opt').forEach(b=>b.onclick=()=>choose(b.dataset.id));
+  document.getElementById('next').onclick=()=>{i++;render();};
+}
+
+function choose(id){
+  const idx = order[i]; if(idx in answers) return;
+  const c = CARDS[idx], ok = id===c.a; answers[idx]=ok;
+  app.querySelectorAll('.opt').forEach(b=>{
+    b.disabled=true;
+    if(b.dataset.id===c.a) b.classList.add('correct');
+    else if(b.dataset.id===id) b.classList.add('wrong');
+    else b.classList.add('dim');
+  });
+  const fb=document.getElementById('fb');
+  fb.className='fb show '+(ok?'ok':'bad');
+  fb.innerHTML=`<b>${ok?'Верно.':'Не совсем. Правильный ответ: '+catById(c.a).label.toLowerCase()+'.'}</b>${c.ex}`;
+  const nx=document.getElementById('next'); nx.hidden=false; nx.focus({preventScroll:true});
+}
+
+function renderEnd(){
+  const right = order.filter(k=>answers[k]).length;
+  const misses = order.filter(k=>!answers[k]);
+  const all = CARDS.map((c,k)=>({...c,k}));
+  app.innerHTML = `
+    <div class="eyebrow">Тренажёр</div>
+    <h1>Результат</h1>
+    <div class="score"><span class="n">${right} из ${order.length}</span><span class="lead">${right===order.length?'Всё верно — категории вы различаете уверенно.':'Посмотрите, где были ошибки, и попробуйте ещё раз.'}</span></div>
+    <div class="memo">
+      ${CATS.map(k=>`<div class="col"><h3><span class="dot" style="background:${k.color}"></span>${k.label}</h3><ul>${all.filter(c=>c.a===k.id).map(c=>`<li class="${order.includes(c.k)&&answers[c.k]===false?'miss':''}">${c.who}</li>`).join('')}</ul></div>`).join('')}
+    </div>
+    <div class="actions">
+      ${misses.length?'<button class="btn" id="retryMiss">Пройти ещё раз только неверные</button>':''}
+      <button class="btn ${misses.length?'ghost':''}" id="retryAll">Пройти заново</button>
+    </div>`;
+  const rm=document.getElementById('retryMiss'); if(rm) rm.onclick=()=>start(misses);
+  document.getElementById('retryAll').onclick=()=>start(CARDS.map((_,k)=>k));
+}
+
+document.addEventListener('keydown',e=>{
+  if(['1','2'].includes(e.key)){ const b=app.querySelectorAll('.opt')[+e.key-1]; if(b&&!b.disabled) b.click(); }
+  if(e.key==='Enter'){ const nx=document.getElementById('next'); if(nx&&!nx.hidden&&document.activeElement!==nx){ e.preventDefault(); nx.click(); } }
+});
+start(CARDS.map((_,k)=>k));
+</script>
+</body>
+</html>
