@@ -144,7 +144,7 @@ function renderEnd(){
       <div class="row"><b>В организации</b><span>Без отрыва от производства – не реже раза в год</span></div>
     </div>
     <div class="actions">
-      ${misses.length?'<button class="btn" id="retryMiss">Повторить ошибки</button>':''}
+      ${misses.length?'<button class="btn" id="retryMiss">Пройти только неверные ответы</button>':''}
       <button class="btn ${misses.length?'ghost':''}" id="retryAll">Пройти заново</button>
     </div>`;
   const rm=document.getElementById('retryMiss'); if(rm) rm.onclick=()=>start(misses);
