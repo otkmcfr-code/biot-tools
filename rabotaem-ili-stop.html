@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Работаем или останавливаемся?</title>
+<meta name="description" content="Тренажёр по очистке кровли от снега: в каких условиях работы на высоте можно начинать, а в каких — нет, по Правилам № 109 (РК).">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --ground:#F2F6F5; --surface:#FFFFFF; --surface-2:#E9F0EE; --line:#D3DFDB;
+  --ink:#15302A; --muted:#566B65; --accent:#0E6B5C; --accent-ink:#FFFFFF; --accent-soft:#DCEEE9;
+  --warn:#9A4A12; --warn-soft:#FBEBDD; --urgent:#B3261E; --urgent-soft:#FBE4E2;
+  --shadow:0 1px 2px rgba(21,48,42,.06),0 6px 20px rgba(21,48,42,.06);
+  --sans:"Golos Text",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  color-scheme:dark;
+  --ground:#0E1917; --surface:#15221F; --surface-2:#1B2B27; --line:#2A3D38;
+  --ink:#E3EDEA; --muted:#98ADA7; --accent:#52C2A8; --accent-ink:#08201B; --accent-soft:#1C3832;
+  --warn:#F0A76B; --warn-soft:#3A2A1C; --urgent:#F28B82; --urgent-soft:#3B201E; --shadow:none;
+}}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --ground:#0E1917; --surface:#15221F; --surface-2:#1B2B27; --line:#2A3D38;
+  --ink:#E3EDEA; --muted:#98ADA7; --accent:#52C2A8; --accent-ink:#08201B; --accent-soft:#1C3832;
+  --warn:#F0A76B; --warn-soft:#3A2A1C; --urgent:#F28B82; --urgent-soft:#3B201E; --shadow:none;
+}
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.5;margin:0}
+.wrap{max-width:600px;margin:0 auto;padding:16px 16px 20px}
+h1,h2,h3{text-wrap:balance;margin:0}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);font-weight:600}
+h1{font-size:clamp(22px,4.4vw,28px);line-height:1.15;font-weight:700;letter-spacing:-.01em;margin:4px 0 6px}
+.lede{color:var(--muted);margin:0 0 12px;font-size:14px}
+
+.prog{display:flex;gap:4px;margin-bottom:12px}
+.prog i{flex:1;height:6px;border-radius:3px;background:var(--surface-2)}
+.prog i.ok{background:var(--accent)} .prog i.bad{background:var(--urgent)} .prog i.cur{background:var(--line);box-shadow:inset 0 0 0 1px var(--accent)}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:18px}
+.counter{font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.sit{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center;margin:8px 0 14px}
+.icon{width:72px;height:72px;border-radius:18px;background:var(--surface-2);display:grid;place-items:center;color:var(--accent)}
+.icon svg{width:44px;height:44px}
+.val{font-family:var(--mono);font-size:13px;color:var(--muted)}
+.sit h2{font-size:21px;line-height:1.2;font-weight:700}
+.ctx{font-size:14px;color:var(--muted);margin:4px 0 0}
+
+.choice{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{border:2px solid var(--line);background:var(--surface);border-radius:12px;padding:14px 10px;font-weight:700;font-size:15.5px;cursor:pointer;display:grid;gap:2px;justify-items:center;line-height:1.2}
+.btn small{font-weight:400;font-size:12.5px;color:var(--muted)}
+.btn.go:hover{border-color:var(--accent)} .btn.stop:hover{border-color:var(--urgent)}
+.btn .dot{width:12px;height:12px;border-radius:50%;margin-bottom:4px}
+.btn.go .dot{background:var(--accent)} .btn.stop .dot{background:var(--urgent)}
+.btn:disabled{cursor:default;opacity:.55}
+.btn.picked{opacity:1}
+.btn.go.picked{border-color:var(--accent);background:var(--accent-soft)}
+.btn.stop.picked{border-color:var(--urgent);background:var(--urgent-soft)}
+
+.fb{margin-top:14px;border-radius:12px;padding:12px 14px;font-size:14.5px}
+.fb.ok{background:var(--accent-soft)} .fb.bad{background:var(--urgent-soft)}
+.fb .verdict{font-weight:700;margin-bottom:4px}
+.fb.ok .verdict{color:var(--accent)} .fb.bad .verdict{color:var(--urgent)}
+.fb p{margin:0 0 6px} .fb p:last-child{margin:0}
+.ref{font-size:12.5px;color:var(--muted)}
+.next{margin-top:12px;display:flex;justify-content:flex-end}
+.pbtn{border:1px solid var(--accent);background:var(--accent);color:var(--accent-ink);border-radius:9px;padding:9px 16px;font-weight:600;font-size:14px;cursor:pointer}
+.pbtn.ghost{background:var(--surface);color:var(--accent)}
+
+.score{display:flex;align-items:baseline;gap:10px;margin:4px 0 6px}
+.score b{font-size:44px;line-height:1;font-variant-numeric:tabular-nums}
+.score span{color:var(--muted)}
+.rule{background:var(--surface-2);border-radius:12px;padding:12px 14px;margin:12px 0;font-size:14px}
+.rule h3{font-size:14.5px;margin-bottom:4px}
+.rule ul{margin:4px 0 0;padding-left:18px}
+.sum{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.sum li{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;font-size:13.5px;border:1px solid var(--line);border-radius:10px;padding:7px 10px}
+.mark{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:700;color:#fff}
+.mark.ok{background:var(--accent)} .mark.bad{background:var(--urgent)}
+.mark{color:var(--surface)}
+.tag{font-size:12px;font-weight:600;border-radius:6px;padding:2px 8px;white-space:nowrap}
+.tag.go{background:var(--accent-soft);color:var(--accent)} .tag.stop{background:var(--urgent-soft);color:var(--urgent)}
+.src{font-size:11.5px;color:var(--muted);margin-top:12px;line-height:1.4}
+@media (prefers-reduced-motion:no-preference){.fb{animation:in .25s ease-out}@keyframes in{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">Очистка кровли · тренажёр</div>
+  <h1>Работаем или останавливаемся?</h1>
+  <p class="lede">Бригада готова подняться на крышу. Решите по каждой ситуации, можно ли начинать работу на высоте.</p>
+  <div class="prog" id="prog" aria-hidden="true"></div>
+  <main id="app" aria-live="polite"></main>
+  <div class="src">По Правилам по обеспечению безопасности и охраны труда при работе на высоте, утв. приказом МТСЗН РК от 31.03.2022 № 109.</div>
+</div>
+
+<script>
+(()=>{
+const I={
+ wind:'<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 18h24a6 6 0 1 0-6-6"/><path d="M6 26h32a6 6 0 1 1-6 6"/><path d="M6 34h14"/></svg>',
+ snow:'<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M24 6v36M8.4 15l31.2 18M8.4 33l31.2-18"/><path d="M19 9l5 4 5-4M19 39l5-4 5 4"/></svg>',
+ dusk:'<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M34 30a14 14 0 0 1-16-20 14 14 0 1 0 16 20z"/><path d="M6 40h36"/></svg>',
+ cold:'<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M20 28V10a4 4 0 0 1 8 0v18a8 8 0 1 1-8 0z"/><path d="M24 30V20"/><circle cx="38" cy="10" r="4"/></svg>',
+ signal:'<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="10" r="5"/><path d="M10 42V28l-3-3 5-8h12l4 6"/><path d="M26 42V28"/><path d="M32 6v22"/><path d="M32 6h10l-3 4 3 4H32"/></svg>',
+ storm:'<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M14 30a8 8 0 1 1 3-15.5A10 10 0 0 1 36 18a6 6 0 0 1 0 12"/><path d="M25 26l-5 9h7l-4 8"/></svg>',
+ solo:'<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><circle cx="24" cy="14" r="6"/><path d="M12 40c0-7 5-12 12-12s12 5 12 12"/><path d="M38 8l6 6M44 8l-6 6"/></svg>'
+};
+const Q=[
+ {ic:"wind",val:"12 м/с",t:"Ветер 12 м/с, осадков нет",ctx:"Прогноз на смену стабильный, видимость хорошая.",a:"go",
+  why:"Запрет на работы на высоте действует при скорости ветра 15 м/с и более. При 12 м/с работать можно.",
+  tip:"Ветер сдувает снег с кровли дальше обычного. Поставьте ограждение опасной зоны с запасом и следите за порывами: при усилении до 15 м/с работу прекращают.",
+  ref:"пп. 4 п. 4 Правил № 109"},
+ {ic:"snow",val:"снегопад",t:"Начался снегопад",ctx:"Снег идёт всё сильнее, кровлю засыпает на глазах.",a:"stop",
+  why:"При интенсивных атмосферных осадках работы на высоте не проводят.",
+  tip:"Во время снегопада ухудшается видимость, кровля становится скользкой, а очищенные участки снова засыпает. Продолжите после того, как снегопад закончится.",
+  ref:"пп. 2 п. 4 Правил № 109"},
+ {ic:"wind",val:"16 м/с",t:"Ветер 16 м/с",ctx:"Осадков нет, но ветер порывистый.",a:"stop",
+  why:"При скорости ветра 15 м/с и более работы на высоте не проводят. 16 м/с — уже выше порога.",
+  tip:"Сильный ветер может сбить работника с ног на скате и разносит снег и лёд за пределы ограждения.",
+  ref:"пп. 4 п. 4 Правил № 109"},
+ {ic:"dusk",val:"сумерки",t:"Сумерки, освещения на кровле нет",ctx:"Работу не успели закончить засветло, фонарей и прожекторов нет.",a:"stop",
+  why:"При недостаточной видимости в пределах фронта работ работы на высоте не проводят.",
+  tip:"В темноте не видно края кровли, зенитных фонарей, люков и людей внизу. Планируйте очистку на светлое время суток, чтобы успеть закончить её и снять ограждение до темноты.",
+  ref:"пп. 1 п. 4 Правил № 109"},
+ {ic:"cold",val:"−10 °С",t:"Мороз −10 °С, ясно, безветренно",ctx:"Осадков нет, видимость хорошая.",a:"go",
+  why:"Конкретной минимальной температуры Правила № 109 не устанавливают. Температурный интервал учитывают с учётом местного климата и характера работ по гигиеническим нормативам (приказ МЗ РК № ҚР ДСМ-15).",
+  tip:"Работать можно, но предусмотрите утеплённую спецодежду и спецобувь, перерывы на обогрев и тёплое помещение рядом. Проверьте, нет ли на кровле наледи.",
+  ref:"п. 5 Правил № 109"},
+ {ic:"signal",val:"30 минут",t:"Ограждения нет, но работа на полчаса",ctx:"Нужно сбить сосульки над входом. Ограждение не ставили, у края тротуара стоит сигнальщик и предупреждает прохожих и водителей.",a:"go",
+  why:"При работах продолжительностью не более 1 часа предупреждать пешеходов и водителей по периметру опасной зоны может сигнальщик (наблюдатель).",
+  tip:"Сигнальщик должен перекрывать все подходы к опасной зоне, а наряд-допуск и остальные меры безопасности никто не отменял. Если работа затягивается дольше часа, ставьте ограждение.",
+  ref:"п. 79, пп. 9 п. 11 Правил № 109"},
+ {ic:"solo",val:"1 человек",t:"Бригада из одного человека",ctx:"Второй работник заболел. Погода хорошая, наряд-допуск оформлен.",a:"stop",
+  why:"Работы на высоте выполняет бригада (звено) не менее чем из 2 человек. Члены бригады видят и слышат друг друга или держат связь по рации.",
+  tip:"Если работник сорвётся и повиснет на страховке, помочь ему будет некому. Без второго человека бригаду на крышу не допускают.",
+  ref:"п. 7 Правил № 109"}
+];
+const N=Q.length;
+let i=0, ans=[];
+const app=document.getElementById("app"), prog=document.getElementById("prog");
+const lbl={go:"Работаем",stop:"Останавливаемся"};
+
+function drawProg(){prog.innerHTML=Q.map((q,k)=>{let c="";if(k<ans.length)c=ans[k]===q.a?"ok":"bad";else if(k===i)c="cur";return `<i class="${c}"></i>`;}).join("");}
+
+function show(){
+  drawProg();
+  const q=Q[i];
+  app.innerHTML=`<section class="card">
+    <div class="counter">Ситуация ${i+1} из ${N}</div>
+    <div class="sit"><div class="icon">${I[q.ic]}</div>
+      <div><h2>${q.t}</h2><p class="ctx">${q.ctx}</p></div></div>
+    <div class="choice">
+      <button class="btn go" data-a="go"><span class="dot"></span>Работаем<small>можно начинать</small></button>
+      <button class="btn stop" data-a="stop"><span class="dot"></span>Останавливаемся<small>работы не проводят</small></button>
+    </div><div id="fb"></div></section>`;
+  app.querySelectorAll(".btn").forEach(b=>b.addEventListener("click",()=>pick(b.dataset.a)));
+  app.querySelector(".btn").focus({preventScroll:true});
+}
+
+function pick(a){
+  const q=Q[i]; ans[i]=a; const ok=a===q.a;
+  app.querySelectorAll(".btn").forEach(b=>{b.disabled=true;if(b.dataset.a===a)b.classList.add("picked");});
+  drawProg();
+  const last=i===N-1;
+  document.getElementById("fb").innerHTML=`<div class="fb ${ok?"ok":"bad"}">
+    <div class="verdict">${ok?"Верно":"Не совсем"}: ${lbl[q.a].toLowerCase()}.</div>
+    <p>${q.why}</p><p>${q.tip}</p><div class="ref">${q.ref}</div></div>
+    <div class="next"><button class="pbtn" id="nx">${last?"Посмотреть итог":"Следующая ситуация →"}</button></div>`;
+  const nx=document.getElementById("nx"); nx.focus({preventScroll:true});
+  nx.addEventListener("click",()=>{if(last)finish();else{i++;show();}});
+}
+
+function finish(){
+  i=N; drawProg();
+  const score=ans.filter((a,k)=>a===Q[k].a).length;
+  const msg=score===N?"Отлично, все решения верные.":score>=N-2?"Хороший результат. Посмотрите, где ошиблись.":"Стоит ещё раз повторить ограничения из п. 4 и 7 Правил № 109.";
+  app.innerHTML=`<section class="card">
+    <div class="counter">Итог</div>
+    <div class="score"><b>${score} из ${N}</b><span>верных решений</span></div>
+    <p style="margin:0">${msg}</p>
+    <div class="rule"><h3>Работы на высоте не проводят:</h3><ul>
+      <li>при недостаточной видимости в пределах фронта работ;</li>
+      <li>при интенсивных осадках;</li>
+      <li>во время грозы и при приближении грозового фронта;</li>
+      <li>при скорости ветра 15 м/с и более.</li></ul>
+      <div class="ref" style="margin-top:4px">п. 4 Правил № 109. Бригада — не менее 2 человек (п. 7).</div></div>
+    <ul class="sum">${Q.map((q,k)=>{const ok=ans[k]===q.a;return `<li><span class="mark ${ok?"ok":"bad"}">${ok?"✓":"✕"}</span><span>${q.t}</span><span class="tag ${q.a}">${lbl[q.a]}</span></li>`;}).join("")}</ul>
+    <div class="next"><button class="pbtn ghost" id="again">Пройти ещё раз</button></div></section>`;
+  document.getElementById("again").addEventListener("click",()=>{i=0;ans=[];show();});
+}
+show();
+})();
+</script>
+</body>
+</html>
