@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Практическая работа</title>
+<!--
+  ШАБЛОН «ЗАДАНИЕ + ПРОВЕРЬТЕ СЕБЯ»
+  Как пользоваться:
+  1. Меняйте текст только между пометками ✏️ НАЧАЛО и ✏️ КОНЕЦ.
+  2. Абзац — <p>текст</p>. Жирный — <b>текст</b>.
+  3. Пункт списка — <li>текст</li> (внутри <ol> — нумерованный, внутри <ul> — маркированный).
+  4. Строка таблицы — <tr><td>Параметр</td><td>Значение</td></tr>. Таблицу можно удалить целиком
+     (от <table> до </table>), если она не нужна.
+  5. Второе задание на той же странице: скопируйте блок от <section class="task"> до </section>.
+  Стили ниже трогать не нужно.
+-->
+<style>
+  :root{
+    --blue:#1F4E79; --accent:#2E75B6; --green:#2E7D32; --green-bg:#EDF7EE;
+    --line:#D6E2EE; --bg:#ffffff; --soft:#F4F8FC; --text:#1d2733; --muted:#5b6b7b;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg)}
+  body{font:14px/1.5 Arial, Helvetica, sans-serif;color:var(--text);padding:10px;max-width:600px}
+  .task{border:1px solid var(--line);border-radius:10px;padding:12px 14px 4px;margin-bottom:16px}
+  .label{display:inline-block;font-size:12px;font-weight:bold;letter-spacing:.04em;text-transform:uppercase;
+         color:var(--accent);background:var(--soft);border-radius:4px;padding:3px 8px;margin-bottom:8px}
+  h2{font-size:18px;line-height:1.3;color:var(--blue);margin:4px 0 10px}
+  p{margin:0 0 10px}
+  ol,ul{margin:0 0 12px;padding-left:22px}
+  li{margin-bottom:6px}
+  table{width:100%;border-collapse:collapse;margin:4px 0 14px;font-size:13px}
+  td{border:1px solid var(--line);padding:4px 7px;vertical-align:top}
+  tr:nth-child(odd) td{background:var(--soft)}
+  td:first-child{width:40%;color:var(--muted)}
+  textarea{width:100%;min-height:56px;border:1px solid var(--line);border-radius:8px;padding:8px;
+           font:inherit;resize:vertical;margin-bottom:12px}
+  details{margin:0 0 12px}
+  summary{list-style:none;cursor:pointer;display:inline-block;background:var(--accent);color:#fff;
+          font-weight:bold;border-radius:8px;padding:10px 18px;user-select:none}
+  summary::-webkit-details-marker{display:none}
+  summary:hover{background:var(--blue)}
+  summary:focus-visible{outline:3px solid #9cc3e6;outline-offset:2px}
+  summary .hide{display:none}
+  details[open] summary{background:#fff;color:var(--accent);border:2px solid var(--accent);padding:8px 16px}
+  details[open] summary .show{display:none}
+  details[open] summary .hide{display:inline}
+  .answer{margin-top:12px;background:var(--green-bg);border-left:4px solid var(--green);border-radius:6px;
+          padding:12px 14px 2px}
+  .answer-title{color:var(--green);font-weight:bold;margin-bottom:6px}
+</style>
+</head>
+<body>
+
+<section class="task">
+  <span class="label">Практическая работа</span>
+
+  <!-- ✏️ НАЧАЛО: заголовок и условие задания -->
+  <h2>Читаем паспорт лифта</h2>
+  <p>Представьте, что вы приняли в управление здание с пассажирским лифтом. Из документов у вас пока есть только выписка из паспорта.</p>
+
+  <table>
+    <tr><td>Назначение</td><td>Пассажирский, самостоятельного пользования</td></tr>
+    <tr><td>Грузоподъёмность</td><td>630 кг</td></tr>
+    <tr><td>Номинальная скорость</td><td>1,0 м/с</td></tr>
+    <tr><td>Число остановок / высота подъёма</td><td>9 / 24 м</td></tr>
+    <tr><td>Привод</td><td>Электрический, лебёдка с канатоведущим шкивом, машинное помещение над шахтой</td></tr>
+    <tr><td>Двери</td><td>Автоматические, центрального открывания</td></tr>
+    <tr><td>Год изготовления / ввода в эксплуатацию</td><td>2003 / 2004</td></tr>
+    <tr><td>Назначенный срок службы</td><td>Не указан</td></tr>
+    <tr><td>Последнее периодическое техническое освидетельствование</td><td>12.09.2025</td></tr>
+  </table>
+
+  <p><b>Выполните задание:</b></p>
+  <ol>
+    <li>Определите вместимость кабины и составьте текст таблички у основного посадочного этажа.</li>
+    <li>Определите, до какой даты лифт должен пройти очередное периодическое техническое освидетельствование.</li>
+    <li>Оцените, когда истекает назначенный срок службы и что организации нужно сделать уже сейчас.</li>
+  </ol>
+  <!-- ✏️ КОНЕЦ: условие задания -->
+
+  <textarea aria-label="Ваш ответ" placeholder="Запишите свой ответ, а затем сравните его с эталоном"></textarea>
+
+  <details>
+    <summary><span class="show">Проверить себя</span><span class="hide">Скрыть ответ</span></summary>
+    <div class="answer">
+      <div class="answer-title">Эталон ответа</div>
+
+      <!-- ✏️ НАЧАЛО: эталон ответа -->
+      <ul>
+        <li><b>Вместимость:</b> 630 / 80 ≈ 7,9, то есть 8 человек. Табличка: «Лифт пассажирский. Грузоподъёмность 630 кг (8 человек). Учётный № … Телефон аварийной службы …». Для лифта самостоятельного пользования укажите также, где находится обслуживающий персонал.</li>
+        <li><b>Освидетельствование:</b> не позднее 12.09.2026 — не реже одного раза в 12 месяцев. Если новой записи в паспорте нет, лифт эксплуатируется с нарушением.</li>
+        <li><b>Срок службы:</b> в паспорте не указан, лифт введён до ТР ТС 011/2011, поэтому назначенный срок — 25 лет, до 2029 года. Уже сейчас заложите в план обследование и бюджет на модернизацию или замену.</li>
+      </ul>
+      <!-- ✏️ КОНЕЦ: эталон ответа -->
+
+    </div>
+  </details>
+</section>
+
+</body>
+</html>
