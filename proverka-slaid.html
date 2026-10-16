@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Проверьте себя</title>
+<!--
+  ШАБЛОН «ПРОВЕРЬТЕ СЕБЯ» — два слайда.
+  Слайд 1: короткая подводка и кнопка «Проверить себя».
+  Слайд 2: эталон ответа и кнопка «Назад».
+
+  Как пользоваться:
+  1. Меняйте текст только между пометками ✏️ НАЧАЛО и ✏️ КОНЕЦ.
+  2. Абзац — <p>текст</p>. Жирный — <b>текст</b>.
+  3. Пункт списка — <li>текст</li> внутри <ul>…</ul> (маркеры) или <ol>…</ol> (номера).
+  4. Если ответ длинный, на втором слайде появится прокрутка — так и задумано.
+  Стили и скрипт внизу трогать не нужно.
+-->
+<style>
+  :root{
+    --blue:#1F4E79; --accent:#2E75B6; --green:#2E7D32; --green-bg:#EDF7EE;
+    --line:#D6E2EE; --soft:#F4F8FC; --text:#1d2733; --muted:#5b6b7b;
+    --h:520px; /* высота слайда; можно поменять, например на 600px */
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:#fff}
+  body{font:14px/1.55 Arial, Helvetica, sans-serif;color:var(--text);padding:10px;max-width:600px}
+  .slide{display:none;height:var(--h);border:1px solid var(--line);border-radius:12px;overflow:hidden;
+         flex-direction:column}
+  .slide.active{display:flex;animation:fade .25s ease}
+  @keyframes fade{from{opacity:0;transform:translateX(12px)}to{opacity:1;transform:none}}
+  .top{padding:18px 20px 0}
+  .label{display:inline-block;font-size:12px;font-weight:bold;letter-spacing:.04em;text-transform:uppercase;
+         border-radius:4px;padding:3px 8px;margin-bottom:10px}
+  .s1 .label{color:var(--accent);background:var(--soft)}
+  .s2 .label{color:var(--green);background:var(--green-bg)}
+  h2{font-size:19px;line-height:1.3;color:var(--blue);margin:0 0 10px}
+  p{margin:0 0 10px}
+  ul,ol{margin:0 0 12px;padding-left:22px}
+  li{margin-bottom:7px}
+  .s1{background:linear-gradient(160deg,#fff 55%,var(--soft))}
+  .s1 .body{flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 20px;text-align:center}
+  .s1 .icon{width:64px;height:64px;margin:0 auto 14px;border-radius:50%;background:var(--soft);
+            display:flex;align-items:center;justify-content:center}
+  .s2 .body{flex:1;overflow-y:auto;padding:4px 20px 6px;border-left:4px solid var(--green);margin:0 20px 0 20px;
+            background:var(--green-bg);border-radius:6px}
+  .s2 .body > *:first-child{margin-top:10px}
+  .bottom{padding:14px 20px 18px;display:flex;justify-content:center}
+  button{font:bold 15px Arial, Helvetica, sans-serif;border-radius:8px;padding:11px 22px;cursor:pointer;
+         border:2px solid var(--accent)}
+  .primary{background:var(--accent);color:#fff}
+  .primary:hover{background:var(--blue);border-color:var(--blue)}
+  .ghost{background:#fff;color:var(--accent)}
+  .ghost:hover{background:var(--soft)}
+  button:focus-visible{outline:3px solid #9cc3e6;outline-offset:2px}
+</style>
+</head>
+<body>
+
+<!-- ===================== СЛАЙД 1 ===================== -->
+<section class="slide s1 active" id="s1" aria-label="Задание">
+  <div class="top"><span class="label">Проверьте себя</span></div>
+  <div class="body">
+    <div class="icon" aria-hidden="true">
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#2E75B6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg>
+    </div>
+
+    <!-- ✏️ НАЧАЛО: текст первого слайда -->
+    <h2>Перечень документов лифтового хозяйства</h2>
+    <p>Составьте перечень документов для торгово-офисного центра из задания, а затем сравните его с эталоном.</p>
+    <!-- ✏️ КОНЕЦ: текст первого слайда -->
+
+  </div>
+  <div class="bottom"><button class="primary" type="button" onclick="go(2)">Проверить себя</button></div>
+</section>
+
+<!-- ===================== СЛАЙД 2 ===================== -->
+<section class="slide s2" id="s2" aria-label="Эталон ответа">
+  <div class="top"><span class="label">Эталон ответа</span></div>
+  <div class="body" tabindex="0">
+
+    <!-- ✏️ НАЧАЛО: текст ответа -->
+    <ul>
+      <li><b>Исправить приказ.</b> Назначить ответственного за организацию работ по ТО и ремонту и ответственного за организацию эксплуатации (допустимо одно лицо). Указать лифты, заместителей и проверку знаний. У главного инженера проверить удостоверение и группу по электробезопасности не ниже IV.</li>
+      <li><b>Утвердить</b> положение о производственном контроле.</li>
+      <li><b>Получить от сервисной организации</b> приказ о назначении электромеханика, ответственного за исправное состояние каждого лифта, его удостоверение и группу III. Внести данные в паспорта лифтов.</li>
+      <li><b>Грузовой лифт с внутренним управлением:</b> назначить лифтёра, оформить допуск приказом.</li>
+      <li><b>Утвердить</b> должностные и производственные инструкции, технологические регламенты, порядок выдачи ключей.</li>
+      <li><b>Проверить договор:</b> время прибытия аварийной службы, освидетельствование, ведение журналов. Запросить копию аттестата.</li>
+      <li><b>Проверить документы по лифтам:</b> паспорта, акты освидетельствований не старше 12 месяцев, уведомления о постановке на учёт в акимате.</li>
+      <li><b>Проверить таблички и правила пользования:</b> в пассажирских лифтах — в кабине, на грузовом — запрет одновременной перевозки пассажиров и груза.</li>
+    </ul>
+    <!-- ✏️ КОНЕЦ: текст ответа -->
+
+  </div>
+  <div class="bottom"><button class="ghost" type="button" onclick="go(1)">← Назад к заданию</button></div>
+</section>
+
+<script>
+  function go(n){
+    document.querySelectorAll('.slide').forEach(function(s){ s.classList.remove('active'); });
+    var s = document.getElementById('s' + n);
+    s.classList.add('active');
+    var b = s.querySelector('button'); if (b) b.focus();
+  }
+</script>
+</body>
+</html>
