@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<!-- saved from url=(0054)https://s.buh.mcfr.kz/files/Filippov/put-k-vyhodu.html -->
+<html lang="ru"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" data-keep="">
+<title data-keep="">Путь к выходу — пиксельный тренажёр по пожарной безопасности</title>
+<link rel="preconnect" href="https://fonts.googleapis.com/" data-keep="">
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" data-keep="">
+<link href="./Путь к выходу — пиксельный тренажёр по пожарной безопасности_files/css2" rel="stylesheet" data-keep="">
+<style data-keep="">
+:root{
+  --bg:#dcd8e6; --ink:#1a1630; --muted:#4a4566; --panel:#ecE9f4; --line:#b9b3cc;
+  --ega-blue:#0000AA; --ega-cyan:#55FFFF; --ega-yellow:#FFFF55; --ega-magenta:#FF55FF; --ega-red:#AA0000;
+  --pix:"Press Start 2P", "Courier New", monospace;
+  --txt:"PT Mono", "Courier New", monospace;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){ --bg:#17142a; --ink:#e8e4f6; --muted:#a39cc4; --panel:#221e3a; --line:#3a3458; }
+}
+:root[data-theme="dark"]{ --bg:#17142a; --ink:#e8e4f6; --muted:#a39cc4; --panel:#221e3a; --line:#3a3458; }
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--txt);font-size:15px;line-height:1.5}
+#app{max-width:800px;margin:0 auto;padding:14px 12px 28px}
+.top{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:4px 2px 12px}
+.top h1{font-family:var(--pix);font-size:clamp(15px,3.6vw,22px);margin:0;letter-spacing:.02em;line-height:1.3}
+.top p{margin:0;color:var(--muted);font-size:13px}
+
+#border{padding:clamp(8px,2.6vw,20px);background:var(--ega-blue);border-radius:3px}
+#border.loading{background:repeating-linear-gradient(0deg,#AA0000 0 6px,#55FFFF 6px 11px,#FFFF55 11px 15px,#0000AA 15px 22px);background-size:100% 44px;animation:load .35s steps(4) infinite}
+@keyframes load{to{background-position:0 44px}}
+#border.alarm{animation:alarm 1s steps(1) infinite}
+@keyframes alarm{0%{background:#AA0000}50%{background:#000}}
+@media (prefers-reduced-motion: reduce){ #border.loading,#border.alarm{animation:none} #border.alarm{background:#AA0000} }
+
+#screen{background:#000;position:relative;image-rendering:pixelated}
+#hud{display:flex;align-items:center;gap:10px;justify-content:space-between;padding:6px 8px;font-family:var(--pix);font-size:clamp(7px,1.5vw,10px);color:#FFFF55;background:#000;border-bottom:2px solid #0000AA;min-height:28px}
+#hud .l{color:#55FFFF;white-space:nowrap}
+#hud .m{flex:1;text-align:center;white-space:nowrap;overflow:hidden}
+#hud .r{white-space:nowrap}
+#hud button{font-family:var(--pix);font-size:inherit;background:none;border:1px solid #555;color:#AAAAAA;padding:3px 5px;cursor:pointer}
+#hud button:focus-visible{outline:2px solid #FF55FF}
+.stage{position:relative;line-height:0;display:grid;aspect-ratio:320/192}
+canvas{position:absolute;top:0;left:0;width:100%;height:auto;display:block;image-rendering:pixelated;image-rendering:crisp-edges}
+#toast{position:absolute;left:8px;right:8px;bottom:8px;line-height:1.35;font-family:var(--txt);font-weight:700;font-size:clamp(12px,2.1vw,14px);color:#FFFF55;background:#000;border:2px solid #FFFF55;padding:6px 9px;display:none}
+#toast.show{display:block}
+#prompt{position:absolute;left:8px;top:8px;line-height:1.3;font-family:var(--txt);font-size:12px;color:#fff;background:rgba(0,0,0,.8);border-left:3px solid #55FF55;padding:4px 8px;display:none;max-width:70%}
+#prompt.show{display:block}
+#prompt{max-width:68%}
+#cv{cursor:pointer;touch-action:none}
+#mini{position:absolute;top:6px;right:6px;left:auto;width:24%;height:auto;border:2px solid #fff;background:#fff;cursor:zoom-in;image-rendering:pixelated}
+#mini[hidden]{display:none}
+#bigmap{position:static;width:100%;max-width:440px;image-rendering:pixelated;border:3px solid #fff;background:#fff;display:block;margin:4px 0 10px}
+.dl{font-family:var(--pix);font-size:10px;line-height:1.4;background:var(--ega-blue);color:var(--ega-yellow);border:2px solid var(--ink);padding:7px 10px;cursor:pointer}
+.dl:hover{background:var(--ega-cyan);color:#000}
+.dl:focus-visible{outline:3px solid #FF55FF;outline-offset:2px}
+#hud .warn{color:#FF5555;animation:blink .5s steps(1) infinite}
+@keyframes blink{50%{opacity:.25}}
+#hud .regen{color:#55FF55} #hud .hurt{color:#FF5555}
+@media (prefers-reduced-motion: reduce){ #hud .warn{animation:none} }
+
+#overlay{position:absolute;inset:0;background:rgba(0,0,50,.93);color:#fff;overflow:auto;line-height:1.45;display:none;padding:clamp(12px,3vw,24px);font-size:clamp(12px,2vw,14.5px)}
+#overlay.show{display:block}
+#overlay{position:relative;inset:auto;overflow:visible}
+@media (max-width:560px){
+  #toast{font-size:11px;padding:4px 7px;left:4px;right:4px;bottom:4px}
+  #overlay{position:fixed;z-index:50;padding:calc(env(safe-area-inset-top,0px) + 18px) 16px calc(env(safe-area-inset-bottom,0px) + 18px)}
+}
+#overlay h2{font-family:var(--pix);font-weight:400;font-size:clamp(12px,2.6vw,17px);color:#FFFF55;margin:0 0 12px;line-height:1.45}
+#overlay h3{font-family:var(--pix);font-weight:400;font-size:clamp(9px,1.7vw,11px);color:#55FFFF;margin:16px 0 8px;line-height:1.5}
+#overlay p{margin:0 0 10px;max-width:62ch}
+#overlay ul{margin:0 0 8px;padding:0;list-style:none}
+#overlay li{padding:3px 0 3px 22px;position:relative;max-width:64ch}
+#overlay li::before{content:attr(data-m);position:absolute;left:0;font-weight:700}
+#overlay li.ok::before{color:#55FF55} #overlay li.no::before{color:#FF5555} #overlay li.info::before{color:#FFFF55}
+.logo{font-family:var(--pix);font-size:clamp(20px,5.4vw,38px);line-height:1.2;color:#FFFF55;text-shadow:3px 3px 0 #AA0000,6px 6px 0 #0000AA;margin:6px 0 16px}
+.choice{display:block;margin:0 0 14px}
+.choice small{display:block;color:#AAAAAA;margin-top:6px;max-width:56ch}
+.btn{font-family:var(--pix);font-size:clamp(9px,1.8vw,12px);line-height:1.4;background:#0000AA;color:#FFFF55;border:2px solid #55FFFF;padding:9px 12px;cursor:pointer;text-align:left}
+.btn:hover{background:#55FFFF;color:#000}
+.btn:focus-visible{outline:3px solid #FF55FF;outline-offset:2px}
+.btn.alt{background:#000;border-color:#AAAAAA;color:#AAAAAA}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.verdict{border:2px solid;padding:10px 12px;margin:12px 0}
+.verdict.bad{border-color:#FF5555;color:#FF5555}
+.verdict.mid{border-color:#FFFF55;color:#FFFF55}
+.verdict.good{border-color:#55FF55;color:#55FF55}
+.stats{display:flex;gap:18px;flex-wrap:wrap;font-family:var(--pix);font-size:clamp(9px,1.6vw,11px);color:#55FFFF;margin:4px 0 6px}
+.stats b{color:#fff;font-weight:400}
+.keys{color:#AAAAAA;font-size:.92em}
+kbd{font-family:var(--pix);font-size:.7em;border:1px solid #777;padding:2px 4px;color:#fff}
+
+#panel{margin-top:14px;background:var(--panel);border:1px solid var(--line);border-radius:3px;padding:12px 14px}
+#panel h2{font-family:var(--pix);font-weight:400;font-size:11px;margin:0 0 10px;line-height:1.5}
+#panel ul{margin:0;padding:0;list-style:none;columns:2 280px;column-gap:24px}
+#panel li{break-inside:avoid;padding:2px 0 2px 34px;position:relative;font-size:13.5px}
+#panel li::before{content:"[ ]";position:absolute;left:0;color:var(--muted)}
+#panel li.done{color:var(--muted);text-decoration:line-through}
+#panel li.done::before{content:"[x]";color:#00AA00;text-decoration:none}
+#panel p{margin:0 0 6px;font-size:13.5px;max-width:70ch}
+#panel .src{color:var(--muted);font-size:12.5px;margin-top:8px}
+
+#touch{display:none;margin-top:12px;gap:12px;justify-content:space-between;align-items:center;user-select:none;-webkit-user-select:none;touch-action:none}
+#touch.on{display:flex}
+.pad{display:grid;grid-template-columns:repeat(3,54px);grid-template-rows:repeat(3,54px);gap:4px}
+.pad button,.acts button{font-family:var(--pix);font-size:11px;background:#0000AA;color:#FFFF55;border:2px solid #55FFFF;touch-action:none}
+.pad button:active,.acts button:active,.acts button.on{background:#55FFFF;color:#000}
+.pad .u{grid-column:2;grid-row:1}.pad .lft{grid-column:1;grid-row:2}.pad .rgt{grid-column:3;grid-row:2}.pad .d{grid-column:2;grid-row:3}
+.acts{display:flex;flex-direction:column;gap:8px}
+.acts button{width:128px;height:44px;line-height:1.3}
+</style>
+<style data-glasp-print="rule">@media print{[data-glasp-print="hide"]{display:none !important}}</style></head>
+<body>
+<main id="app">
+  <div id="border">
+    <div id="screen">
+      <div id="hud"><span class="l" id="hL">Путь к выходу</span><span class="m" id="hM">Выберите режим</span><span class="r" id="hR"></span><button id="mute" aria-label="Звук">ЗВУК</button></div>
+      <div class="stage">
+        <canvas id="cv" aria-label="Игровое поле: этаж офиса сверху" width="320" height="192"></canvas>
+        <canvas id="mini" hidden="" aria-label="План эвакуации, открыть крупно"></canvas>
+        <div id="prompt"></div>
+        <div id="toast" role="status" aria-live="polite"></div>
+        <div id="overlay" role="dialog" aria-modal="false" class="show"><h2>Пауза</h2><div class="row"><button class="btn" id="bRes">Продолжить</button><button class="btn alt" id="bMenu">В меню</button></div></div>
+      </div>
+    </div>
+  </div>
+  <div id="touch">
+    <div class="pad">
+      <button class="u" data-d="up" aria-label="Вверх">▲</button>
+      <button class="lft" data-d="left" aria-label="Влево">◀</button>
+      <button class="rgt" data-d="right" aria-label="Вправо">▶</button>
+      <button class="d" data-d="down" aria-label="Вниз">▼</button>
+    </div>
+    <div class="acts">
+      <button id="tAct">Действие</button>
+      <button id="tCrouch">Пригнуться</button>
+      <button id="tMap">Карта</button>
+    </div>
+  </div>
+  <section id="panel" hidden=""><h2>По мотивам статьи «Пожарная безопасность: три дела»</h2><p>Игра собрана из реальных пунктов проверочного листа: запертые изнутри выходы, завалы в коридорах, склад под лестницей, снятые двери, неработающие оповещение и знаки «Выход», устаревший план эвакуации.</p><p class="src">Управление: стрелки, WASD или клик мышью — идти; Пробел или клик по предмету — действие; Shift, C или правая кнопка — пригнуться; Tab — план; Esc — пауза; M — звук. На телефоне — кнопки под экраном или касание по полю.</p></section>
+</main>
+
+<script id="game">
+(()=>{
+"use strict";
+const T=16, MW=32, MH=20, VW=20, VH=12;
+const cv=document.getElementById('cv'), ctx=cv.getContext('2d');
+cv.width=VW*T; cv.height=VH*T; ctx.imageSmoothingEnabled=false;
+const $=id=>document.getElementById(id);
+const ACT=('ontouchstart' in window)?'Действие':'Пробел';
+const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const idx=(x,y)=>y*MW+x;
+const clamp=(v,a,b)=>v<a?a:v>b?b:v;
+
+/* ---------- Карта ---------- */
+const BASE=(()=>{
+  const m=[]; for(let y=0;y<MH;y++) m.push(new Array(MW).fill('#'));
+  const fill=(x1,y1,x2,y2,c)=>{for(let y=y1;y<=y2;y++)for(let x=x1;x<=x2;x++)m[y][x]=c;};
+  fill(1,1,9,6,'.'); fill(11,1,17,6,'.'); fill(19,1,23,6,'.'); fill(25,1,30,6,'.'); fill(25,1,27,5,'S');
+  fill(1,8,30,10,'.');
+  fill(1,12,11,18,'.'); fill(13,12,17,18,'.'); fill(25,12,30,18,'.');
+  m[2][31]='E';
+  [[6,7],[12,7],[16,7],[20,7],[23,7],[6,11]].forEach(([x,y])=>m[y][x]='D');
+  m[7][27]='Z'; m[11][15]='.'; m[11][20]='L'; m[11][21]='L'; fill(25,11,29,11,'.');
+  m[9][0]='X';
+  [[2,19],[5,19],[9,19],[15,19]].forEach(([x,y])=>m[y][x]='W');
+  m[19][27]='E'; m[19][28]='E';
+  return m;
+})();
+const tile=(x,y)=>(x<0||y<0||x>=MW||y>=MH)?'#':BASE[y][x];
+
+const DECOR={};
+function dec(type,solid,...pts){pts.forEach(([x,y])=>DECOR[x+','+y]={type,solid});}
+dec('desk',1,[2,2],[3,2],[7,2],[8,2],[2,5],[3,5],[12,2],[13,2],[15,2],[16,2],[2,14],[3,14],[5,14],[6,14],[8,14],[9,14],[2,17],[3,17],[5,17],[6,17],[8,17],[9,17]);
+dec('chair',0,[2,3],[3,3],[7,3],[8,3],[12,3],[13,3],[15,3],[16,3],[2,15],[5,15],[8,15],[3,18],[6,18],[9,18]);
+dec('plant',1,[9,1],[11,6],[19,1],[30,8],[11,12],[30,18]);
+dec('printer',1,[17,1],[1,12]);
+dec('table',1,[20,3],[21,3],[22,3],[20,4],[21,4],[22,4],[13,14],[14,14]);
+dec('cooler',1,[1,8]); dec('fridge',1,[17,12]);
+dec('counter',1,[13,18],[14,18],[15,18],[16,18],[17,18]);
+dec('sofa',1,[25,15],[25,16]); dec('reception',1,[29,13],[30,13]);
+const WALLOBJ={'3,7':'plan','8,7':'button','14,7':'ext','3,0':'speaker','26,19':'sign'};
+
+/* ---------- Нарушения (по статье: приложение 32 и экспресс-чек-лист) ---------- */
+const VIOL=[
+ {id:'boxes',tiles:[[21,8],[21,9],[21,10],[22,8],[22,9],[22,10]],solid:1,crit:1,
+  check:'Выходы и проходы свободны, ничего не загромождено',
+  short:'Коробки перекрыли коридор',fix:'Коробки убраны, коридор снова проектной ширины.',
+  effect:'Коробки в коридоре перекрыли прямой путь — пришлось идти в обход или разбирать завал.'},
+ {id:'stairs',tiles:[[29,1],[29,2],[29,3],[30,3]],solid:1,crit:1,
+  check:'Под лестницами и на площадках ничего не хранится',
+  short:'Склад мебели на лестничной клетке',fix:'Мебель вынесли с лестничной клетки.',
+  effect:'Старая мебель на лестничной клетке отрезала путь к запасному выходу.'},
+ {id:'lock',tiles:[[31,2]],solid:0,crit:1,
+  check:'Двери эвакуационных выходов открываются изнутри без ключа',
+  short:'Запасной выход заперт на ключ',fix:'Замок заменён на запор, который открывается изнутри без ключа.',
+  effect:'Запасной выход был заперт на ключ — тупик.'},
+ {id:'door',tiles:[[27,7]],solid:0,crit:1,
+  check:'Все предусмотренные проектом двери на путях эвакуации на месте',
+  short:'Снята дверь лестничной клетки',fix:'Дверь лестничной клетки установлена обратно.',
+  effect:'Без двери лестничная клетка быстро заполнилась дымом.'},
+ {id:'ext',tiles:[[14,8]],solid:1,crit:1,
+  check:'К огнетушителям и пожарным кранам есть свободный доступ',
+  short:'Шкаф загородил огнетушитель',fix:'Шкаф отодвинут, огнетушитель доступен.',
+  effect:'Шкаф загородил огнетушитель — очаг потушить было нечем.'},
+ {id:'elec',tiles:[[16,16]],solid:0,crit:1,
+  check:'Электросети и приборы без неисправностей',
+  short:'Искрит удлинитель на кухне',fix:'Неисправный удлинитель заменён.',
+  effect:'Пожар начался с искрящего удлинителя на кухне — в двух шагах от коридора.'},
+ {id:'alarm',tiles:[[3,0]],solid:0,crit:1,
+  check:'Система оповещения слышна во всех зонах',
+  short:'Динамик оповещения отключён',fix:'Динамик оповещения подключён и проверен.',
+  effect:'Сигнал оповещения в кабинете не было слышно — о пожаре узнали с опозданием.'},
+ {id:'grille',tiles:[[5,19]],solid:0,crit:1,
+  check:'На окнах нет глухих решёток',
+  short:'Глухая решётка на окне',fix:'Глухую решётку заменили распашной.',
+  effect:null},
+ {id:'sign',tiles:[[26,19]],solid:0,crit:0,
+  check:'Знаки «Выход» и аварийное освещение работают',
+  short:'Светознак «Выход» заклеен и не горит',fix:'Реклама снята, светознак «Выход» горит.',
+  effect:'Светознак «Выход» не горел, холл был в темноте.'},
+ {id:'plan',tiles:[[3,7]],solid:0,crit:0,
+  check:'Планы эвакуации актуальны и совпадают с планировкой',
+  short:'План эвакуации составлен до перепланировки',fix:'Повешен актуальный план эвакуации.',
+  effect:'План эвакуации устарел: маршрут вёл к заложенному выходу.'},
+ {id:'docs',tiles:[[8,2]],solid:0,crit:0,
+  check:'Журнал инструктажей и приказ об ответственном в порядке',
+  short:'Журнал инструктажей не заполнен',fix:'Журнал заполнен, приказ подшит.',
+  effect:null},
+];
+const PROBE={boxes:'Коробки в коридоре',stairs:'Вещи на лестничной клетке',lock:'Замок запасного выхода',door:'Проём лестничной клетки',ext:'Шкаф у огнетушителя',elec:'Удлинитель на кухне',alarm:'Динамик оповещения',grille:'Решётка на окне',sign:'Табличка у главного выхода',plan:'План эвакуации',docs:'Бумаги на столе'};
+VIOL.forEach(v=>v.probe=PROBE[v.id]);
+const DECOYS=[
+ {id:'cooler',decoy:1,tiles:[[1,8]],probe:'Кулер в коридоре',ok:'Кулер стоит в торце коридора и не сужает путь. Нарушения нет.'},
+ {id:'plant',decoy:1,tiles:[[30,8]],probe:'Кадка у лестничной клетки',ok:'Кадка стоит в стороне, дверь лестничной клетки открывается свободно. Нарушения нет.'},
+ {id:'sofa',decoy:1,tiles:[[25,15],[25,16]],probe:'Диван в холле',ok:'Диван у стены, проход к главному выходу свободен. Нарушения нет.'},
+];
+const VBY={}; VIOL.forEach(v=>VBY[v.id]=v);
+const vioAtTile=(x,y)=>{ if(!S) return null; for(const v of VIOL){ if(S.vio[v.id] && v.tiles.some(t=>t[0]===x&&t[1]===y)) return v; } return null; };
+
+/* ---------- Звук ---------- */
+let AC=null, muted=false, sirenN=null;
+function ac(){ if(!AC){ try{AC=new (window.AudioContext||window.webkitAudioContext)();}catch(e){} } if(AC&&AC.state==='suspended') AC.resume(); return AC; }
+function tone(f,d,type='square',v=0.04,delay=0){ if(muted) return; const a=ac(); if(!a) return;
+  const o=a.createOscillator(), g=a.createGain(); o.type=type; o.frequency.value=f; const t=a.currentTime+delay;
+  g.gain.setValueAtTime(v,t); g.gain.exponentialRampToValueAtTime(0.0001,t+d); o.connect(g).connect(a.destination); o.start(t); o.stop(t+d+0.03); }
+const jingle=(n,st=0.09)=>n.forEach((f,i)=>f&&tone(f,st*0.9,'square',0.04,i*st));
+const SFX={fix:()=>jingle([523,659,784,1047]),bad:()=>jingle([392,330,262,196],0.13),win:()=>jingle([523,523,659,784,0,659,784,1047],0.11),
+  blip:()=>tone(880,0.05,'square',0.03),bump:()=>tone(110,0.07,'square',0.03),take:()=>jingle([660,990],0.07)};
+function sirenOn(){ if(sirenN||muted) return; const a=ac(); if(!a) return;
+  const o=a.createOscillator(), l=a.createOscillator(), lg=a.createGain(), g=a.createGain();
+  o.type='square'; o.frequency.value=760; l.type='triangle'; l.frequency.value=1.5; lg.gain.value=190; l.connect(lg).connect(o.frequency);
+  g.gain.value=0.016; o.connect(g).connect(a.destination); o.start(); l.start(); sirenN={o,l}; }
+function sirenOff(){ if(!sirenN) return; try{sirenN.o.stop(); sirenN.l.stop();}catch(e){} sirenN=null; }
+$('mute').onclick=()=>{ muted=!muted; $('mute').textContent=muted?'ТИХО':'ЗВУК'; if(muted) sirenOff(); else if(S&&S.siren&&S.running) sirenOn(); };
+
+/* ---------- Состояние ---------- */
+let S=null, paused=false;
+const dirs={up:[0,-1],down:[0,1],left:[-1,0],right:[1,0]};
+let dirStack=[], actHeld=false, actEdge=false, shiftHeld=false;
+
+function baseState(mode){
+  return {mode, running:false, vio:{}, time:0, hp:100, smoke:new Float32Array(MW*MH), smoke2:new Float32Array(MW*MH), cond:new Float32Array(MW*MH),
+    fire:[], fireT:0, fireBox:null, acc:0, siren:false, alarmPressed:false, hasExt:false, extTaken:false, extinguished:false,
+    planRead:false, arrows:null, deadEnd:false, usedLift:false, crouchSmoke:0, crouchToggle:false,
+    p:{x:5,y:4,fx:5,fy:4,t:1,moving:false,face:[0,1],crouch:false},
+    mate:{x:21,y:5,fx:21,fy:5,t:1,follow:false}, hold:null, holdT:0, timeLeft:180, drill:false, fixed:[], bumpCd:{}, wt:0, clock:0, bands:[], extT:0, tipCrouch:false, cam:{x:0,y:0}, mpath:[], mact:false, autoHold:false, checked:[], warned:0, tickT:0, hpState:''};
+}
+function recalcCond(){
+  const c=S.cond;
+  for(let y=0;y<MH;y++)for(let x=0;x<MW;x++){ const ch=BASE[y][x]; let v=0;
+    if(ch==='.'||ch==='S') v=1; else if(ch==='D') v=0.06; else if(ch==='Z') v=S.vio.door?1:0.06;
+    c[idx(x,y)]=v; }
+}
+const sm=(x,y)=>S.smoke[idx(x,y)];
+const exitOpen=(x,y)=>tile(x,y)==='E' && !(x===31&&y===2&&S.vio.lock);
+const isFire=(x,y)=>S.fire.some(f=>f[0]===x&&f[1]===y);
+
+function smokeStep(h){
+  const s=S.smoke, n=S.smoke2, c=S.cond, D=6, base=(S.mode==='evac'&&S.wt>35)?0.006*h:0;
+  for(let y=1;y<MH-1;y++) for(let x=1;x<MW-1;x++){
+    const i=idx(x,y), ci=c[i]; if(ci===0){ n[i]=0; continue; }
+    const v=s[i]; let fl=0;
+    const nb=[i-1,i+1,i-MW,i+MW], nx=[x-1,x+1,x,x], ny=[y,y,y-1,y+1];
+    for(let k=0;k<4;k++){ const j=nb[k], cj=c[j]; if(cj>0) fl+=Math.min(ci,cj)*(s[j]-v); else if(exitOpen(nx[k],ny[k])) fl-=0.5*v; }
+    let nv=v+D*h*fl-0.003*h+base; n[i]=nv<0?0:nv>1?1:nv;
+  }
+  for(const f of S.fire) for(const d of [[0,0],[1,0],[-1,0],[0,1],[0,-1]]){ const i=idx(f[0]+d[0],f[1]+d[1]); if(c[i]>0) n[i]=Math.min(1,n[i]+4*h); }
+  S.smoke=n; S.smoke2=s;
+}
+function fireStep(h){
+  if(!S.fire.length) return;
+  S.fireT+=h; if(S.fireT<18 || S.fire.length>=10) return; S.fireT=0;
+  const [x1,y1,x2,y2]=S.fireBox, cand=[];
+  for(const f of S.fire) for(const d of [[1,0],[-1,0],[0,1],[0,-1]]){ const x=f[0]+d[0], y=f[1]+d[1];
+    if(x<x1||x>x2||y<y1||y>y2) continue; if(tile(x,y)!=='.'||isFire(x,y)) continue; if(S.p.x===x&&S.p.y===y) continue; cand.push([x,y]); }
+  if(cand.length) S.fire.push(cand[(Math.random()*cand.length)|0]);
+}
+function stepWorld(dt){ S.clock+=dt; fireStep(dt); smokeField(); }
+/* Дым идёт полосами: густые участки, где надо пригнуться, и чистые промежутки между ними */
+function makeBands(){
+  const B=[], add=(x1,y1,x2,y2,start,grow=0,max=0)=>B.push({x1,y1,x2,y2,start,grow,max});
+  if(S.vio.elec){ add(13,12,17,17,0); add(14,8,16,11,2,20,1); }
+  else { add(11,1,17,6,0); add(11,8,13,10,5,20,1); add(15,8,17,10,9,20,1); }
+  add(22,8,24,10,26);          // у переговорной
+  add(25,11,30,12,42);              // вход в холл
+  add(7,8,9,10,58);            // у двери кабинета
+  add(25,1,30,6,S.vio.door?10:75);  // лестничная клетка
+  add(25,16,30,17,90);              // холл у выхода
+  add(19,1,23,6,110); add(1,12,11,18,125);
+  S.bands=B;
+}
+const smokeable=(x,y)=>'.SDZ'.includes(tile(x,y));
+function smokeField(){
+  const t=S.clock, f=S.smoke; f.fill(0);
+  const fade=S.extinguished?Math.max(0.3,1-(t-S.extT)/20):1;
+  const put=(x,y,v)=>{ if(x<0||y<0||x>=MW||y>=MH||!smokeable(x,y)) return; const i=idx(x,y); if(v>f[i]) f[i]=v; };
+  for(const b of S.bands){
+    const k=clamp((t-b.start)/5,0,1); if(k<=0) continue;
+    const e=b.grow?Math.min(b.max,Math.floor((t-b.start)/b.grow)):0, x1=b.x1-e, x2=b.x2+e;
+    for(let y=b.y1-1;y<=b.y2+1;y++) for(let x=x1-1;x<=x2+1;x++){
+      const inside=x>=x1&&x<=x2&&y>=b.y1&&y<=b.y2; put(x,y,(inside?1:0.3)*k*fade); }
+  }
+  if(t>150){ const base=Math.min(0.44,(t-150)/60*0.35); for(let y=0;y<MH;y++) for(let x=0;x<MW;x++) put(x,y,base); }
+  for(const q of S.fire) put(q[0],q[1],1);
+}
+
+/* ---------- Запуск режимов ---------- */
+function startEvac(present, drill){
+  sirenOff(); $('mini').hidden=true;
+  S=baseState('evac'); S.drill=!!drill; S.vio={...present}; S.startVio={...present}; recalcCond();
+  if(S.vio.elec){ S.fire=[[16,16]]; S.fireBox=[13,12,17,17]; } else { S.fire=[[14,4]]; S.fireBox=[11,1,17,6]; }
+  S.clock=S.vio.alarm?20:3; makeBands();
+  for(let t=0;t<S.clock;t+=0.1) fireStep(0.1);
+  smokeField();
+  showPanel(); loadBorder(()=>{
+    intro(drill?'Учебная тревога':'Пожар на этаже',
+      (drill?'<p>Тренировка в здании, которое вы готовили к проверке. Задымление имитируется, но действуйте как при настоящем пожаре: всё, что вы не устранили, сейчас будет мешать.</p>'
+            :'<p>Пятница, 16:40. Где-то на этаже горит. Выберитесь из здания через эвакуационный выход.</p><p>К проверке здесь никто не готовился. Что именно не так, узнаете по дороге — в каждой партии набор нарушений свой.</p>')+
+      '<ul><li class="info" data-m="!">План эвакуации висит на стене у двери вашего кабинета. Подойдите — появится подсказка. После прочтения план останется в углу экрана.</li><li class="info" data-m="!">Дым идёт полосами. В густой полосе пригнитесь — у пола воздух чище, но идёте медленнее. Прошли полосу — выпрямляйтесь. На чистых участках здоровье восстанавливается.</li><li class="info" data-m="!">Ручной извещатель — красная кнопка в коридоре. Коллега в переговорной, над ним мигает «?» — подойдите и позовите.</li></ul>'+
+      '<p class="keys"><kbd>←↑→↓</kbd> / <kbd>WASD</kbd> или клик — идти · <kbd>Пробел</kbd> или клик по предмету — действие · <kbd>Shift</kbd>, <kbd>C</kbd> или правая кнопка — пригнуться · <kbd>Tab</kbd> — план · <kbd>Esc</kbd> — пауза</p>',
+      'Начать', ()=>{
+        S.running=true;
+        if(!S.vio.alarm){ S.siren=true; sirenOn(); setBorder('alarm'); toast(drill?'Сигнал учебной тревоги. На выход!':'Сработало оповещение. На выход!'); }
+        else toast('Сигнал оповещения в кабинете не слышно. Вы заметили дым поздно.');
+      });
+  });
+}
+function startPrep(){
+  sirenOff(); $('mini').hidden=true;
+  S=baseState('prep'); VIOL.forEach(v=>S.vio[v.id]=true); recalcCond();
+  S.p.x=S.p.fx=5; S.p.y=S.p.fy=9; S.p.face=[1,0];
+  showPanel(); loadBorder(()=>{
+    intro('Инспектор через 3 минуты',
+      '<p>Госпожконтроль придёт с тем же проверочным листом, по которому можно проверить себя. Пройдите этаж первыми и устраните нарушения на путях эвакуации.</p>'+
+      '<ul><li class="info" data-m="!">Нарушения не подсвечены. Знак «?» появляется, только когда вы рядом.</li><li class="info" data-m="!">Подойдите вплотную и удерживайте Пробел, пока полоска не заполнится. Или просто кликните по предмету — персонаж подойдёт и проверит сам.</li><li class="info" data-m="!">Не всё подозрительное — нарушение. Лишняя проверка отнимает время.</li><li class="info" data-m="!">За 30 секунд до конца таймер покраснеет и начнёт тикать.</li><li class="info" data-m="!">Некоторые нарушения прячутся за другими.</li></ul>'+
+      '<p class="keys"><kbd>←↑→↓</kbd> / <kbd>WASD</kbd> или клик — идти · <kbd>Пробел</kbd> (держать) или клик по предмету — проверить · <kbd>Esc</kbd> — пауза</p>',
+      'Начать обход', ()=>{ S.running=true; toast('Обход начался. Инспектор уже в пути.'); });
+  });
+}
+function randomPresent(){
+  const ids=['boxes','stairs','lock','door','ext','elec','alarm','sign','plan','grille','docs'], pr={};
+  ids.forEach(i=>pr[i]=Math.random()<0.6);
+  const key=['boxes','stairs','lock','door','ext','elec','alarm','sign','plan'];
+  while(key.filter(i=>pr[i]).length<4) pr[key[(Math.random()*key.length)|0]]=true;
+  return pr;
+}
+
+/* ---------- Ввод ---------- */
+const KEYMAP={ArrowUp:'up',KeyW:'up',ArrowDown:'down',KeyS:'down',ArrowLeft:'left',KeyA:'left',ArrowRight:'right',KeyD:'right'};
+const overlayOpen=()=>$('overlay').classList.contains('show');
+addEventListener('keydown',e=>{
+  if(e.code==='KeyM'){ $('mute').click(); return; }
+  if(overlayOpen()){
+    if(mapOpen&&(e.code==='Tab'||e.code==='Escape')){ e.preventDefault(); closeMap(); return; }
+    if(e.code==='Digit1'&&menuOn){ e.preventDefault(); startEvac(randomPresent(),false); }
+    if(e.code==='Digit2'&&menuOn){ e.preventDefault(); startPrep(); }
+    return;
+  }
+  if(!S||!S.running) return;
+  const d=KEYMAP[e.code];
+  if(d){ e.preventDefault(); dirStack=dirStack.filter(x=>x!==d); dirStack.push(d); return; }
+  if(e.code==='Space'||e.code==='KeyE'||e.code==='Enter'){ e.preventDefault(); if(!e.repeat){ actEdge=true; } actHeld=true; ac(); return; }
+  if(e.code==='ShiftLeft'||e.code==='ShiftRight'){ shiftHeld=true; return; }
+  if(e.code==='KeyC'){ S.crouchToggle=!S.crouchToggle; $('tCrouch').classList.toggle('on',S.crouchToggle); return; }
+  if(e.code==='Escape'){ pause(); }
+  if(e.code==='Tab'){ e.preventDefault(); openMap(); }
+});
+addEventListener('keyup',e=>{
+  const d=KEYMAP[e.code]; if(d) dirStack=dirStack.filter(x=>x!==d);
+  if(e.code==='Space'||e.code==='KeyE'||e.code==='Enter') actHeld=false;
+  if(e.code==='ShiftLeft'||e.code==='ShiftRight') shiftHeld=false;
+});
+addEventListener('blur',()=>{ dirStack=[]; actHeld=false; shiftHeld=false; if(S&&S.running) pause(); });
+// Сенсорное управление
+if(matchMedia('(pointer: coarse)').matches || 'ontouchstart' in window) $('touch').classList.add('on');
+document.querySelectorAll('.pad button').forEach(b=>{
+  const d=b.dataset.d;
+  b.addEventListener('pointerdown',e=>{ e.preventDefault(); b.setPointerCapture(e.pointerId); dirStack=dirStack.filter(x=>x!==d); dirStack.push(d); ac(); });
+  const up=()=>dirStack=dirStack.filter(x=>x!==d);
+  b.addEventListener('pointerup',up); b.addEventListener('pointercancel',up); b.addEventListener('lostpointercapture',up);
+});
+$('tAct').addEventListener('pointerdown',e=>{ e.preventDefault(); actEdge=true; actHeld=true; ac(); });
+['pointerup','pointercancel','pointerleave'].forEach(ev=>$('tAct').addEventListener(ev,()=>actHeld=false));
+$('tCrouch').addEventListener('pointerdown',e=>{ e.preventDefault(); if(!S) return; S.crouchToggle=!S.crouchToggle; $('tCrouch').classList.toggle('on',S.crouchToggle); });
+
+/* ---------- Движение и взаимодействие ---------- */
+function bump(msg){ const now=performance.now(); if((S.bumpCd[msg]||0)>now) return; S.bumpCd[msg]=now+2200; SFX.bump(); toast(msg); }
+function enter(x,y){
+  const ch=tile(x,y), ev=S.mode==='evac';
+  if(ch==='#'||ch==='W'){
+    if(ch==='W'&&x===5&&y===19&&S.vio.grille) return 'Глухая решётка на окне. Через такое окно не выбраться и не спастись.';
+    return false;
+  }
+  if(ch==='X'){ if(ev){ S.deadEnd=true; return 'Тупик. Здесь был выход — его заложили при перепланировке, а план не обновили.'; } return 'Заложенный проём. Выход здесь был до перепланировки.'; }
+  if(ch==='L'){ if(ev){ endEvac(false,'lift'); return false; } return 'Лифт. При пожаре им не пользуются — это нужно сказать на инструктаже.'; }
+  if(ch==='E'){
+    if(x===31&&y===2&&S.vio.lock) return 'Заперто! Замок открывается только ключом, а ключа нет.';
+    if(!ev) return 'Выход свободен. Работаем дальше — инспектор скоро будет.';
+    return true;
+  }
+  const d=DECOR[x+','+y]; if(d&&d.solid) return false;
+  const v=vioAtTile(x,y);
+  if(v&&v.solid){
+    if(ev){ if(v.id==='ext') return 'Шкаф загородил огнетушитель. Не достать.';
+      return (v.id==='boxes'?'Завал из коробок':'Мебель свалена у лестницы')+'. Держите '+ACT+', чтобы разобрать — это долго.'; }
+    return false;
+  }
+  if(ev&&isFire(x,y)) return 'Огонь! Туда нельзя.';
+  if(!S.mate.follow&&S.mate.x===x&&S.mate.y===y) return ev?'Коллега: «Может, это учебная?..» Нажмите '+ACT+', чтобы увести с собой.':false;
+  return true;
+}
+function curDir(){ return dirStack.length?dirs[dirStack[dirStack.length-1]]:null; }
+function movePlayer(dt){
+  const p=S.p; p.crouch=S.mode==='evac'&&(shiftHeld||S.crouchToggle);
+  const sp=p.crouch?2.3:4.6;
+  if(p.moving){ p.t+=dt*sp; const m=S.mate; if(m.follow) m.t=p.t; if(p.t>=1){ p.t=1; p.moving=false; if(m.follow) m.t=1; arrive(); if(!S.running) return; } }
+  if(!p.moving && !((actHeld||S.autoHold)&&S.hold)){
+    let d=curDir(), fromMouse=false;
+    if(d){ S.mpath=[]; S.mact=false; S.autoHold=false; }
+    else if(S.mpath.length){ d=S.mpath[0]; fromMouse=true; }
+    if(!d){ if(S.mact){ S.mact=false; act(); } return; }
+    p.face=d; const nx=p.x+d[0], ny=p.y+d[1]; const r=enter(nx,ny);
+    if(r===true){ if(fromMouse) S.mpath.shift();
+      const m=S.mate; if(m.follow){ m.fx=m.x; m.fy=m.y; m.x=p.x; m.y=p.y; m.t=0; }
+      p.fx=p.x; p.fy=p.y; p.x=nx; p.y=ny; p.t=0; p.moving=true; }
+    else { if(fromMouse){ S.mpath=[]; S.mact=false; } if(typeof r==='string') bump(r); }
+  }
+}
+function arrive(){ if(S.mode==='evac' && tile(S.p.x,S.p.y)==='E') endEvac(true); }
+const cheb=(ax,ay,bx,by)=>Math.max(Math.abs(ax-bx),Math.abs(ay-by));
+function act(){ actEdge=true; S.autoHold=true; }
+function nearPrep(x,y){
+  for(const v of VIOL) if(S.vio[v.id]&&v.tiles.some(t=>cheb(t[0],t[1],x,y)<=1)) return v;
+  for(const d of DECOYS) if(!S.checked.includes(d.id)&&d.tiles.some(t=>cheb(t[0],t[1],x,y)<=1)) return d;
+  return null;
+}
+function evacTarget(){
+  const p=S.p, x=p.x, y=p.y, m=S.mate;
+  if(!m.follow && cheb(x,y,m.x,m.y)<=2) return {k:'mate',t:ACT+' — позвать коллегу с собой',tx:m.x,ty:m.y};
+  if(!S.planRead && cheb(x,y,3,7)<=1) return {k:'plan',t:ACT+' — прочитать план эвакуации',tx:3,ty:7};
+  if(!S.alarmPressed && cheb(x,y,8,7)<=1) return {k:'button',t:ACT+' — нажать ручной пожарный извещатель',tx:8,ty:7};
+  if(!S.extTaken){ if(x===14&&y===8) return {k:'ext',t:ACT+' — взять огнетушитель',tx:14,ty:7};
+    if(S.vio.ext&&cheb(x,y,14,8)<=1) return {k:'info',t:'Шкаф загородил огнетушитель — не достать'}; }
+  const f=S.fire.find(f=>Math.abs(f[0]-x)+Math.abs(f[1]-y)===1);
+  if(f) return S.hasExt?{k:'fire',t:ACT+' — тушить очаг',tx:f[0],ty:f[1]}:{k:'info',t:'Огонь! Тушить нечем — уходите'};
+  for(const id of ['boxes','stairs']){ if(!S.vio[id]) continue;
+    const t=VBY[id].tiles.find(t=>Math.abs(t[0]-x)+Math.abs(t[1]-y)===1);
+    if(t) return {k:'clear',id,t:'Держите '+ACT+' — разобрать завал (долго)',tx:t[0],ty:t[1]}; }
+  return null;
+}
+function handleAction(dt){
+  const p=S.p, pr=$('prompt'), held=actHeld||S.autoHold;
+  if(S.mode==='prep'){
+    const v=!p.moving?nearPrep(p.x,p.y):null;
+    if(v){ pr.textContent='Держите '+ACT+': проверить — '+lc(v.probe); pr.classList.add('show'); } else pr.classList.remove('show');
+    if(v&&held){ if(S.hold!==v.id){ S.hold=v.id; S.holdT=0; SFX.blip(); } S.holdT+=dt/1.1;
+      if(S.holdT>=1){ S.hold=null; S.holdT=0; S.autoHold=false;
+        if(v.decoy){ S.checked.push(v.id); tone(330,0.12,'square',0.03); toast(v.ok); } else fixVio(v); } }
+    else { S.hold=null; S.holdT=0; if(!v) S.autoHold=false; }
+    return;
+  }
+  const tg=p.moving?null:evacTarget();
+  if(tg){ pr.textContent=tg.t; pr.classList.add('show'); } else pr.classList.remove('show');
+  if(tg&&tg.k==='clear'&&held){
+    if(S.hold!==tg.id){ S.hold=tg.id; S.holdT=0; SFX.blip(); }
+    S.holdT+=dt/3.2;
+    if(S.holdT>=1){ S.vio[tg.id]=false; S.hold=null; S.holdT=0; S.autoHold=false; SFX.fix(); toast('Завал разобран. Ушли драгоценные секунды.'); }
+  } else { S.hold=null; S.holdT=0; if(!tg||tg.k!=='clear') S.autoHold=false; }
+  if(!actEdge||!tg) return;
+  if(tg.tx!=null){ const dx=tg.tx-p.x, dy=tg.ty-p.y; if(dx||dy) p.face=Math.abs(dx)>=Math.abs(dy)?[Math.sign(dx),0]:[0,Math.sign(dy)]; }
+  if(tg.k==='mate'){ S.mate.follow=true; S.mate.fx=S.mate.x; S.mate.fy=S.mate.y; SFX.take(); toast('Коллега идёт за вами.'); }
+  else if(tg.k==='plan') readPlan();
+  else if(tg.k==='button'){ S.alarmPressed=true; SFX.take();
+    if(!S.siren){ S.siren=true; sirenOn(); setBorder('alarm'); toast('Вы нажали ручной извещатель — тревога включилась для всех.'); }
+    else toast('Ручной извещатель нажат: пожарная часть получила сигнал.'); }
+  else if(tg.k==='ext'){ S.extTaken=true; S.hasExt=true; SFX.take(); toast('Огнетушитель у вас. Небольшой очаг можно потушить.'); }
+  else if(tg.k==='fire'){
+    if(S.fire.length<=3){ S.fire=[]; S.extinguished=true; S.extT=S.clock; S.hasExt=false; SFX.fix(); toast('Очаг потушен! Дым понемногу редеет, но всё равно выходите.'); }
+    else toast('Очаг уже слишком большой для огнетушителя. Эвакуируйтесь!');
+  }
+}
+function readPlan(){
+  if(S.planRead) return;
+  S.planRead=true; SFX.blip();
+  S.arrows=bfsPath(S.p.x,S.p.y,S.vio.plan?[[0,9]]:[[27,19],[28,19]]);
+  S.planMain=bfsPath(3,8,S.vio.plan?[[0,9]]:[[27,19],[28,19]]);
+  S.planAlt=bfsPath(3,8,[[31,2]]);
+  $('mini').hidden=false; drawPlan($('mini'),3);
+  toast('План прочитан: маршрут отмечен стрелками, сам план — в углу экрана. Tab или клик по нему — крупно.');
+}
+function bfsPath(sx,sy,targets){
+  const key=(x,y)=>x+','+y, prev={}, q=[[sx,sy]]; prev[key(sx,sy)]=null;
+  const isT=(x,y)=>targets.some(t=>t[0]===x&&t[1]===y);
+  let end=null;
+  while(q.length){ const [x,y]=q.shift(); if(isT(x,y)){ end=[x,y]; break; }
+    for(const d of [[1,0],[-1,0],[0,1],[0,-1]]){ const nx=x+d[0], ny=y+d[1], k=key(nx,ny); if(k in prev) continue;
+      const ch=tile(nx,ny); const ok=('.SDZ'.includes(ch)&&!(DECOR[k]&&DECOR[k].solid))||isT(nx,ny); if(!ok) continue; prev[k]=[x,y]; q.push([nx,ny]); } }
+  if(!end) return [];
+  const path=[]; let c=end; while(c){ path.unshift(c); c=prev[key(c[0],c[1])]; }
+  const out=[]; for(let i=1;i<path.length-1;i++){ out.push({x:path[i][0],y:path[i][1],dx:path[i+1][0]-path[i][0],dy:path[i+1][1]-path[i][1]}); }
+  return out;
+}
+function applyHazards(dt){
+  const p=S.p, s=sm(p.x,p.y), nearFire=S.fire.some(f=>Math.abs(f[0]-p.x)+Math.abs(f[1]-p.y)===1);
+  let dmg=0;
+  if(s>=0.5){ dmg=p.crouch?1.5:34; if(p.crouch) S.crouchSmoke+=dt;
+    else if(!S.tipCrouch){ S.tipCrouch=true; toast('Густой дым! Пригнитесь: '+(('ontouchstart' in window)?'кнопка «Пригнуться»':'Shift, C или правая кнопка мыши')+'. Прошли полосу — можно выпрямиться.'); } }
+  else if(s>=0.15) dmg=p.crouch?0.8:5;
+  if(nearFire) dmg+=6;
+  S.hp-=dmg*dt;
+  if(dmg>0) S.hpState='hurt';
+  else if(s<0.12&&!nearFire&&S.hp<100){ S.hp=Math.min(100,S.hp+6*dt); S.hpState='regen'; }
+  else S.hpState='';
+  if(S.hp<=0){ S.hp=0; endEvac(false,'smoke'); }
+}
+function fixVio(v){
+  S.vio[v.id]=false; S.fixed.push(v.id); recalcCond(); SFX.fix(); toast(v.fix); showPanel();
+  if(VIOL.every(x=>!S.vio[x.id])) setTimeout(()=>{ if(S.running) endPrep(); },900);
+}
+
+/* ---------- Итоги ---------- */
+function best(key,score){ let b=0; try{ b=+localStorage.getItem(key)||0; if(score>b){ localStorage.setItem(key,score); } }catch(e){} return Math.max(b,score); }
+const mmss=t=>{ t=Math.max(0,Math.round(t)); return String((t/60)|0).padStart(2,'0')+':'+String(t%60).padStart(2,'0'); };
+function endEvac(ok,cause){
+  if(!S.running) return; S.running=false; sirenOff(); setBorder(''); $('prompt').classList.remove('show');
+  ok?SFX.win():SFX.bad();
+  const hp=Math.round(S.hp), mate=S.mate.follow&&ok;
+  const score=ok?hp*10+(S.alarmPressed?300:0)+(mate?500:0)+(S.extinguished?400:0)+Math.max(0,Math.round(900-S.time*4)):0;
+  const b=best('ptv-best-evac',score);
+  const hurt=['elec','alarm','boxes','stairs','lock','door','ext','sign','plan'].filter(i=>S.vio[i]||(i==='boxes'||i==='stairs')&&S.startVio&&S.startVio[i]).map(i=>VBY[i].effect);
+  const good=[], bad=[];
+  if(S.alarmPressed) good.push('Нажали ручной извещатель.'); else bad.push('Не нажали ручной извещатель — остальные могли не узнать о пожаре.');
+  if(S.planRead) good.push('Прочитали план эвакуации.');
+  if(S.crouchSmoke>1.5) good.push('Пригибались в дыму — у пола воздух чище.');
+  if(S.extinguished) good.push('Потушили очаг, пока он был маленьким.');
+  if(mate) good.push('Вывели коллегу. Никто не остался внутри.');
+  else bad.push('Коллега остался в переговорной. На месте сбора численность сверяют по списку — именно так находят потерявшихся.');
+  if(cause==='lift') bad.unshift('Поехали на лифте. При пожаре лифт может остановиться между этажами, а шахта быстро наполняется дымом.');
+  const title=ok?(S.drill?'Тренировка пройдена':'Вы снаружи'):(cause==='lift'?'Лифт — ловушка':(S.drill?'Тренировка провалена':'Вы не успели выйти'));
+  const lead=ok?'<p>Вы добрались до выхода. Вот что в этом здании работало против вас.</p>':(cause==='lift'?'<p>Лифт остановился между этажами.</p>':'<p>Дым оказался быстрее. Вот что в этом здании работало против вас.</p>');
+  overlay(`<h2>${title}</h2>
+   <div class="stats"><span>Время <b>${mmss(S.time)}</b></span><span>Здоровье <b>${hp}%</b></span><span>Очки <b>${score}</b></span><span>Рекорд <b>${b}</b></span></div>
+   ${lead}
+   ${hurt.length?'<h3>Нарушения в этом здании</h3><ul>'+hurt.map(t=>`<li class="no" data-m="✗">${t}</li>`).join('')+'</ul>':'<h3>Нарушения в этом здании</h3><p>Их не было — пути эвакуации в порядке.</p>'}
+   ${good.length?'<h3>Что сделали правильно</h3><ul>'+good.map(t=>`<li class="ok" data-m="✓">${t}</li>`).join('')+'</ul>':''}
+   ${bad.length?'<h3>Что стоит отработать</h3><ul>'+bad.map(t=>`<li class="info" data-m="!">${t}</li>`).join('')+'</ul>':''}
+   <div class="row"><button class="btn" id="bAgain">${S.drill?'Готовить здание заново':'Сыграть ещё'}</button><button class="btn alt" id="bMenu">В меню</button></div>`);
+  $('bAgain').onclick=()=>S.drill?startPrep():startEvac(randomPresent(),false);
+  $('bMenu').onclick=menu; $('bAgain').focus({preventScroll:true});
+}
+function endPrep(){
+  if(!S.running) return; S.running=false; setBorder(''); $('prompt').classList.remove('show');
+  const left=VIOL.filter(v=>S.vio[v.id]), crit=left.filter(v=>v.crit);
+  const score=S.fixed.length*100+(left.length?0:Math.round(S.timeLeft)*10);
+  const b=best('ptv-best-prep',score);
+  let verdict;
+  if(crit.length){ verdict=`<div class="verdict bad">Приостановление деятельности до 60 календарных дней. ${crit.length===1?'Нарушение':'Нарушения'} из перечня приложения 32 к проверочным листам (приказ МВД РК № 758 и МНЭ РК № 31 от 30.10.2018).</div>`; SFX.bad(); }
+  else if(left.length){ verdict='<div class="verdict mid">Предписание и административный штраф по ст. 410 КоАП РК. Критичных нарушений нет, но проверочный лист закрыт не полностью.</div>'; SFX.bad(); }
+  else { verdict='<div class="verdict good">Проверка пройдена. По путям эвакуации замечаний нет.</div>'; SFX.win(); }
+  const items=VIOL.map(v=>`<li class="${S.vio[v.id]?'no':'ok'}" data-m="${S.vio[v.id]?'✗':'✓'}">${v.check}${S.vio[v.id]?' — '+lc(v.short):''}</li>`).join('');
+  overlay(`<h2>${left.length?'Инспектор нашёл нарушения':'Инспектор ушёл ни с чем'}</h2>
+    <div class="stats"><span>Устранено <b>${S.fixed.length} из ${VIOL.length}</b></span><span>Осталось времени <b>${mmss(S.timeLeft)}</b></span><span>Очки <b>${score}</b></span><span>Рекорд <b>${b}</b></span></div>
+    ${verdict}
+    <h3>Проверочный лист</h3><ul>${items}</ul>
+    ${S.checked.length?`<p>Лишние проверки: ${S.checked.map(id=>lc(DECOYS.find(d=>d.id===id).probe)).join(', ')}. Нарушением это не было — просто ушло время.</p>`:''}
+    <p>Теперь проверьте здание в деле: учебная эвакуация пройдёт с теми нарушениями, которые вы оставили.</p>
+    <div class="row"><button class="btn" id="bDrill">Провести учебную эвакуацию</button><button class="btn alt" id="bAgain">Ещё раз</button><button class="btn alt" id="bMenu">В меню</button></div>`);
+  const pres={}; VIOL.forEach(v=>pres[v.id]=S.vio[v.id]);
+  $('bDrill').onclick=()=>startEvac(pres,true); $('bAgain').onclick=startPrep; $('bMenu').onclick=menu; $('bDrill').focus({preventScroll:true});
+}
+
+/* ---------- Оверлеи, тосты, панель ---------- */
+let menuOn=false, toastT=0;
+function overlay(html){ const o=$('overlay'); o.innerHTML=html; o.classList.add('show'); o.scrollTop=0; $('toast').classList.remove('show'); toastT=0; }
+const lc=t=>t.charAt(0).toLowerCase()+t.slice(1);
+function closeOverlay(){ $('overlay').classList.remove('show'); menuOn=false; }
+function intro(title,body,btn,go){
+  overlay(`<h2>${title}</h2>${body}<div class="row"><button class="btn" id="bGo">${btn}</button><button class="btn alt" id="bMenu">В меню</button></div>`);
+  $('bGo').onclick=()=>{ closeOverlay(); ac(); dirStack=[]; actHeld=false; go(); };
+  $('bMenu').onclick=menu; $('bGo').focus({preventScroll:true});
+}
+function toast(t){ const el=$('toast'); el.textContent=t; el.classList.add('show'); toastT=3.4; }
+function pause(){
+  if(!S||!S.running) return; S.running=false; paused=true; sirenOff();
+  overlay('<h2>Пауза</h2><div class="row"><button class="btn" id="bRes">Продолжить</button><button class="btn alt" id="bMenu">В меню</button></div>');
+  $('bRes').onclick=()=>{ closeOverlay(); paused=false; S.running=true; dirStack=[]; if(S.siren) sirenOn(); };
+  $('bMenu').onclick=menu; $('bRes').focus({preventScroll:true});
+}
+function setBorder(c){ const b=$('border'); b.classList.remove('alarm','loading'); if(c) b.classList.add(c); }
+function loadBorder(next){ setBorder('loading'); setTimeout(()=>{ setBorder(''); next(); }, reduced?0:650); }
+function menu(){
+  sirenOff(); $('mini').hidden=true; mapOpen=false; setBorder(''); paused=false; $('toast').classList.remove('show'); $('prompt').classList.remove('show');
+  S=baseState('demo'); S.vio={}; VIOL.forEach(v=>S.vio[v.id]=Math.random()<0.5); recalcCond();
+  S.fire=[[16,16]]; S.fireBox=[13,12,17,17]; S.vio.elec=true; S.clock=70; makeBands(); smokeField(); S.running=true;
+  let be=0,bp=0; try{ be=+localStorage.getItem('ptv-best-evac')||0; bp=+localStorage.getItem('ptv-best-prep')||0; }catch(e){}
+  overlay(`<div class="logo">ПУТЬ<br>К ВЫХОДУ</div>
+    <p>За кого играете?</p>
+    <div class="choice"><button class="btn" id="m1">1. Сотрудник</button><small>Пожар на этаже. Выбраться из здания, которое никто не готовил к проверке: завалы, запертые двери, устаревший план.</small></div>
+    <div class="choice"><button class="btn" id="m2">2. Специалист по охране труда</button><small>До прихода инспектора 3 минуты. Найти и устранить нарушения на путях эвакуации, а потом проверить здание учебной тревогой.</small></div>
+    ${be||bp?`<p class="keys">Рекорды: сотрудник — ${be}, охрана труда — ${bp}</p>`:''}`);
+  menuOn=true;
+  $('m1').onclick=()=>startEvac(randomPresent(),false); $('m2').onclick=startPrep; $('m1').focus({preventScroll:true});
+  showPanel();
+}
+function showPanel(){
+  const el=$('panel');
+  if(S&&S.mode==='prep'){
+    el.innerHTML='<h2>Экспресс-чек-лист «Пути эвакуации»</h2><ul>'+VIOL.map(v=>`<li class="${S.vio[v.id]?'':'done'}">${v.check}</li>`).join('')+'</ul>';
+  } else if(S&&S.mode==='evac'){
+    el.innerHTML='<h2>Как выжить в игре и на работе</h2><p>Прочитайте план у двери кабинета и идите по зелёным стрелкам, но проверяйте, совпадает ли он с тем, что видите. В дыму пригнитесь. Лифт — не выход. Небольшой очаг можно потушить огнетушителем, большой — нет. Не забудьте коллегу.</p><p class="src">Управление: стрелки, WASD или клик мышью — идти; Пробел или клик по предмету — действие; Shift, C или правая кнопка — пригнуться; Tab — план; Esc — пауза; M — звук.</p>';
+  } else {
+    el.innerHTML='<h2>По мотивам статьи «Пожарная безопасность: три дела»</h2><p>Игра собрана из реальных пунктов проверочного листа: запертые изнутри выходы, завалы в коридорах, склад под лестницей, снятые двери, неработающие оповещение и знаки «Выход», устаревший план эвакуации.</p><p class="src">Управление: стрелки, WASD или клик мышью — идти; Пробел или клик по предмету — действие; Shift, C или правая кнопка — пригнуться; Tab — план; Esc — пауза; M — звук. На телефоне — кнопки под экраном или касание по полю.</p>';
+  }
+}
+
+/* ---------- HUD ---------- */
+const hudCache={};
+function setC(id,c){ const el=$(id); const want=(id==='hM'?'m':'r')+(c?' '+c:''); if(el.className!==want) el.className=want; }
+function setH(id,v){ if(hudCache[id]!==v){ hudCache[id]=v; $(id).textContent=v; } }
+function hud(){
+  if(!S||S.mode==='demo'){ setC('hM',''); setC('hR',''); setH('hL','Путь к выходу'); setH('hM','Выберите режим'); setH('hR',''); return; }
+  if(S.mode==='evac'){
+    const n=Math.round(S.hp/10); setH('hL',S.drill?'Учебная тревога':'Сотрудник');
+    setH('hM','Здоровье '+'█'.repeat(n)+'░'.repeat(10-n)+(S.hpState==='regen'?' +':'')); setC('hM',S.hpState); setC('hR','');
+    setH('hR',(S.p.crouch?'пригнулся  ':(S.running&&sm(S.p.x,S.p.y)>=0.5?'ПРИГНИТЕСЬ!  ':''))+(S.hasExt?'огнетушитель  ':'')+mmss(S.time));
+  } else {
+    setC('hM',''); setH('hL','Охрана труда'); setH('hM','Устранено '+S.fixed.length+' из '+VIOL.length); setH('hR','Инспектор через '+mmss(S.timeLeft)); setC('hR',S.timeLeft<=30?'warn':'');
+  }
+}
+
+/* ---------- Отрисовка ---------- */
+const R=(x,y,w,h,c)=>{ ctx.fillStyle=c; ctx.fillRect(x|0,y|0,w,h); };
+function floorKind(x,y){
+  if(y>=7&&y<=10) return 'corr';
+  if(y===11) return x>=25?'lobby':(x===15?'kitchen':'corr');
+  if(y<=6){ if(x>=25) return 'stair'; if(x>=19) return 'meet'; return 'office'; }
+  if(x<=11) return 'open'; if(x<=17) return 'kitchen'; return 'lobby';
+}
+function drawFloor(x,y,sx,sy){
+  switch(floorKind(x,y)){
+    case 'office': R(sx,sy,16,16,'#1b1b66'); R(sx+3,sy+3,1,1,'#34349a'); R(sx+11,sy+10,1,1,'#34349a'); break;
+    case 'meet': R(sx,sy,16,16,'#3e1a44'); R(sx+4,sy+11,1,1,'#6a3a74'); R(sx+12,sy+4,1,1,'#6a3a74'); break;
+    case 'open': R(sx,sy,16,16,'#0f3a3a'); R(sx+2,sy+9,1,1,'#1f6664'); R(sx+10,sy+2,1,1,'#1f6664'); break;
+    case 'corr': R(sx,sy,16,16,'#6a6a70'); R(sx,sy,16,1,'#58585e'); R(sx,sy,1,16,'#58585e'); R(sx+8,sy+8,1,1,'#7e7e86'); break;
+    case 'kitchen': R(sx,sy,8,8,'#9a9aa0'); R(sx+8,sy+8,8,8,'#9a9aa0'); R(sx+8,sy,8,8,'#c2c2c8'); R(sx,sy+8,8,8,'#c2c2c8'); break;
+    case 'lobby': R(sx,sy,16,16,(x+y)%2?'#2c2c34':'#3a3a44'); break;
+    default: R(sx,sy,16,16,'#34343c');
+  }
+}
+function drawWall(x,y,sx,sy){
+  let inner=true; for(let j=-1;j<=1;j++) for(let i=-1;i<=1;i++){ const t=tile(x+i,y+j); if(!(t==='#'||t==='L')) inner=false; }
+  if(inner){ R(sx,sy,16,16,'#24242c'); return; }
+  R(sx,sy,16,16,'#7c7c8c'); R(sx,sy,16,2,'#b0b0c0'); R(sx,sy+15,16,1,'#3a3a46');
+  R(sx,sy+6,16,1,'#6a6a7a'); R(sx,sy+11,16,1,'#6a6a7a'); R(sx+5+(y%2)*4,sy+2,1,4,'#6a6a7a'); R(sx+11-(y%2)*4,sy+7,1,4,'#6a6a7a');
+}
+function drawDoor(sx,sy){ R(sx+1,sy+1,14,14,'#AA5500'); R(sx+1,sy+1,14,2,'#d07a2a'); R(sx+7,sy+1,1,14,'#5a2c00'); R(sx+10,sy+7,2,2,'#FFFF55'); R(sx+4,sy+7,2,2,'#FFFF55'); }
+function drawPixText(pat,sx,sy,c){ for(let r=0;r<pat.length;r++) for(let q=0;q<pat[r].length;q++) if(pat[r][q]==='#') R(sx+q,sy+r,1,1,c); }
+const RUNNER=['..#..','.###.','#.#.#','..#..','.#.#.','#...#'];
+const QMARK=['.###.','#...#','....#','..##.','..#..','.....','..#..'];
+function drawTile(x,y,sx,sy,now){
+  const ch=tile(x,y);
+  if(ch==='.'||ch==='S'||ch==='D'||ch==='Z'){ drawFloor(x,y,sx,sy); }
+  if(ch==='S'){ R(sx,sy,16,16,'#4a4a54'); for(let i=0;i<4;i++){ R(sx,sy+i*4,16,1,'#80808c'); R(sx,sy+i*4+3,16,1,'#26262e'); } R(sx,sy,1,16,'#26262e'); }
+  else if(ch==='D') drawDoor(sx,sy);
+  else if(ch==='Z'){ if(S.vio.door){ R(sx,sy,2,16,'#AA5500'); R(sx+14,sy,2,16,'#AA5500'); R(sx+1,sy+3,2,2,'#FFFF55'); R(sx+1,sy+11,2,2,'#FFFF55'); } else drawDoor(sx,sy); }
+  else if(ch==='#'){ drawWall(x,y,sx,sy); }
+  else if(ch==='W'){ drawWall(x,y,sx,sy); R(sx+2,sy+3,12,10,'#55FFFF'); R(sx+2,sy+3,12,2,'#FFFFFF'); R(sx+7,sy+3,1,10,'#7c7c8c');
+    if(x===5&&y===19&&S.vio.grille){ for(let i=0;i<5;i++) R(sx+2+i*3,sy+3,1,10,'#111'); R(sx+2,sy+6,12,1,'#111'); R(sx+2,sy+10,12,1,'#111'); } }
+  else if(ch==='X'){ R(sx,sy,16,16,'#8a1a1a'); for(let r=0;r<4;r++){ R(sx,sy+r*4+3,16,1,'#4a1010'); R(sx+((r%2)?3:10),sy+r*4,1,3,'#4a1010'); } }
+  else if(ch==='L'){ R(sx,sy,16,16,'#AAAAAA'); R(sx,sy,16,2,'#e0e0e0'); R(sx+(x===20?15:0),sy,1,16,'#555555'); R(sx+6,sy+5,4,1,'#555'); R(sx+7,sy+4,2,1,'#555'); R(sx+6,sy+10,4,1,'#555'); R(sx+7,sy+11,2,1,'#555'); }
+  else if(ch==='E'){ const locked=x===31&&y===2&&S.vio.lock;
+    R(sx,sy,16,16,'#00AA00'); R(sx,sy,16,2,'#55FF55'); drawPixText(RUNNER,sx+5,sy+5,'#FFFFFF');
+    if(locked){ R(sx+4,sy+8,8,6,'#FFFF55'); R(sx+5,sy+5,1,3,'#FFFF55'); R(sx+10,sy+5,1,3,'#FFFF55'); R(sx+6,sy+4,4,1,'#FFFF55'); R(sx+7,sy+10,2,2,'#000'); } }
+  // настенные объекты
+  const wo=WALLOBJ[x+','+y];
+  if(wo==='plan'){ const old=S.vio.plan; R(sx+2,sy+2,12,11,old?'#c8b878':'#FFFFFF'); R(sx+2,sy+2,12,1,'#333'); R(sx+2,sy+12,12,1,'#333');
+    R(sx+4,sy+5,7,1,old?'#6a8a3a':'#00AA00'); R(sx+10,sy+5,1,5,old?'#6a8a3a':'#00AA00'); R(sx+4,sy+8,1,1,'#0000AA'); if(old){ R(sx+11,sy+3,2,2,'#AA5500'); } }
+  else if(wo==='button'){ R(sx+4,sy+4,8,8,'#AA0000'); R(sx+6,sy+6,4,4,S&&S.alarmPressed?'#550000':'#FF5555'); R(sx+4,sy+4,8,1,'#FF5555'); }
+  else if(wo==='ext'){ R(sx+3,sy+2,10,13,'#3a3a44'); if(!S.extTaken){ R(sx+6,sy+4,4,10,'#FF5555'); R(sx+6,sy+3,4,2,'#222'); R(sx+5,sy+5,1,4,'#222'); R(sx+7,sy+6,2,4,'#FFFFFF'); } }
+  else if(wo==='speaker'){ R(sx+4,sy+3,8,8,'#222'); for(let i=0;i<3;i++) for(let j=0;j<3;j++) R(sx+5+i*2,sy+4+j*2,1,1,'#AAAAAA');
+    if(S.vio.alarm){ R(sx+8,sy+11,1,4,'#FF5555'); R(sx+9,sy+14,2,1,'#FF5555'); } else R(sx+7,sy+11,2,2,'#55FF55'); }
+  else if(wo==='sign'){ if(S.vio.sign){ R(sx+1,sy+2,14,11,'#FF55FF'); R(sx+1,sy+5,14,2,'#FFFF55'); R(sx+3,sy+9,10,1,'#AA00AA'); }
+    else { if(S.mode==='evac'){ ctx.globalAlpha=0.35; R(sx-6,sy-10,28,26,'#55FF55'); ctx.globalAlpha=1; } R(sx+1,sy+3,14,9,'#00AA00'); drawPixText(RUNNER,sx+5,sy+4,'#FFFFFF'); } }
+  // мебель
+  const d=DECOR[x+','+y];
+  if(d) drawDecor(d.type,x,y,sx,sy);
+  // нарушения
+  const v=vioAtTile(x,y); if(v) drawVio(v.id,x,y,sx,sy,now);
+  else if(x===16&&y===16&&!isFire(x,y)){ R(sx+3,sy+8,10,4,'#FFFFFF'); R(sx+3,sy+11,10,1,'#AAAAAA'); }
+  if(x===8&&y===2&&!S.vio.docs){ R(sx+6,sy+8,7,5,'#0000AA'); R(sx+7,sy+9,5,1,'#55FFFF'); }
+}
+function drawDecor(t,x,y,sx,sy){
+  switch(t){
+    case 'desk': R(sx,sy+2,16,12,'#AA5500'); R(sx,sy+2,16,2,'#d07a2a'); R(sx,sy+13,16,1,'#5a2c00');
+      if(x%2===0){ R(sx+3,sy+3,8,6,'#222'); R(sx+4,sy+4,6,4,'#55FFFF'); } else { R(sx+2,sy+9,8,3,'#AAAAAA'); } break;
+    case 'chair': R(sx+4,sy+4,8,8,'#222'); R(sx+5,sy+5,6,6,'#555'); break;
+    case 'plant': R(sx+5,sy+10,6,5,'#AA5500'); R(sx+3,sy+3,5,6,'#00AA00'); R(sx+8,sy+2,5,7,'#00AA00'); R(sx+5,sy+1,5,5,'#55FF55'); break;
+    case 'printer': R(sx+2,sy+4,12,9,'#AAAAAA'); R(sx+4,sy+2,8,3,'#FFFFFF'); R(sx+3,sy+9,10,1,'#333'); R(sx+11,sy+6,2,1,'#55FF55'); break;
+    case 'table': R(sx,sy,16,16,'#9a6230'); R(sx,sy,16,1,'#c08a50'); if(y===3) R(sx+5,sy+10,5,4,'#FFFFFF'); break;
+    case 'cooler': R(sx+4,sy+6,8,9,'#FFFFFF'); R(sx+5,sy+1,6,6,'#55FFFF'); R(sx+6,sy+10,1,2,'#FF5555'); R(sx+9,sy+10,1,2,'#5555FF'); break;
+    case 'fridge': R(sx+2,sy+1,12,14,'#FFFFFF'); R(sx+2,sy+6,12,1,'#AAAAAA'); R(sx+11,sy+3,1,2,'#555'); R(sx+11,sy+8,1,3,'#555'); break;
+    case 'counter': R(sx,sy+1,16,14,'#AAAAAA'); R(sx,sy+1,16,3,'#FFFFFF'); if(x===15){ R(sx+3,sy+5,10,6,'#555'); R(sx+4,sy+6,8,4,'#777'); } break;
+    case 'sofa': R(sx+1,sy,14,16,'#AA0000'); R(sx+1,sy,4,16,'#FF5555'); R(sx+1,sy+(y===15?0:15),14,1,'#550000'); break;
+    case 'reception': R(sx,sy+3,16,11,'#AA5500'); R(sx,sy+3,16,3,'#d07a2a'); break;
+  }
+}
+function drawVio(id,x,y,sx,sy,now){
+  switch(id){
+    case 'boxes': { const o=(x+y)%2; R(sx+1,sy+2+o,14,12,'#c08040'); R(sx+1,sy+2+o,14,1,'#e0b070'); R(sx+7,sy+2+o,2,12,'#e8d0a0'); R(sx+1,sy+8+o,14,1,'#8a5a2a');
+      if(o){ R(sx+3,sy,9,5,'#c08040'); R(sx+7,sy,2,5,'#e8d0a0'); } break; }
+    case 'stairs': R(sx+1,sy+4,14,10,'#555'); R(sx+2,sy+1,6,7,'#AA5500'); R(sx+2,sy+1,6,1,'#d07a2a'); R(sx+8,sy+6,6,8,'#AA00AA'); R(sx+9,sy+7,4,2,'#FF55FF'); R(sx+3,sy+10,4,4,'#c08040'); break;
+    case 'ext': R(sx+1,sy+1,14,14,'#6a6a3a'); R(sx+1,sy+1,14,2,'#9a9a5a'); R(sx+7,sy+3,1,12,'#3a3a20'); R(sx+5,sy+8,1,2,'#FFFF55'); R(sx+9,sy+8,1,2,'#FFFF55'); break;
+    case 'elec': if(isFire(x,y)) break; R(sx+3,sy+8,10,4,'#FFFFFF'); R(sx+4,sy+9,2,2,'#222'); R(sx+8,sy+9,2,2,'#222'); R(sx+1,sy+10,2,1,'#222'); R(sx+13,sy+9,3,1,'#222');
+      if(((now/120)|0)%2){ R(sx+6,sy+5,1,2,'#FFFF55'); R(sx+9,sy+4,1,1,'#FFFFFF'); R(sx+11,sy+6,1,1,'#FFFF55'); } break;
+    case 'docs': R(sx+4,sy+6,5,4,'#FFFFFF'); R(sx+8,sy+8,5,5,'#e8e8e8'); R(sx+6,sy+11,4,3,'#FFFFFF'); R(sx+9,sy+9,3,1,'#FF5555'); break;
+  }
+}
+function drawFire(sx,sy,now,seed){
+  R(sx,sy,16,16,'#AA0000'); let r=((now/90)|0)*7+seed*13;
+  const rnd=()=>{ r=(r*1103515245+12345)&0x7fffffff; return r; };
+  for(let i=0;i<16;i++){ const c=['#FF5555','#FFFF55','#FFFFFF','#FF5555'][rnd()%4]; R(sx+rnd()%15,sy+rnd()%15,2,2+rnd()%3,c); }
+}
+function drawPerson(px,py,o,face,crouch,step){
+  const cy=crouch?4:0, dir=face[0]===1?'r':face[0]===-1?'l':face[1]===-1?'u':'d';
+  // тень
+  ctx.globalAlpha=0.35; R(px+3,py+14,10,2,'#000'); ctx.globalAlpha=1;
+  // ноги
+  const l1=step?3:4, l2=step?4:3;
+  if(!crouch){ R(px+5,py+12,2,l1,o.legs); R(px+9,py+12,2,l2,o.legs); } else { R(px+4,py+13,8,2,o.legs); }
+  // тело
+  R(px+4,py+6+cy,8,7-(crouch?1:0),o.body); if(o.vest){ R(px+4,py+9+cy,8,1,'#FFFFFF'); }
+  R(px+3,py+7+cy,1,4,o.body); R(px+12,py+7+cy,1,4,o.body);
+  // голова
+  R(px+5,py+1+cy,6,5,'#f0a070'); R(px+5,py+1+cy,6,2,o.hair);
+  if(dir==='u') R(px+5,py+1+cy,6,4,o.hair);
+  if(dir==='d'){ R(px+6,py+3+cy,1,1,'#000'); R(px+9,py+3+cy,1,1,'#000'); }
+  if(dir==='r') R(px+9,py+3+cy,1,1,'#000'); if(dir==='l') R(px+6,py+3+cy,1,1,'#000');
+  if(o.helmet){ R(px+4,py+cy,8,2,o.helmet); R(px+5,py-1+cy,6,1,o.helmet); }
+}
+function render(now){
+  if(!S) return;
+  ctx.fillStyle='#000'; ctx.fillRect(0,0,cv.width,cv.height);
+  const p=S.p;
+  let ppx=(p.fx+(p.x-p.fx)*p.t)*T, ppy=(p.fy+(p.y-p.fy)*p.t)*T;
+  let cx, cy;
+  if(S.mode==='demo'){ cx=(Math.sin(now/5200)*0.5+0.5)*(MW*T-VW*T); cy=(Math.sin(now/7300)*0.5+0.5)*(MH*T-VH*T); }
+  else { cx=clamp(ppx+8-VW*T/2,0,MW*T-VW*T); cy=clamp(ppy+8-VH*T/2,0,MH*T-VH*T); }
+  cx=Math.round(cx); cy=Math.round(cy); S.cam={x:cx,y:cy};
+  const x0=(cx/T)|0, y0=(cy/T)|0;
+  for(let y=y0;y<=Math.min(MH-1,y0+VH);y++) for(let x=x0;x<=Math.min(MW-1,x0+VW);x++) drawTile(x,y,x*T-cx,y*T-cy,now);
+  // стрелки плана
+  if(S.arrows){ for(const a of S.arrows){ const sx=a.x*T-cx, sy=a.y*T-cy; if(vioAtTile(a.x,a.y)&&VBY[vioAtTile(a.x,a.y).id].solid) continue;
+    const c='#55FF55', mx=sx+8, my=sy+8;
+    R(mx-1,my-1,2,2,'#003300'); for(let k=0;k<4;k++){ const along=k*2-3, perp=(3-k)*2; if(a.dx){ R(mx+a.dx*along-1,my-perp-1,2,2,c); R(mx+a.dx*along-1,my+perp-1,2,2,c); } else { R(mx-perp-1,my+a.dy*along-1,2,2,c); R(mx+perp-1,my+a.dy*along-1,2,2,c); } } } }
+  // дым
+  if(S.mode!=='prep'){
+    for(let y=y0;y<=Math.min(MH-1,y0+VH);y++) for(let x=x0;x<=Math.min(MW-1,x0+VW);x++){
+      const s=sm(x,y); if(s<0.05) continue;
+      const sx=x*T-cx, sy=y*T-cy, near=p.crouch&&Math.abs(x-p.x)<=1&&Math.abs(y-p.y)<=1;
+      if(s>=0.5){ const a=near?0.45:0.82;
+        ctx.globalAlpha=a; R(sx,sy,16,16,'#2c2c34');
+        ctx.globalAlpha=a*0.9; const o=((now/140)|0)+x*5; R(sx,sy+(o%4),16,2,'#8e8e9a'); R(sx,sy+6+((o+2)%4),16,2,'#a8a8b4'); R(sx,sy+12+((o+1)%3),16,1,'#8e8e9a');
+      } else { ctx.globalAlpha=Math.min(0.4,s*0.9); R(sx,sy,16,16,'#44444e'); const w=((now/450)|0)+x*3+y*5; ctx.globalAlpha*=0.8; R(sx+(w%10),sy+((w*7)%10),6,3,'#9a9aa4'); }
+      ctx.globalAlpha=1;
+    }
+  }
+  // огонь
+  S.fire.forEach((f,i)=>drawFire(f[0]*T-cx,f[1]*T-cy,now,i));
+  // люди
+  const m=S.mate;
+  if(S.mode!=='prep'){ const mx=(m.fx+(m.x-m.fx)*m.t)*T-cx, my=(m.fy+(m.y-m.fy)*m.t)*T-cy;
+    if(!(S.mode==='evac'&&!S.running&&tile(S.p.x,S.p.y)==='E'&&m.follow)) drawPerson(mx,my-2,{body:'#AA00AA',legs:'#222',hair:'#FFFF55'},m.follow?S.p.face:[0,1],S.p.crouch&&m.follow,m.follow&&S.p.moving&&(((now/140)|0)%2));
+    if(S.mode==='evac'&&!m.follow&&((now/350)|0)%2){ R(mx+4,my-10,9,10,'#FFFFFF'); R(mx+7,my,3,2,'#FFFFFF'); drawPixText(QMARK,mx+6,my-9,'#AA00AA'); } }
+  if(S.mode!=='demo'){
+    const look=S.mode==='prep'?{body:'#FF5555',legs:'#0000AA',hair:'#AA5500',vest:1,helmet:'#FFFFFF'}:{body:'#5555FF',legs:'#0000AA',hair:'#3a2210'};
+    drawPerson(ppx-cx,ppy-cy-2,look,p.face,p.crouch,p.moving&&(((now/120)|0)%2));
+    if(S.mode==='evac'&&!p.crouch&&sm(p.x,p.y)>=0.5){ const o=((now/140)|0)%3; ctx.globalAlpha=0.75; R(ppx-cx,ppy-cy-4,16,8,'#3a3a44'); R(ppx-cx,ppy-cy-3+o,16,2,'#a8a8b4'); ctx.globalAlpha=1; }
+  }
+  // темнота, если не горят «Выход» и аварийное освещение
+  if(S.mode==='evac'&&S.vio.sign){
+    for(let y=Math.max(8,y0);y<=Math.min(MH-1,y0+VH);y++) for(let x=Math.max(24,x0);x<=Math.min(MW-1,x0+VW);x++){
+      const dd=Math.hypot(x-(ppx/T),y-(ppy/T)); const a=clamp((dd-1.3)/1.8,0,0.94);
+      if(a>0){ ctx.globalAlpha=a; R(x*T-cx,y*T-cy,16,16,'#000'); ctx.globalAlpha=1; } }
+  }
+  // подсказки «?»
+  if(S.mode==='prep'&&S.running&&((now/300)|0)%2){
+    for(const v of [...VIOL,...DECOYS]){ if(v.decoy?S.checked.includes(v.id):!S.vio[v.id]) continue; const t=v.tiles.find(t=>Math.max(Math.abs(t[0]-p.x),Math.abs(t[1]-p.y))<=2);
+      if(t){ const sx=t[0]*T-cx, sy=t[1]*T-cy; R(sx+4,sy-6,9,10,'#000'); drawPixText(QMARK,sx+6,sy-5,'#FFFF55'); } }
+  }
+  // цель клика мышью
+  if(S.mpath&&S.mpath.length&&S.mgoal){ const sx=S.mgoal[0]*T-cx, sy=S.mgoal[1]*T-cy; const c='#FFFF55'; R(sx,sy,4,1,c);R(sx,sy,1,4,c);R(sx+12,sy,4,1,c);R(sx+15,sy,1,4,c);R(sx,sy+15,4,1,c);R(sx,sy+12,1,4,c);R(sx+12,sy+15,4,1,c);R(sx+15,sy+12,1,4,c); }
+  // полоска удержания
+  if(S.hold&&S.holdT>0){ const sx=ppx-cx, sy=ppy-cy-8; R(sx,sy,16,4,'#000'); R(sx+1,sy+1,Math.round(14*S.holdT),2,S.mode==='prep'?'#55FF55':'#FFFF55'); }
+}
+
+
+/* ---------- План эвакуации (мини и крупно) ---------- */
+let mapOpen=false;
+function drawPlan(c,sc){
+  const g=c.getContext('2d'); if(c.width!==MW*sc){ c.width=MW*sc; c.height=MH*sc; } g.imageSmoothingEnabled=false;
+  const old=S.vio.plan, F=(x,y,w,h,col)=>{ g.fillStyle=col; g.fillRect(x,y,w,h); };
+  F(0,0,c.width,c.height,old?'#efe6c4':'#FFFFFF');
+  for(let y=0;y<MH;y++) for(let x=0;x<MW;x++){ const ch=tile(x,y);
+    if(ch==='#'||ch==='W'||ch==='L'||(ch==='X'&&!old)) F(x*sc,y*sc,sc,sc,'#111');
+    else if(ch==='E'||(ch==='X'&&old)) F(x*sc,y*sc,sc,sc,'#00AA00');
+    else if(ch==='S'&&sc>=6) for(let i=0;i<3;i++) F(x*sc,y*sc+i*sc/3,sc,1,'#999');
+    else if(ch==='D'&&sc>=6){ F(x*sc+1,y*sc+sc/2-1,sc-2,2,'#AA5500'); }
+  }
+  const dot=Math.max(1,Math.round(sc*0.34));
+  (S.planMain||[]).forEach(a=>{ const cx0=a.x*sc+(sc-dot)/2, cy0=a.y*sc+(sc-dot)/2; F(Math.min(cx0,cx0+a.dx*sc),Math.min(cy0,cy0+a.dy*sc),dot+Math.abs(a.dx)*sc,dot+Math.abs(a.dy)*sc,'#00AA00'); });
+  (S.planAlt||[]).forEach((a,i)=>{ if(i%2===0) F(a.x*sc+(sc-dot)/2,a.y*sc+(sc-dot)/2,dot,dot,'#00AA00'); });
+  if(sc>=6){ // огнетушитель и извещатель — знаками
+    F(14*sc+sc/4,7*sc+sc/4,sc/2,sc/2,'#FF5555'); F(8*sc+sc/4,7*sc+sc/4,sc/2,sc/2,'#AA0000'); }
+  // «Вы находитесь здесь» — синий круг там, где висит план
+  const r=Math.max(2,sc*0.45); g.fillStyle='#0000FF'; g.beginPath(); g.arc(3*sc+sc/2,7*sc+sc/2,r,0,7); g.fill();
+  // игрок сейчас
+  const px=S.p.fx+(S.p.x-S.p.fx)*S.p.t, py=S.p.fy+(S.p.y-S.p.fy)*S.p.t;
+  if(((performance.now()/300)|0)%2||sc>=6){ F(px*sc+sc*0.2,py*sc+sc*0.2,Math.max(2,sc*0.6),Math.max(2,sc*0.6),'#FF3300'); }
+}
+function openMap(){
+  if(!S||S.mode!=='evac'||!S.running) return;
+  if(!S.planRead){ toast('Сначала найдите и прочитайте план эвакуации — он висит на стене у двери вашего кабинета.'); return; }
+  S.running=false; paused=true; mapOpen=true; sirenOff();
+  overlay(`<h2>План эвакуации${S.vio.plan?' (пожелтевший, старый)':''}</h2><canvas id="bigmap"></canvas>
+    <ul><li class="ok" data-m="●">Сплошная зелёная линия — основной маршрут, пунктир — запасной.</li>
+    <li class="info" data-m="●">Синий круг — «Вы находитесь здесь»: место, где висит план.</li>
+    <li class="no" data-m="■">Красный квадрат — где вы сейчас.</li></ul>
+    <div class="row"><button class="btn" id="bClose">Вернуться (Tab)</button></div>`);
+  drawPlan($('bigmap'),12); $('bClose').onclick=closeMap; $('bClose').focus({preventScroll:true});
+}
+function closeMap(){ if(!mapOpen) return; mapOpen=false; closeOverlay(); paused=false; S.running=true; dirStack=[]; if(S.siren) sirenOn(); }
+$('mini').addEventListener('click',e=>{ e.stopPropagation(); openMap(); });
+$('tMap').addEventListener('pointerdown',e=>{ e.preventDefault(); openMap(); });
+
+/* ---------- Мышь и касание по полю ---------- */
+let mouseDown=false;
+cv.addEventListener('contextmenu',e=>e.preventDefault());
+cv.addEventListener('pointerdown',e=>{
+  if(!S||!S.running||S.mode==='demo') return;
+  e.preventDefault(); ac();
+  if(e.button===2){ if(S.mode==='evac'){ S.crouchToggle=!S.crouchToggle; $('tCrouch').classList.toggle('on',S.crouchToggle); } return; }
+  const r=cv.getBoundingClientRect();
+  const tx=Math.floor(((e.clientX-r.left)/r.width*cv.width+S.cam.x)/T), ty=Math.floor(((e.clientY-r.top)/r.height*cv.height+S.cam.y)/T);
+  mouseDown=true; clickTo(tx,ty);
+});
+addEventListener('pointerup',()=>{ mouseDown=false; });
+const around=(x,y,r)=>{ const o=[]; for(let j=-r;j<=r;j++) for(let i=-r;i<=r;i++) if(i||j) o.push([x+i,y+j]); return o; };
+const cross=(x,y)=>[[x+1,y],[x-1,y],[x,y+1],[x,y-1]];
+function goalsFor(x,y){
+  if(S.mode==='prep'){
+    const t=[...VIOL.filter(v=>S.vio[v.id]),...DECOYS.filter(d=>!S.checked.includes(d.id))].find(v=>v.tiles.some(q=>q[0]===x&&q[1]===y));
+    return t?around(x,y,1):null;
+  }
+  const m=S.mate; if(!m.follow&&m.x===x&&m.y===y) return around(x,y,2);
+  if(x===3&&y===7) return around(x,y,1);
+  if(x===8&&y===7) return around(x,y,1);
+  if(x===14&&y===7) return [[14,8]];
+  if(isFire(x,y)) return cross(x,y);
+  const v=vioAtTile(x,y); if(v&&(v.id==='boxes'||v.id==='stairs')) return cross(x,y);
+  return null;
+}
+function clickTo(tx,ty){
+  const p=S.p, goals=goalsFor(tx,ty);
+  S.autoHold=false;
+  if(goals&&!p.moving&&goals.some(g=>g[0]===p.x&&g[1]===p.y)){ S.mpath=[]; act(); return; }
+  const x0=Math.floor(S.cam.x/T), y0=Math.floor(S.cam.y/T), x1=Math.ceil((S.cam.x+VW*T)/T)-1, y1=Math.ceil((S.cam.y+VH*T)/T)-1;
+  const targets=goals||[[tx,ty]];
+  const ok=(x,y)=>{
+    if(x<x0||x>x1||y<y0||y>y1) return false;
+    const ch=tile(x,y), isT=targets.some(t=>t[0]===x&&t[1]===y);
+    if(ch==='E'||ch==='L') return isT&&x===tx&&y===ty;
+    if(!'.SDZ'.includes(ch)) return false;
+    const d=DECOR[x+','+y]; if(d&&d.solid) return false;
+    return true;
+  };
+  const key=(x,y)=>x+','+y, prev={}, q=[[p.x,p.y]]; prev[key(p.x,p.y)]=null; let end=null;
+  const isGoal=(x,y)=>targets.some(t=>t[0]===x&&t[1]===y);
+  while(q.length){ const [x,y]=q.shift(); if((x!==p.x||y!==p.y)&&isGoal(x,y)){ end=[x,y]; break; }
+    for(const d of [[1,0],[-1,0],[0,1],[0,-1]]){ const nx=x+d[0], ny=y+d[1], k=key(nx,ny); if(k in prev||!ok(nx,ny)) continue; prev[k]=[x,y]; q.push([nx,ny]); } }
+  if(!end){ SFX.bump(); return; }
+  const steps=[]; let c=end; while(prev[key(c[0],c[1])]){ const pv=prev[key(c[0],c[1])]; steps.unshift([c[0]-pv[0],c[1]-pv[1]]); c=pv; }
+  S.mpath=steps; S.mact=!!goals; S.mgoal=goals?[tx,ty]:end; dirStack=[];
+}
+
+/* ---------- Цикл ---------- */
+let last=0, miniT=-1;
+function update(dt){
+  if(S.mode==='demo'){ S.clock+=dt; if(S.clock>140) S.clock=70; smokeField(); return; }
+  S.time+=dt;
+  if(S.mode==='prep'){ S.timeLeft-=dt;
+    if(S.timeLeft<=30&&!S.warned){ S.warned=1; toast('Инспектор уже в здании. Осталось 30 секунд!'); jingle([880,660,880,660],0.1); }
+    if(S.timeLeft<=10&&S.warned<2){ S.warned=2; setBorder('alarm'); }
+    if(S.timeLeft<=30){ S.tickT-=dt; if(S.tickT<=0){ S.tickT=S.timeLeft<=10?0.5:1; tone(S.timeLeft<=10?1250:900,0.04,'square',0.03); } }
+    if(S.timeLeft<=0){ S.timeLeft=0; toast('Инспектор прибыл с проверочным листом.'); endPrep(); return; } }
+  if(S.mode==='evac') stepWorld(dt);
+  movePlayer(dt); if(!S.running) return;
+  handleAction(dt);
+  if(S.mode==='evac'&&S.running) applyHazards(dt);
+}
+function frame(ts){
+  const dt=Math.min(0.05,(ts-last)/1000||0); last=ts;
+  if(S&&S.running&&!paused) update(dt);
+  actEdge=false;
+  if(toastT>0){ toastT-=dt; if(toastT<=0) $('toast').classList.remove('show'); }
+  render(ts); hud();
+  if(S&&S.mode==='evac'&&S.planRead&&!$('mini').hidden&&((ts/250)|0)!==miniT){ miniT=(ts/250)|0; drawPlan($('mini'),3); }
+  requestAnimationFrame(frame);
+}
+menu();
+requestAnimationFrame(frame);
+})();
+</script>
+
+
+<div class="glasp-extension-toaster glasp-extension-toaster--youtube-summary" data-glasp-print="hide" dir="ltr" style="text-align: start; display: block; width: 320px; margin: unset; padding: unset; border: unset; border-radius: unset; outline: unset; background-color: unset; box-shadow: unset; position: fixed; top: 40px; right: 24px; z-index: 2147483647;"><template shadowrootmode="open"><div class="glasp-extension" style="font-family: inherit;"></div></template></div></body><div class="glasp-extension" data-glasp-print="hide" dir="ltr" id="glasp-web-summary-button" style="text-align: start; display: block; width: unset; margin: unset; padding: unset; border: unset; border-radius: unset; outline: unset; background-color: unset; box-shadow: unset; position: fixed; bottom: 16px; right: 16px; z-index: 9999;"><div class="glasp-extension" style="font-family: inherit;"></div></div></html>
