@@ -620,8 +620,8 @@ function menu(){
   overlay(`<div class="logo">ПУТЬ<br>К ВЫХОДУ</div>
     <p>За кого играете?</p>
     <div class="choice"><button class="btn" id="m1">1. Сотрудник</button><small>Пожар на этаже. Выбраться из здания, которое никто не готовил к проверке: завалы, запертые двери, устаревший план.</small></div>
-    <div class="choice"><button class="btn" id="m2">2. Специалист по охране труда</button><small>До прихода инспектора 3 минуты. Найти и устранить нарушения на путях эвакуации, а потом проверить здание учебной тревогой.</small></div>
-    ${be||bp?`<p class="keys">Рекорды: сотрудник — ${be}, охрана труда — ${bp}</p>`:''}`);
+    <div class="choice"><button class="btn" id="m2">2. Ответственный специалист</button><small>До прихода инспектора 3 минуты. Найти и устранить нарушения на путях эвакуации, а потом проверить здание учебной тревогой.</small></div>
+    ${be||bp?`<p class="keys">Рекорды: сотрудник — ${be}, ответственный — ${bp}</p>`:''}`);
   menuOn=true;
   $('m1').onclick=()=>startEvac(randomPresent(),false); $('m2').onclick=startPrep; $('m1').focus({preventScroll:true});
   showPanel();
@@ -648,7 +648,7 @@ function hud(){
     setH('hM','Здоровье '+'█'.repeat(n)+'░'.repeat(10-n)+(S.hpState==='regen'?' +':'')); setC('hM',S.hpState); setC('hR','');
     setH('hR',(S.p.crouch?'пригнулся  ':(S.running&&sm(S.p.x,S.p.y)>=0.5?'ПРИГНИТЕСЬ!  ':''))+(S.hasExt?'огнетушитель  ':'')+mmss(S.time));
   } else {
-    setC('hM',''); setH('hL','Охрана труда'); setH('hM','Устранено '+S.fixed.length+' из '+VIOL.length); setH('hR','Инспектор через '+mmss(S.timeLeft)); setC('hR',S.timeLeft<=30?'warn':'');
+    setC('hM',''); setH('hL','Ответственный'); setH('hM','Устранено '+S.fixed.length+' из '+VIOL.length); setH('hR','Инспектор через '+mmss(S.timeLeft)); setC('hR',S.timeLeft<=30?'warn':'');
   }
 }
 
