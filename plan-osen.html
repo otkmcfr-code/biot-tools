@@ -594,5 +594,15 @@ function renderAll(){renderQuestions();renderResp();setResp(!S.respClosed);rende
 renderAll();
 })();
 </script>
+<script>
+(function(){
+  function send(){
+    var h = document.body.scrollHeight;
+    parent.postMessage({type:"biot-height", id:"plan-osen", height:h}, "*");
+  }
+  new ResizeObserver(send).observe(document.body);
+  window.addEventListener("load", send);
+})();
+</script>
 </body>
 </html>
