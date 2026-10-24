@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>План мероприятий по охране труда на 2027 год</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=PT+Sans:ital,wght@0,400;0,700;1,400&family=PT+Serif:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --brand:#007760; --brand-dk:#005e4c; --tint:#e7f3ef; --tint2:#f3f8f6;
+  --ink:#1b2622; --muted:#5b6a64; --line:#d6dfdb; --paper:#ffffff;
+  --risk:#8a4a0e; --risk-bg:#fbf1e3; --risk-line:#ecd2ac;
+  --f:"PT Sans",Arial,sans-serif; --fs:"PT Serif",Georgia,serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink)}
+body{font:15px/1.45 var(--f)}
+#app{max-width:600px;margin:0 auto;padding:14px 14px 18px}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+h1{font:700 21px/1.2 var(--f);margin:0 0 4px}
+.lead{margin:0 0 12px;color:var(--muted);font-size:14px}
+
+/* шаги */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line);border-radius:6px;overflow:hidden;margin-bottom:12px}
+.step{background:#fff;border:0;border-right:1px solid var(--line);padding:8px 5px;cursor:pointer;text-align:left;display:flex;gap:7px;align-items:center;min-width:0}
+.step:last-child{border-right:0}
+.step .n{flex:none;width:22px;height:22px;border-radius:50%;border:1.5px solid var(--muted);color:var(--muted);display:grid;place-items:center;font-size:12px;font-weight:700}
+.step .t{font-size:14px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.step[aria-selected=true]{background:var(--tint)}
+.step[aria-selected=true] .n{background:var(--brand);border-color:var(--brand);color:#fff}
+.step[aria-selected=true] .t{color:var(--ink);font-weight:700}
+.sumbar{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;color:var(--muted);padding:0 2px 10px;font-variant-numeric:tabular-nums}
+.sumbar b{color:var(--ink)}
+.sumbar .r b{color:var(--risk)}
+
+/* формы */
+.fld{display:flex;flex-direction:column;gap:3px;margin-bottom:10px}
+.fld>span,.lbl{font-size:13px;color:var(--muted)}
+input[type=text],input[type=number],select,textarea{width:100%;min-width:0;border:1px solid var(--line);border-radius:4px;background:#fff;padding:7px 9px;font-size:15px}
+textarea{resize:vertical;line-height:1.35}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 10px}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line);border-radius:4px;overflow:hidden}
+.seg label{display:block;text-align:center;padding:7px 4px;font-size:14px;cursor:pointer;border-right:1px solid var(--line);line-height:1.2}
+.seg label:last-child{border-right:0}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg input:checked+span{font-weight:700;color:var(--brand)}
+.seg label:has(input:checked){background:var(--tint)}
+.seg label:has(input:focus-visible){outline:2px solid var(--brand);outline-offset:-2px}
+.chk{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-top:1px solid var(--line);cursor:pointer}
+.chk input{width:18px;height:18px;margin:2px 0 0;accent-color:var(--brand);flex:none}
+.chk small{display:block;color:var(--muted);font-size:13px;margin-top:2px}
+.note{background:var(--tint2);border-left:3px solid var(--brand);padding:8px 10px;font-size:13.5px;margin:4px 0 12px}
+.note.risk{background:var(--risk-bg);border-left-color:var(--risk)}
+details.req{border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:8px 0 12px}
+details.req summary{cursor:pointer;padding:9px 0;font-weight:700;list-style:none;display:flex;justify-content:space-between}
+details.req summary::after{content:"+";color:var(--brand);font-size:18px;line-height:1}
+details.req[open] summary::after{content:"−"}
+details.req .in{padding:0 0 4px}
+
+.btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.btn{border:1px solid var(--brand);background:var(--brand);color:#fff;border-radius:4px;padding:9px 14px;font-weight:700;cursor:pointer}
+.btn:hover{background:var(--brand-dk)}
+.btn.sec{background:#fff;color:var(--brand)}
+.btn.sec:hover{background:var(--tint)}
+.btn.wide{flex:1}
+.link{background:none;border:0;padding:6px 0;color:var(--brand);text-decoration:underline;text-underline-offset:3px;cursor:pointer;font-size:14px}
+
+/* разделы */
+.sec{border:1px solid var(--line);border-radius:6px;margin-bottom:8px;overflow:hidden}
+.sec>summary{list-style:none;cursor:pointer;padding:10px 12px;display:flex;gap:10px;align-items:baseline;background:#fff}
+.sec>summary::-webkit-details-marker{display:none}
+.sec[open]>summary{background:var(--tint);border-bottom:1px solid var(--line)}
+.sec .st{flex:1;font-weight:700;font-size:15px;line-height:1.25}
+.sec .sm{font-size:12.5px;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+.sec .arr{color:var(--brand);font-weight:700;width:12px;text-align:center}
+.sec[open] .arr{transform:rotate(90deg)}
+.sub{font-size:13px;color:var(--muted);padding:8px 12px 2px;font-style:italic}
+.row{display:grid;grid-template-columns:24px 1fr 30px;gap:4px 8px;padding:9px 12px;border-top:1px solid var(--line);align-items:start}
+.sub+.row{border-top:0}
+.row:first-child{border-top:0}
+.row input[type=checkbox]{width:18px;height:18px;margin:2px 0 0;accent-color:var(--brand)}
+.row .nm{cursor:pointer;min-width:0}
+.row .tx{font-size:14.5px;line-height:1.3}
+.row.off .tx{color:var(--muted)}
+.meta{font-size:12.5px;color:var(--muted);margin-top:3px;display:flex;flex-wrap:wrap;gap:2px 10px;font-variant-numeric:tabular-nums}
+.meta .f{color:var(--risk)}
+.meta .ob{color:var(--brand);font-weight:700}
+.meta .warn{color:var(--risk);font-weight:700}
+.tg{width:30px;height:30px;margin:-4px -4px 0 0;border:1.5px solid var(--brand);border-radius:50%;background:#fff;color:var(--brand);cursor:pointer;font-size:20px;font-weight:700;line-height:1;display:grid;place-items:center;padding:0 0 2px}.tg[aria-expanded=true]{background:var(--brand);color:#fff}.tg:hover{background:var(--tint)}.tg[aria-expanded=true]:hover{background:var(--brand-dk)}
+.ed{grid-column:1/-1;margin:6px 0 2px;padding:10px;background:var(--tint2);border-radius:4px}
+.ed .tip{font-size:13px;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:4px;padding:7px 9px;margin-bottom:10px}
+.ed .tip b{font-weight:700}
+.calc{font-size:12.5px;color:var(--muted);margin:-6px 0 10px}
+.add{padding:6px 12px 10px;border-top:1px solid var(--line)}
+.empty{padding:10px 12px;color:var(--muted);font-size:14px;margin:0}
+
+/* итог */
+.tgl{display:grid;grid-template-columns:1fr 1fr;gap:2px 12px;margin-bottom:10px}
+.tgl label{display:flex;gap:8px;align-items:center;font-size:14px;cursor:pointer;padding:3px 0}
+.tgl input{accent-color:var(--brand);width:16px;height:16px;margin:0}
+h2{font:700 17px/1.25 var(--f);margin:16px 0 8px}
+.qrow{display:grid;grid-template-columns:52px 1fr 110px;gap:8px;align-items:center;font-size:13.5px;margin-bottom:5px;font-variant-numeric:tabular-nums}
+.qbar{height:12px;background:var(--tint2);border-radius:2px;overflow:hidden}
+.qbar i{display:block;height:100%;background:var(--brand)}
+.qrow .v{text-align:right}
+.rbox{margin-top:16px;border:1px solid var(--risk-line);border-radius:6px;background:var(--risk-bg)}.rbox>summary{list-style:none;cursor:pointer;padding:10px 12px;display:flex;justify-content:space-between;gap:10px;align-items:baseline}.rbox>summary::-webkit-details-marker{display:none}.rbox .rt{font-weight:700;font-size:16px}.rbox .rt::after{content:" +";color:var(--risk)}.rbox[open] .rt::after{content:" −"}.rbox .rv{color:var(--risk);font-weight:700;white-space:nowrap;font-variant-numeric:tabular-nums}.risks{border-top:1px solid var(--risk-line);padding:8px 12px 10px}
+.rk{padding:7px 0;border-top:1px solid var(--risk-line);font-size:13.5px}
+.rk:first-of-type{border-top:0;padding-top:2px}
+.rk .h{display:flex;justify-content:space-between;gap:10px;font-weight:700}
+.rk .h span:last-child{color:var(--risk);white-space:nowrap;font-variant-numeric:tabular-nums}
+.rk .d{color:var(--muted);font-size:12.5px;margin-top:2px}
+.rtot{display:flex;justify-content:space-between;gap:10px;border-top:2px solid var(--risk-line);padding-top:8px;margin-top:4px;font-weight:700;font-variant-numeric:tabular-nums}
+.rtot span:last-child{color:var(--risk);white-space:nowrap}
+.rnote{font-size:12.5px;color:var(--muted);margin:6px 0 0}
+
+/* документ */
+.paper{border:1px solid var(--line);box-shadow:0 1px 0 var(--line),0 3px 0 -1px #fff,0 4px 0 -1px var(--line);padding:16px 14px;font-family:var(--fs);font-size:12px;line-height:1.35;background:#fff}
+.docscroll{overflow-x:auto}
+.grif{font-size:12px}
+table.gt{min-width:0}
+.dtitle{text-align:center;font-weight:700;font-size:14px;margin:6px 0 2px}
+.dorg{text-align:center;margin-bottom:10px}
+table.doc{border-collapse:collapse;width:100%;min-width:560px;font-size:11px}
+.doc th,.doc td{border:1px solid #777;padding:3px 4px;vertical-align:top;text-align:left}
+.doc th{font-weight:700;text-align:center;background:#eef3f1}
+.doc .r{text-align:right;white-space:nowrap}
+.doc .c{text-align:center}
+.doc tr.s td{font-weight:700;background:#e3ece8}
+.doc tr.g td{font-weight:700;font-style:italic;background:#f4f7f6}
+.doc tfoot td{font-weight:700}
+.sig{margin-top:14px;font-size:12px}
+.sig p{margin:0 0 10px}
+.src{font-size:12px;color:var(--muted);border-top:1px solid var(--line);margin-top:16px;padding-top:8px}
+.msg{font-size:13px;color:var(--muted);margin:6px 0 0;min-height:1em}
+#print{display:none}
+
+@media (max-width:420px){
+  h1{font-size:19px}
+  .step{gap:5px;padding:8px 4px}
+  .step .n{width:19px;height:19px;font-size:11px}
+  .step .t{font-size:13px;letter-spacing:-.1px}
+  .grid2{grid-template-columns:1fr}
+  .seg label{font-size:13px}
+  .qrow{grid-template-columns:44px 1fr 100px}
+}
+@media print{
+  @page{size:A4 landscape;margin:12mm}
+  #app{display:none}
+  #print{display:block;font-family:"PT Serif",Georgia,serif;font-size:11pt;color:#000}
+  #print table.doc{min-width:0;font-size:9.5pt}
+  #print .doc th{background:#e8e8e8}
+  #print tr{page-break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <h1>План мероприятий по охране труда на 2027 год</h1>
+  <p class="lead">Отметьте мероприятия, укажите сроки и смету. На выходе — готовый к утверждению план в Word или Excel и расчёт штрафов для разговора с руководителем.</p>
+
+  <div class="steps" role="tablist" id="steps">
+    <button class="step" role="tab" data-s="0" type="button"><span class="n">1</span><span class="t">Данные</span></button>
+    <button class="step" role="tab" data-s="1" type="button"><span class="n">2</span><span class="t">Мероприятия</span></button>
+    <button class="step" role="tab" data-s="2" type="button"><span class="n">3</span><span class="t">План</span></button>
+  </div>
+  <div class="sumbar"><span>В плане: <b id="sbN">0</b></span><span>Смета: <b id="sbC">0 тг</b></span><span class="r">Риск: <b id="sbF">0 тг</b></span></div>
+
+  <!-- Шаг 1 -->
+  <section id="s0" role="tabpanel">
+    <label class="fld"><span>Организация</span><input type="text" id="o-name" placeholder="ТОО «Название»"></label>
+    <div class="fld"><span>Масштаб бизнеса — от него зависит размер штрафа</span>
+      <div class="seg" id="o-size">
+        <label><input type="radio" name="size" value="small"><span>Малое, НКО</span></label>
+        <label><input type="radio" name="size" value="medium"><span>Среднее</span></label>
+        <label><input type="radio" name="size" value="large"><span>Крупное</span></label>
+      </div>
+    </div>
+    <label class="fld"><span>МРП на 2027 год, тг</span><input type="text" id="o-mrp" inputmode="numeric"></label>
+    <p class="calc" id="mrpNote"></p>
+
+    <div class="lbl" style="margin-top:6px">Что есть в организации — эти отметки добавляют мероприятия в план</div>
+    <label class="chk"><input type="checkbox" id="o-harm"><span>Работы с вредными условиями труда<small>Добавит лечебно-профилактическое питание.</small></span></label>
+    <label class="chk"><input type="checkbox" id="o-opo"><span>Опасные производственные объекты<small>Добавит подготовку по промышленной безопасности и страхование ответственности владельца объекта.</small></span></label>
+    <label class="chk" style="border-bottom:1px solid var(--line)"><input type="checkbox" id="o-att"><span>В 2027 году нужна аттестация производственных объектов<small>Истекает пятилетний срок прежней аттестации, объект реконструируют (меняют или устанавливают новое оборудование, внедряют новые процессы) либо выдано предписание о внеочередной аттестации.</small></span></label>
+    <div class="note" id="attNote"><b>Когда проводить аттестацию.</b> Плановую — не реже одного раза в пять лет (ст. 183 ТК РК). После реконструкции объекта (замена, внедрение, установка нового технологического оборудования, процессов) — не позднее 90 календарных дней после ввода в эксплуатацию (п. 4 Правил аттестации): если реконструкция запланирована на 2027 год, поставьте аттестацию на квартал после её завершения. Внеочередную — по требованию инспекции труда при нарушении порядка аттестации, срок указывают в предписании (ст. 183 ТК РК).</div>
+
+    <details class="req" id="reqBox">
+      <summary>Реквизиты для печатной формы</summary>
+      <div class="in">
+        <label class="fld"><span>Город</span><input type="text" id="o-city" placeholder="Алматы"></label>
+        <div class="grid2">
+          <label class="fld"><span>Утверждает: должность</span><input type="text" id="o-headT"></label>
+          <label class="fld"><span>Ф. И. О.</span><input type="text" id="o-headN" placeholder="Иванов И. И."></label>
+          <label class="fld"><span>Разработал: должность</span><input type="text" id="o-otT"></label>
+          <label class="fld"><span>Ф. И. О.</span><input type="text" id="o-otN" placeholder="Петрова А. А."></label>
+          <label class="fld"><span>Согласовал: должность</span><input type="text" id="o-coT" placeholder="Главный инженер"></label>
+          <label class="fld"><span>Ф. И. О.</span><input type="text" id="o-coN"></label>
+        </div>
+      </div>
+    </details>
+    <div class="btns"><button class="btn wide" type="button" data-go="1">Далее: мероприятия</button></div>
+  </section>
+
+  <!-- Шаг 2 -->
+  <section id="s1" role="tabpanel" hidden>
+    <p class="lead" style="margin-bottom:10px">Обязательные мероприятия уже отмечены. Остальные — предложения: отметьте нужные. Нажмите на название, чтобы указать срок, количество и смету.</p>
+    <div id="secs"></div>
+    <div class="btns"><button class="btn sec" type="button" data-go="0">Назад</button><button class="btn wide" type="button" data-go="2">Далее: план</button></div>
+  </section>
+
+  <!-- Шаг 3 -->
+  <section id="s2" role="tabpanel" hidden>
+    <div class="lbl" style="margin-bottom:4px">Колонки печатного плана</div>
+    <div class="tgl">
+      <label><input type="checkbox" id="v-qty">Количество</label>
+      <label><input type="checkbox" id="v-cost">Смета</label>
+      <label><input type="checkbox" id="v-fine">Штраф за невыполнение</label>
+      <label><input type="checkbox" id="v-form">Форма завершения</label>
+    </div>
+    <div class="btns" style="margin-top:4px">
+      <button class="btn" type="button" id="bDoc">Скачать Word</button>
+      <button class="btn" type="button" id="bXls">Скачать Excel</button>
+      <button class="btn sec" type="button" id="bPrn">Печать / PDF</button>
+    </div>
+    <p class="msg" id="msg" role="status"></p>
+
+    <h2>Расходы по кварталам</h2>
+    <div id="quart"></div>
+    <p class="rnote" id="qHint"></p>
+
+    <details class="rbox" id="riskBox"><summary><span class="rt">Чем рискует организация</span><span class="rv" id="riskSum">0 тг</span></summary>
+      <div class="risks" id="risks"></div>
+    </details>
+    <div class="btns" style="margin-top:8px"><button class="btn sec wide" type="button" id="bRisk">Скачать расчёт рисков (Word)</button></div>
+    <p class="msg" id="msgR" role="status"></p>
+
+    <details class="req" id="docBox"><summary>Просмотр документа</summary><div class="in"><div class="paper"><div class="docscroll" id="docView"></div></div></div></details>
+    <div class="btns"><button class="btn sec" type="button" data-go="1">Назад к мероприятиям</button></div>
+  </section>
+
+  <p class="src" id="src"></p>
+</div>
+<div id="print"></div>
+
+<script>
+(function(){
+'use strict';
+
+/* =====================================================================
+   ДАННЫЕ — правьте здесь
+   ===================================================================== */
+
+/* Источник и оговорка (строка внизу инструмента и в выгрузке) */
+var SOURCE = 'Источники: Кодекс РК об административных правонарушениях — ст. 93, 94, ч. 2 ст. 230, ст. 299 (в ред. Закона РК от 10.01.2025 № 155-VIII); Трудовой кодекс РК — ст. 183; Правила обязательной периодической аттестации производственных объектов по условиям труда (приказ МЗСР РК от 28.12.2015 № 1057) — п. 4; Правила и сроки проведения обучения, инструктирования и проверок знаний по вопросам БиОТ (приказ МЗСР РК от 25.12.2015 № 1019 в ред. приказа Минтруда от 30.05.2026 № 223); МРП на 2027 год — проект Закона РК «О республиканском бюджете на 2027–2029 годы». Сверьте с действующей редакцией; окончательное решение — по замерам/обследованию.';
+
+/* МРП по умолчанию и пометка о его статусе */
+var MRP_DEFAULT = 4693;
+var MRP_NOTE = '4 693 тг — по проекту закона о республиканском бюджете на 2027–2029 годы. После принятия закона сверьте значение.';
+
+/* Штрафы, МРП. first — первичное нарушение, repeat — повторное в течение года (null — повторного состава нет).
+   small — малое предпринимательство или НКО, medium — среднее, large — крупное.
+   Если размер не выверен, ставьте first:null — инструмент покажет только ссылку на статью. */
+var FINES = {
+  med:  {part:'ч. 2 ст. 93 КоАП', rep:'ч. 5 ст. 93', what:'Медосмотры и предсменное освидетельствование', first:{small:20,medium:30,large:120}, repeat:{small:40,medium:60,large:240}},
+  siz:  {part:'ч. 3 ст. 93 КоАП', rep:'ч. 5 ст. 93', what:'СИЗ, средства коллективной защиты, лечебно-профилактическое питание', first:{small:20,medium:30,large:120}, repeat:{small:40,medium:60,large:240}},
+  edu:  {part:'ч. 4 ст. 93 КоАП', rep:'ч. 5 ст. 93', what:'Обучение и проверка знаний по БиОТ', first:{small:20,medium:30,large:120}, repeat:{small:40,medium:60,large:240}},
+  inst: {part:'ч. 6 ст. 93 КоАП', rep:'ч. 7 ст. 93', what:'Инструктажи (кроме вводного) и документы по БиОТ', first:{small:40,medium:60,large:120}, repeat:{small:80,medium:120,large:240}},
+  att:  {part:'ст. 94 КоАП', rep:null, what:'Аттестация производственных объектов по условиям труда', first:{small:20,medium:35,large:50}, repeat:null},
+  ins:  {part:'ч. 2 ст. 230 КоАП', rep:null, what:'Незаключение договора обязательного страхования', first:{small:160,medium:400,large:1000}, repeat:null},
+  opo:  {part:'ч. 1 ст. 299 КоАП', rep:'ч. 2 ст. 299', what:'Подготовка работников ОПО по промышленной безопасности', first:null, repeat:null}
+};
+
+/* Разделы плана */
+var SECTIONS = [
+  {id:'1', t:'I. Организационные мероприятия', g:[
+     {id:'1.1', t:'1.1. Обучение, инструктажи, проверка знаний'},
+     {id:'1.2', t:'1.2. Разработка и корректировка документации'},
+     {id:'1.3', t:'1.3. Производственный контроль и плановые проверки'}]},
+  {id:'2', t:'II. Технические мероприятия', g:[{id:'2', t:''}]},
+  {id:'3', t:'III. Санитарно-бытовые условия и лечебно-профилактическая работа', g:[{id:'3', t:''}]},
+  {id:'4', t:'IV. Социально-экономические мероприятия', g:[{id:'4', t:''}]},
+  {id:'5', t:'V. Научно-исследовательские работы по безопасности и охране труда', g:[{id:'5', t:''}]},
+  {id:'6', t:'Дополнительные мероприятия', g:[{id:'6', t:''}]}
+];
+
+/* Сроки: подпись и распределение сметы по кварталам */
+var TERMS = [
+  ['q1','I квартал',[1,0,0,0]], ['q2','II квартал',[0,1,0,0]], ['q3','III квартал',[0,0,1,0]], ['q4','IV квартал',[0,0,0,1]],
+  ['h1','I полугодие',[1,1,0,0]], ['h2','II полугодие',[0,0,1,1]],
+  ['q13','I и III кварталы',[1,0,1,0]], ['q24','II и IV кварталы',[0,1,0,1]],
+  ['qq','Ежеквартально',[1,1,1,1]], ['yr','В течение года',[1,1,1,1]],
+  ['gr','По отдельному графику',[1,1,1,1]], ['hire','По факту приёма на работу',[1,1,1,1]]
+];
+var UNITS = ['чел.','шт.','компл.','раб. мест','объект','договор','м²','усл.'];
+var FORMS = ['Протокол проверки знаний','Запись в журнале инструктажа','Заключительный акт медосмотра','Личные карточки учёта СИЗ','Отчёт об аттестации','Договор страхования','Приказ, утверждённый документ','Акт выполненных работ','Акт проверки','Приёмный акт'];
+
+var RB = 'Руководитель службы БиОТ', RBI = 'Руководитель службы БиОТ, главный инженер';
+
+/* Стартовый список мероприятий.
+   g — раздел; mand — обязательное; fine — ключ из FINES; cond — показывается при отметке на шаге 1 (harm, opo, att);
+   on — отмечено по умолчанию; term — ключ срока; unit — единица; form — форма завершения; tip — пояснение. */
+var ITEMS = [
+  {id:'e1', g:'1.1', name:'Обучение и проверка знаний по безопасности и охране труда руководителей и лиц, ответственных за обеспечение БиОТ', mand:true, fine:'edu', on:true, term:'gr', resp:RB, unit:'чел.', form:'Протокол проверки знаний',
+   tip:'Включите тех, у кого срок проверки знаний истекает в 2027 году. Порядок и периодичность — по Правилам и срокам проведения обучения, инструктирования и проверок знаний по БиОТ (в ред. приказа Минтруда от 30.05.2026 № 223).'},
+  {id:'e2', g:'1.1', name:'Обучение и проверка знаний по безопасности и охране труда работников рабочих профессий', mand:true, fine:'edu', on:true, term:'gr', resp:RB, unit:'чел.', form:'Протокол проверки знаний',
+   tip:'Число работников — из графика проверки знаний и плана найма (запросите у кадровой службы).'},
+  {id:'e3', g:'1.1', name:'Инструктажи по безопасности и охране труда', mand:true, fine:'inst', on:true, term:'gr', resp:RBI, unit:'чел.', form:'Запись в журнале инструктажа',
+   tip:'Расходов обычно нет — смету можно не заполнять. Если покупаете журналы или программы, впишите их стоимость.'},
+  {id:'e4', g:'1.1', name:'Обучение работников навыкам оказания первой помощи', mand:false, on:false, term:'q13', resp:RB, unit:'чел.', form:'Протокол проверки знаний'},
+  {id:'e5', g:'1.1', name:'Подготовка и проверка знаний работников опасных производственных объектов по промышленной безопасности', mand:true, fine:'opo', cond:'opo', on:true, term:'gr', resp:RB, unit:'чел.', form:'Протокол проверки знаний',
+   tip:'Нужно организациям, эксплуатирующим опасные производственные объекты. Размер штрафа по ст. 299 КоАП в инструмент не внесён — сверьте его с действующей редакцией.'},
+
+  {id:'d1', g:'1.2', name:'Разработка и пересмотр инструкций по безопасности и охране труда', mand:true, fine:'inst', on:true, term:'q1', resp:RBI, unit:'шт.', form:'Приказ, утверждённый документ',
+   tip:'За отсутствие документов по БиОТ штраф по той же ч. 6 ст. 93, что и за инструктажи. В расчёте риска эта часть учитывается один раз.'},
+  {id:'d2', g:'1.2', name:'Разработка и корректировка программ обучения по рабочим профессиям', mand:false, on:false, term:'q1', resp:RBI, unit:'шт.', form:'Приказ, утверждённый документ'},
+  {id:'d3', g:'1.2', name:'Разработка и корректировка локальных актов организации по охране труда', mand:false, on:false, term:'q1', resp:RBI, unit:'шт.', form:'Приказ, утверждённый документ'},
+
+  {id:'c1', g:'1.3', name:'Обходы производственных помещений и рабочих мест', mand:false, on:false, term:'q24', resp:RBI, unit:'', form:'Акт проверки'},
+  {id:'c2', g:'1.3', name:'Проверка выполнения требований охраны труда работниками, выполняющими работы на высоте', mand:false, on:false, term:'q24', resp:RB, unit:'', form:'Акт проверки'},
+  {id:'c3', g:'1.3', name:'Аттестация производственных объектов по условиям труда', mand:true, fine:'att', cond:'att', on:true, term:'h1', resp:RB, unit:'раб. мест', form:'Отчёт об аттестации',
+   tip:'Плановая — не реже одного раза в пять лет (ст. 183 ТК РК). После реконструкции объекта — не позднее 90 календарных дней после ввода в эксплуатацию (п. 4 Правил аттестации). Количество — число рабочих мест, смета — по коммерческим предложениям аттестующих организаций.'},
+  {id:'c4', g:'1.3', name:'Исполнение предписаний надзорных органов со сроком исполнения в 2027 году', mand:true, opt:true, on:false, term:'h1', resp:RBI, unit:'', form:'Акт выполненных работ',
+   tip:'Внесите каждое предписание отдельной строкой: что устранить и срок из предписания. Строки добавляет кнопка «Добавить мероприятие».'},
+
+  {id:'t1', g:'2', name:'Испытание и измерение параметров электрооборудования', mand:false, on:false, term:'qq', resp:RBI, unit:'', form:'Акт проверки'},
+  {id:'t2', g:'2', name:'Техническое обслуживание и ремонт пожарной сигнализации', mand:false, on:false, term:'q2', resp:RBI, unit:'', form:'Акт выполненных работ'},
+  {id:'t3', g:'2', name:'Подготовка отопительных котлов к сезону (ремонт и ревизия)', mand:false, on:false, term:'q3', resp:RBI, unit:'', form:'Акт выполненных работ'},
+  {id:'t4', g:'2', name:'Установка систем кондиционирования воздуха', mand:false, on:false, term:'q1', resp:RBI, unit:'шт.', form:'Акт выполненных работ'},
+  {id:'t5', g:'2', name:'Монтаж аварийного освещения', mand:false, on:false, term:'q2', resp:RBI, unit:'', form:'Акт выполненных работ'},
+
+  {id:'m1', g:'3', name:'Периодические медицинские осмотры работников', mand:true, fine:'med', on:true, term:'gr', resp:RB, unit:'чел.', form:'Заключительный акт медосмотра',
+   tip:'Число работников — по списку контингента, подлежащего осмотру; срок — по графику с медицинской организацией. Смету подтвердите предложениями нескольких клиник.'},
+  {id:'m2', g:'3', name:'Контроль наличия заключения предварительного медицинского осмотра при приёме на работу', mand:false, on:false, term:'hire', resp:'Кадровая служба', unit:'', form:'',
+   tip:'Предварительный осмотр кандидат проходит до приёма на работу. Трудовой кодекс прямо возлагает на работодателя оплату только периодических осмотров, поэтому в плане достаточно контроля: не допускать к работе без заключения. Если организация оплачивает предварительные осмотры по коллективному договору или своему решению, впишите смету.'},
+  {id:'m3', g:'3', name:'Предсменное (предрейсовое) медицинское освидетельствование', mand:true, opt:true, fine:'med', on:false, term:'yr', resp:RB, unit:'чел.', form:'Акт выполненных работ',
+   tip:'Отметьте, если в организации есть работы, для которых оно обязательно.'},
+  {id:'m4', g:'3', name:'Приобретение спецодежды, спецобуви и СИЗ по нормам бесплатной выдачи', mand:true, fine:'siz', on:true, term:'h1', resp:RBI, unit:'компл.', form:'Личные карточки учёта СИЗ',
+   tip:'Потребность — по нормам бесплатной выдачи: число работников по профессиям, умноженное на стоимость комплекта.'},
+  {id:'m5', g:'3', name:'Лечебно-профилактическое питание работников, занятых на работах с вредными условиями труда', mand:true, fine:'siz', cond:'harm', on:true, term:'yr', resp:RB, unit:'чел.', form:'Акт выполненных работ',
+   tip:'Штраф по той же ч. 3 ст. 93, что и за СИЗ; в расчёте риска часть учитывается один раз.'},
+  {id:'m6', g:'3', name:'Пополнение аптечек первой помощи', mand:false, on:false, term:'qq', resp:RB, unit:'шт.', form:'Акт выполненных работ'},
+
+  {id:'s1', g:'4', name:'Обязательное страхование работника от несчастных случаев при исполнении им трудовых обязанностей', mand:true, fine:'ins', on:true, term:'q1', resp:'Юридическая служба', unit:'договор', form:'Договор страхования',
+   tip:'Страховая премия — по договору или коммерческому предложению страховщика.'},
+  {id:'s2', g:'4', name:'Обязательное страхование гражданско-правовой ответственности владельца объекта, деятельность которого связана с опасностью причинения вреда третьим лицам', mand:true, fine:'ins', cond:'opo', on:true, term:'q1', resp:'Юридическая служба', unit:'договор', form:'Договор страхования',
+   tip:'Перечень объектов, владельцы которых обязаны страховаться, сверьте с законом об этом виде страхования. В расчёте риска ч. 2 ст. 230 учитывается один раз.'},
+  {id:'s3', g:'4', name:'Обеспечение работников питьевой водой (установка оборудования)', mand:false, on:false, term:'q1', resp:RBI, unit:'шт.', form:'Акт выполненных работ'},
+  {id:'s4', g:'4', name:'Информационные стенды, плакаты и знаки безопасности', mand:false, on:false, term:'q2', resp:RB, unit:'шт.', form:'Приёмный акт'},
+  {id:'s5', g:'4', name:'Ремонт помещений для отдыха и приёма пищи', mand:false, on:false, term:'q3', resp:RBI, unit:'', form:'Акт выполненных работ'}
+];
+
+/* ===================================================================== */
+
+var MSG_TYPE = 'otplan-height';
+var SIZE_RU = {small:'малое предпринимательство или НКО', medium:'среднее предпринимательство', large:'крупное предпринимательство'};
+
+var S = {
+  step:0,
+  org:{name:'', city:'', size:'medium', mrp:MRP_DEFAULT, harm:false, opo:false, att:false,
+       headT:'Генеральный директор', headN:'', otT:'Руководитель службы безопасности и охраны труда', otN:'', coT:'', coN:''},
+  view:{qty:true, cost:true, fine:false, form:true},
+  items:ITEMS.map(function(x){return {id:x.id,g:x.g,name:x.name,mand:!!x.mand,opt:!!x.opt,fine:x.fine||null,cond:x.cond||null,on:x.on!==false,
+     term:x.term||'yr',resp:x.resp||'',qty:'',unit:x.unit||'',price:0,cost:0,form:x.form||'',note:'',tip:x.tip||'',custom:false}}),
+  open:{}, edit:null, seq:0
+};
+
+/* ---------- утилиты ---------- */
+function $(id){return document.getElementById(id)}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function fmt(n){return Math.round(n||0).toString().replace(/\B(?=(\d{3})+(?!\d))/g,'\u00a0')}
+function num(v){var n=parseFloat(String(v).replace(/\s/g,'').replace(',','.'));return isFinite(n)&&n>0?n:0}
+function term(k){for(var i=0;i<TERMS.length;i++)if(TERMS[i][0]===k)return TERMS[i];return TERMS[9]}
+function find(id){for(var i=0;i<S.items.length;i++)if(S.items[i].id===id)return S.items[i]}
+function visible(i){return !i.cond||S.org[i.cond]}
+function active(i){return i.on&&visible(i)}
+function mrp(){return S.org.mrp||MRP_DEFAULT}
+function fineMrp(i){var f=i.fine&&FINES[i.fine];return f&&f.first?f.first[S.org.size]:null}
+function fineLabel(i){var f=i.fine&&FINES[i.fine];if(!f)return '';var m=fineMrp(i);return m?fmt(m*mrp())+' тг ('+m+' МРП)':'по '+f.part}
+function qtyText(i){return i.qty?(i.qty+(i.unit?' '+i.unit:'')):''}
+
+function totals(){
+  var T={n:0,cost:0,q:[0,0,0,0],noCost:0,off:0,risk:{},rFirst:0,rRep:0};
+  S.items.forEach(function(i){
+    if(!visible(i))return;
+    if(!i.on){if(i.mand&&i.fine&&!i.opt)T.off++;return}
+    T.n++;T.cost+=i.cost;
+    if(i.mand&&!i.cost&&i.fine&&i.fine!=='inst')T.noCost++;
+    var tq=term(i.term)[2],k=tq.reduce(function(a,b){return a+b},0);
+    tq.forEach(function(v,x){if(v)T.q[x]+=i.cost/k});
+    if(i.mand&&i.fine){(T.risk[i.fine]=T.risk[i.fine]||[]).push(i)}
+  });
+  Object.keys(T.risk).forEach(function(k){var f=FINES[k];if(f.first){T.rFirst+=f.first[S.org.size]*mrp();T.rRep+=(f.repeat?f.repeat[S.org.size]:f.first[S.org.size])*mrp()}});
+  return T;
+}
+
+/* ---------- высота для iframe ---------- */
+var lastH=0;
+function sendH(scroll){
+  var h=Math.ceil($('app').getBoundingClientRect().height);
+  if(h!==lastH||scroll){lastH=h;try{parent.postMessage({type:MSG_TYPE,height:h,scroll:!!scroll},'*')}catch(e){}}
+}
+if(window.ResizeObserver)new ResizeObserver(function(){sendH(false)}).observe($('app'));
+window.addEventListener('load',function(){sendH(false)});
+
+/* ---------- шаги ---------- */
+function go(n){
+  S.step=n;
+  [0,1,2].forEach(function(k){$('s'+k).hidden=k!==n});
+  document.querySelectorAll('.step').forEach(function(b){b.setAttribute('aria-selected',String(+b.dataset.s===n))});
+  if(n===1)renderSecs();
+  if(n===2)renderPlan();
+  sendH(true);
+}
+$('steps').addEventListener('click',function(e){var b=e.target.closest('.step');if(b)go(+b.dataset.s)});
+document.addEventListener('click',function(e){var b=e.target.closest('[data-go]');if(b)go(+b.dataset.go)});
+
+/* ---------- шаг 1 ---------- */
+function bindOrg(){
+  ['name','city','headT','headN','otT','otN','coT','coN'].forEach(function(k){
+    var el=$('o-'+k);el.value=S.org[k];el.addEventListener('input',function(){S.org[k]=el.value});
+  });
+  var m=$('o-mrp');m.value=fmt(S.org.mrp);
+  m.addEventListener('input',function(){S.org.mrp=num(m.value)||0;updateBar()});
+  m.addEventListener('change',function(){if(!S.org.mrp)S.org.mrp=MRP_DEFAULT;m.value=fmt(S.org.mrp);updateBar()});
+  $('mrpNote').textContent=MRP_NOTE;
+  document.querySelectorAll('#o-size input').forEach(function(r){
+    r.checked=r.value===S.org.size;
+    r.addEventListener('change',function(){S.org.size=r.value;updateBar()});
+  });
+  ['harm','opo','att'].forEach(function(k){
+    var el=$('o-'+k);el.checked=S.org[k];
+    el.addEventListener('change',function(){S.org[k]=el.checked;updateBar()});
+  });
+  ['qty','cost','fine','form'].forEach(function(k){
+    var el=$('v-'+k);el.checked=S.view[k];
+    el.addEventListener('change',function(){S.view[k]=el.checked;renderDoc()});
+  });
+}
+
+/* ---------- шаг 2 ---------- */
+function rowMeta(i){
+  var a=[];
+  a.push('<span>'+esc(term(i.term)[1])+'</span>');
+  if(i.qty)a.push('<span>'+esc(qtyText(i))+'</span>');
+  if(i.cost)a.push('<span>'+fmt(i.cost)+' тг</span>');
+  if(i.mand){
+    if(i.fine)a.push('<span class="f">штраф '+esc(fineLabel(i))+'</span>');
+    else a.push('<span class="ob">обязательное</span>');
+    if(!i.on&&!i.opt)a.push('<span class="warn">исключено из плана</span>');
+  }
+  return a.join('');
+}
+function optList(arr,cur,valIdx,lblIdx){return arr.map(function(t){var v=valIdx==null?t:t[valIdx],l=lblIdx==null?t:t[lblIdx];return '<option value="'+esc(v)+'"'+(v===cur?' selected':'')+'>'+esc(l)+'</option>'}).join('')}
+function edHtml(i){
+  var g=[];SECTIONS.forEach(function(s){s.g.forEach(function(x){g.push([x.id,x.t||s.t])})});
+  var units=UNITS.slice();if(i.unit&&units.indexOf(i.unit)<0)units.unshift(i.unit);
+  var f=i.fine&&FINES[i.fine],tip='';
+  if(i.tip||f){
+    tip='<div class="tip">'+(f?'<b>'+esc(f.part)+'.</b> '+(fineMrp(i)?'Первичное нарушение — '+fineMrp(i)+' МРП ('+fmt(fineMrp(i)*mrp())+' тг)'+(f.repeat?', повторное в течение года — '+f.repeat[S.org.size]+' МРП ('+fmt(f.repeat[S.org.size]*mrp())+' тг, '+esc(f.rep)+')':'')+'. ':'')+'':'')+esc(i.tip)+'</div>';
+  }
+  return '<div class="ed" id="ed-'+i.id+'">'+tip+
+    '<label class="fld"><span>Наименование</span><textarea rows="2" data-f="name" data-id="'+i.id+'">'+esc(i.name)+'</textarea></label>'+
+    '<div class="grid2">'+
+      '<label class="fld"><span>Срок исполнения</span><select data-f="term" data-id="'+i.id+'">'+optList(TERMS,i.term,0,1)+'</select></label>'+
+      '<label class="fld"><span>Ответственные</span><input type="text" data-f="resp" data-id="'+i.id+'" value="'+esc(i.resp)+'"></label>'+
+      '<label class="fld"><span>Количество</span><input type="text" inputmode="decimal" data-f="qty" data-id="'+i.id+'" value="'+esc(i.qty)+'"></label>'+
+      '<label class="fld"><span>Единица</span><select data-f="unit" data-id="'+i.id+'"><option value="">—</option>'+optList(units,i.unit)+'</select></label>'+
+      '<label class="fld"><span>Цена за единицу, тг</span><input type="text" inputmode="numeric" data-f="price" data-id="'+i.id+'" value="'+(i.price?fmt(i.price):'')+'"></label>'+
+      '<label class="fld"><span>Смета, тг</span><input type="text" inputmode="numeric" data-f="cost" data-id="'+i.id+'" value="'+(i.cost?fmt(i.cost):'')+'"></label>'+
+    '</div>'+
+    '<p class="calc" id="calc-'+i.id+'">'+calcText(i)+'</p>'+
+    '<label class="fld"><span>Форма завершения</span><input type="text" list="formsList" data-f="form" data-id="'+i.id+'" value="'+esc(i.form)+'"></label>'+
+    '<label class="fld"><span>Примечание</span><input type="text" data-f="note" data-id="'+i.id+'" value="'+esc(i.note)+'"></label>'+
+    '<label class="fld"><span>Раздел плана</span><select data-f="g" data-id="'+i.id+'">'+optList(g,i.g,0,1)+'</select></label>'+
+    (i.custom?'<button type="button" class="link" data-del="'+i.id+'">Удалить мероприятие</button>':'')+
+  '</div>';
+}
+function calcText(i){var q=num(i.qty);if(q&&i.price)return 'Смета посчитана: '+fmt(q)+' × '+fmt(i.price)+' тг. Её можно исправить вручную.';return 'Укажите количество и цену — смета посчитается сама. Или впишите сумму сразу.'}
+function rowHtml(i){
+  var o=S.edit===i.id;
+  return '<div class="row'+(i.on?'':' off')+'" id="row-'+i.id+'">'+
+    '<input type="checkbox" data-on="'+i.id+'"'+(i.on?' checked':'')+' aria-label="Включить в план">'+
+    '<div class="nm" data-open="'+i.id+'"><div class="tx" id="tx-'+i.id+'">'+esc(i.name||'Новое мероприятие')+'</div><div class="meta" id="mt-'+i.id+'">'+rowMeta(i)+'</div></div>'+
+    '<button type="button" class="tg" data-open="'+i.id+'" aria-expanded="'+o+'" aria-label="Подробнее">'+(o?'−':'+')+'</button>'+
+    (o?edHtml(i):'')+
+  '</div>';
+}
+function secStat(s){
+  var n=0,c=0;S.items.forEach(function(i){if(i.g.charAt(0)===s.id&&active(i)){n++;c+=i.cost}});
+  return n?n+' · '+fmt(c)+' тг':'пусто';
+}
+function renderSecs(){
+  var h='';
+  SECTIONS.forEach(function(s){
+    var body='';
+    s.g.forEach(function(g){
+      var rows=S.items.filter(function(i){return i.g===g.id&&visible(i)});
+      if(g.t&&rows.length)body+='<div class="sub">'+esc(g.t)+'</div>';
+      body+=rows.map(rowHtml).join('');
+    });
+    if(!body)body='<p class="empty">'+(s.id==='5'?'Заполняйте, только если такие работы заказаны. Пустой раздел в план не попадёт.':'Пока ничего нет.')+'</p>';
+    h+='<details class="sec" data-sec="'+s.id+'"'+(S.open[s.id]?' open':'')+'><summary><span class="arr">›</span><span class="st">'+esc(s.t)+'</span><span class="sm" id="ss-'+s.id+'">'+secStat(s)+'</span></summary>'+
+       body+'<div class="add"><button type="button" class="link" data-add="'+s.g[s.g.length-1].id+'">+ Добавить мероприятие</button></div></details>';
+  });
+  $('secs').innerHTML=h;
+  updateBar();
+}
+function refreshRow(i){
+  var m=$('mt-'+i.id);if(m)m.innerHTML=rowMeta(i);
+  var r=$('row-'+i.id);if(r)r.classList.toggle('off',!i.on);
+  SECTIONS.forEach(function(s){var e=$('ss-'+s.id);if(e)e.textContent=secStat(s)});
+  updateBar();
+}
+var secs=$('secs');
+secs.addEventListener('toggle',function(e){var d=e.target;if(d.dataset&&d.dataset.sec){S.open[d.dataset.sec]=d.open;if(d.open){document.querySelectorAll('#secs details.sec[open]').forEach(function(x){if(x!==d){x.open=false;S.open[x.dataset.sec]=false}})}sendH(false)}},true);
+secs.addEventListener('click',function(e){
+  var t=e.target;
+  var a=t.closest('[data-add]');
+  if(a){S.seq++;var n={id:'x'+S.seq,g:a.dataset.add,name:'',mand:false,fine:null,cond:null,on:true,term:'q1',resp:RB,qty:'',unit:'',price:0,cost:0,form:'',note:'',tip:'',custom:true};
+    S.items.push(n);S.edit=n.id;renderSecs();var f=document.querySelector('#ed-'+n.id+' textarea');if(f)f.focus();return}
+  var d=t.closest('[data-del]');
+  if(d){S.items=S.items.filter(function(x){return x.id!==d.dataset.del});S.edit=null;renderSecs();return}
+  var o=t.closest('[data-open]');
+  if(o){S.edit=S.edit===o.dataset.open?null:o.dataset.open;renderSecs();return}
+});
+secs.addEventListener('change',function(e){
+  var t=e.target;
+  if(t.dataset.on){var i=find(t.dataset.on);i.on=t.checked;refreshRow(i);return}
+  var i2=find(t.dataset.id);if(!i2)return;
+  if(t.dataset.f==='price'||t.dataset.f==='cost'){var v=t.dataset.f==='price'?i2.price:i2.cost;t.value=v?fmt(v):''}
+  if(t.dataset.f==='g'){i2.g=t.value;S.open={};S.open[t.value.charAt(0)]=true;renderSecs()}
+});
+secs.addEventListener('input',function(e){
+  var t=e.target,i=find(t.dataset.id);if(!i)return;var f=t.dataset.f;
+  if(f==='name'){i.name=t.value;$('tx-'+i.id).textContent=i.name||'Новое мероприятие'}
+  else if(f==='qty'||f==='price'){
+    if(f==='qty')i.qty=t.value.trim();else i.price=num(t.value);
+    var q=num(i.qty);
+    if(q&&i.price){i.cost=Math.round(q*i.price);var c=document.querySelector('#ed-'+i.id+' [data-f=cost]');if(c)c.value=fmt(i.cost)}
+    $('calc-'+i.id).textContent=calcText(i);
+  }
+  else if(f==='cost')i.cost=Math.round(num(t.value));
+  else if(f==='term'||f==='unit'||f==='resp'||f==='form'||f==='note')i[f]=t.value;
+  refreshRow(i);
+});
+
+function updateBar(){
+  var T=totals();
+  $('sbN').textContent=T.n;$('sbC').textContent=fmt(T.cost)+' тг';$('sbF').textContent=fmt(T.rFirst)+' тг';
+}
+
+/* ---------- модель документа ---------- */
+function model(){
+  var out=[];
+  SECTIONS.forEach(function(s){
+    var part=[];
+    s.g.forEach(function(g){
+      var rows=S.items.filter(function(i){return i.g===g.id&&active(i)&&i.name.trim()});
+      if(!rows.length)return;
+      if(g.t)part.push({k:'g',t:g.t});
+      rows.forEach(function(i,x){part.push({k:'i',no:(g.t?g.id+'.':s.id+'.')+(x+1),i:i})});
+    });
+    if(part.length){out.push({k:'s',t:s.t});out=out.concat(part)}
+  });
+  return out;
+}
+function cols(){
+  var c=[['no','№ п/п',5],['name','Наименование мероприятий',40]];
+  if(S.view.qty)c.push(['qty','Количество',11]);
+  c.push(['term','Срок исполнения',15],['resp','Ответственные исполнители',22]);
+  if(S.view.cost)c.push(['cost','Смета, тг',14]);
+  if(S.view.fine)c.push(['fine','Штраф за невыполнение',16]);
+  if(S.view.form)c.push(['form','Форма завершения',18]);
+  c.push(['mark','Отметка о выполнении',13],['note','Примечание',16]);
+  return c;
+}
+function cell(i,k){
+  if(k==='name')return i.name;
+  if(k==='qty')return qtyText(i);
+  if(k==='term')return term(i.term)[1];
+  if(k==='resp')return i.resp;
+  if(k==='cost')return i.cost?fmt(i.cost):'';
+  if(k==='fine'){if(!i.mand||!i.fine)return '';var f=FINES[i.fine],m=fineMrp(i);return (m?fmt(m*mrp())+' тг ('+m+' МРП), ':'')+f.part}
+  if(k==='form')return i.form;
+  if(k==='note')return i.note;
+  return '';
+}
+function docTable(){
+  var C=cols(),M=model(),T=totals(),n=C.length;
+  var h='<table class="doc" width="100%" border="1" cellspacing="0" cellpadding="3"><thead><tr>'+C.map(function(c){return '<th>'+esc(c[1])+'</th>'}).join('')+'</tr></thead><tbody>';
+  M.forEach(function(b){
+    if(b.k!=='i'){h+='<tr class="'+b.k+'"><td colspan="'+n+'">'+esc(b.t)+'</td></tr>';return}
+    h+='<tr>'+C.map(function(c){var k=c[0];if(k==='no')return '<td class="c">'+esc(b.no)+'</td>';return '<td'+(k==='cost'?' class="r"':'')+'>'+esc(cell(b.i,k))+'</td>'}).join('')+'</tr>';
+  });
+  if(!M.length)h+='<tr><td colspan="'+n+'">Отметьте мероприятия на шаге 2.</td></tr>';
+  h+='</tbody>';
+  if(S.view.cost&&M.length){
+    var ci=-1;C.forEach(function(c,x){if(c[0]==='cost')ci=x});
+    h+='<tfoot><tr><td colspan="'+ci+'" class="r">Итого по плану, тг</td><td class="r">'+fmt(T.cost)+'</td>'+(n-ci-1?'<td colspan="'+(n-ci-1)+'"></td>':'')+'</tr></tfoot>';
+  }
+  return h+'</table>';
+}
+function blank(s,len){return s&&s.trim()?esc(s):new Array(len+1).join('_')}
+function docHtml(){
+  var o=S.org,T=totals();
+  var h='<table class="gt" width="100%" border="0" cellspacing="0" cellpadding="0" style="width:100%;border:none;margin-bottom:10pt"><tr><td width="62%" style="width:62%;border:none">&nbsp;</td><td class="grif" width="38%" valign="top" style="border:none;padding:0;vertical-align:top"><b>УТВЕРЖДАЮ</b><br>'+esc(o.headT||'Руководитель')+(o.name?'<br>'+esc(o.name):'')+'<br>_____________ / '+blank(o.headN,14)+' /<br>«___» ____________ 20__ г.</td></tr></table>'+
+    '<div class="dtitle">План мероприятий по безопасности и охране труда на 2027 год</div>'+
+    '<div class="dorg">'+esc(o.name||'')+(o.city?', г. '+esc(o.city):'')+'</div>'+docTable();
+  if(S.view.fine&&T.rFirst){
+    h+='<p style="margin:8px 0 0">Штраф за невыполнение обязательных мероприятий ('+esc(SIZE_RU[o.size])+', МРП '+fmt(mrp())+' тг): при первичном нарушении каждой части статьи по одному разу — '+fmt(T.rFirst)+' тг; при повторном в течение года — '+fmt(T.rRep)+' тг. Штраф не заменяет мероприятие.</p>';
+  }
+  h+='<div class="sig"><p><b>Разработан:</b> '+blank(o.otT,24)+' (должность) '+blank(o.otN,18)+' (Ф. И. О.) «___» ________ 20__ г. ____________ (подпись)</p>'+
+     '<p><b>Согласован:</b> '+blank(o.coT,24)+' (должность) '+blank(o.coN,18)+' (Ф. И. О.) «___» ________ 20__ г. ____________ (подпись)</p></div>';
+  return h;
+}
+
+/* ---------- шаг 3 ---------- */
+function renderPlan(){
+  var T=totals(),mx=Math.max.apply(null,T.q.concat([1]));
+  $('quart').innerHTML=['I кв.','II кв.','III кв.','IV кв.'].map(function(l,k){
+    return '<div class="qrow"><span>'+l+'</span><span class="qbar"><i style="width:'+Math.round(T.q[k]/mx*100)+'%"></i></span><span class="v">'+fmt(T.q[k])+' тг</span></div>'}).join('');
+  var hint=[];
+  if(!T.cost)hint.push('Смета пока пустая — впишите суммы на шаге 2.');
+  else if(T.q[3]/T.cost>0.3)hint.push('На IV квартал приходится '+Math.round(T.q[3]/T.cost*100)+'% расходов. Дорогие мероприятия лучше ставить на I–II кварталы: в конце года их чаще переносят.');
+  if(T.noCost)hint.push('Обязательных мероприятий без сметы: '+T.noCost+'.');
+  hint.push('Суммы со сроком «по графику» и «в течение года» разложены поровну по кварталам.');
+  $('qHint').textContent=hint.join(' ');
+
+  var keys=Object.keys(T.risk),h='';
+  if(!keys.length)h='<p class="rnote" style="margin:0">Обязательных мероприятий со штрафом в плане нет.</p>';
+  keys.forEach(function(k){
+    var f=FINES[k],l=T.risk[k],m=f.first?f.first[S.org.size]:null;
+    h+='<div class="rk"><div class="h"><span>'+esc(f.part)+'</span><span>'+(m?fmt(m*mrp())+' тг':'размер — по статье')+'</span></div>'+
+       '<div class="d">'+esc(f.what)+(m?' · '+m+' МРП'+(f.repeat?'; повторно — '+fmt(f.repeat[S.org.size]*mrp())+' тг ('+f.repeat[S.org.size]+' МРП)':''):'')+'</div></div>';
+  });
+  if(keys.length)h+='<div class="rtot"><span>Если нарушить каждую часть по одному разу</span><span>'+fmt(T.rFirst)+' тг</span></div>'+
+    '<div class="rtot" style="border-top:0;padding-top:2px;font-weight:400"><span>То же при повторном нарушении в течение года</span><span>'+fmt(T.rRep)+' тг</span></div>';
+  if(T.off)h+='<p class="rnote" style="color:var(--risk)">Исключено обязательных мероприятий со штрафом: '+T.off+'. Они не входят в план и в расчёт.</p>';
+  h+='<p class="rnote">Ориентир для служебной записки, а не прогноз проверки: каждая часть статьи учтена один раз. Штраф не заменяет мероприятие. При несчастном случае возможна и уголовная ответственность (ст. 156 УК РК).</p>';
+  $('risks').innerHTML=h;
+  $('riskSum').textContent=keys.length?fmt(T.rFirst)+' тг':'нет';
+  renderDoc();
+}
+function plural(n,a,b,c){var m=n%10,mm=n%100;if(m===1&&mm!==11)return a;if(m>=2&&m<=4&&(mm<12||mm>14))return b;return c}
+function renderDoc(){$('docView').innerHTML=docHtml();sendH(false)}
+
+/* ---------- выгрузка ---------- */
+function fname(ext){var o=S.org.name.replace(/[^\wА-Яа-яЁёӘәҒғҚқҢңӨөҰұҮүҺһІі-]+/g,'_').replace(/^_+|_+$/g,'');return 'План_ОТ_2027'+(o?'_'+o:'')+'.'+ext}
+function save(blob,name,mid){
+  var url=URL.createObjectURL(blob),a=document.createElement('a');
+  a.href=url;a.download=name;document.body.appendChild(a);a.click();
+  setTimeout(function(){a.remove();URL.revokeObjectURL(url)},4000);
+  $(mid||'msg').textContent='Файл «'+name+'» сформирован.';
+}
+function wordDoc(){
+  var css='@page Section1{size:841.9pt 595.3pt;mso-page-orientation:landscape;margin:40pt 36pt 40pt 36pt}div.Section1{page:Section1}'+
+    'body{font-family:"Times New Roman",serif;font-size:11pt}table{border-collapse:collapse;width:100%}th,td{border:1px solid #000;padding:2pt 4pt;vertical-align:top;font-size:10pt}'+
+    'th{background:#e8e8e8}.r{text-align:right;white-space:nowrap}.c{text-align:center}tr.s td{font-weight:bold;background:#dfe8e4}tr.g td{font-weight:bold;font-style:italic}'+
+    '.dtitle{text-align:center;font-weight:bold;font-size:13pt}.dorg{text-align:center;margin-bottom:10pt}.sig p{margin:12pt 0}';
+  var html='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><style>'+css+'</style></head><body><div class="Section1">'+docHtml()+'</div></body></html>';
+  save(new Blob(['\ufeff',html],{type:'application/msword'}),fname('doc'));
+}
+
+/* --- минимальный XLSX без библиотек (ZIP без сжатия) --- */
+var CRC=(function(){var t=[];for(var n=0;n<256;n++){var c=n;for(var k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0}return t})();
+function crc32(b){var c=0xFFFFFFFF;for(var i=0;i<b.length;i++)c=CRC[(c^b[i])&255]^(c>>>8);return (c^0xFFFFFFFF)>>>0}
+function zip(files){
+  var enc=new TextEncoder(),parts=[],cen=[],off=0;
+  files.forEach(function(f){
+    var nm=enc.encode(f.name),d=enc.encode(f.data),c=crc32(d);
+    var h=new DataView(new ArrayBuffer(30));
+    h.setUint32(0,0x04034b50,true);h.setUint16(4,20,true);h.setUint16(6,0x0800,true);h.setUint16(8,0,true);
+    h.setUint32(14,c,true);h.setUint32(18,d.length,true);h.setUint32(22,d.length,true);h.setUint16(26,nm.length,true);
+    parts.push(new Uint8Array(h.buffer),nm,d);
+    var e=new DataView(new ArrayBuffer(46));
+    e.setUint32(0,0x02014b50,true);e.setUint16(4,20,true);e.setUint16(6,20,true);e.setUint16(8,0x0800,true);
+    e.setUint32(16,c,true);e.setUint32(20,d.length,true);e.setUint32(24,d.length,true);e.setUint16(28,nm.length,true);e.setUint32(42,off,true);
+    cen.push(new Uint8Array(e.buffer),nm);
+    off+=30+nm.length+d.length;
+  });
+  var cs=cen.reduce(function(a,b){return a+b.length},0),z=new DataView(new ArrayBuffer(22));
+  z.setUint32(0,0x06054b50,true);z.setUint16(8,files.length,true);z.setUint16(10,files.length,true);z.setUint32(12,cs,true);z.setUint32(16,off,true);
+  return new Blob(parts.concat(cen,[new Uint8Array(z.buffer)]),{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+}
+function xe(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]}).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g,'')}
+function colL(n){var s='';n++;while(n){var m=(n-1)%26;s=String.fromCharCode(65+m)+s;n=Math.floor((n-1)/26)}return s}
+function excel(){
+  var C=cols(),M=model(),T=totals(),o=S.org,n=C.length,rows=[],merges=[],r=0;
+  function sc(v,st){return {t:'s',v:v,s:st||0}}
+  function add(cells,ht){r++;rows.push({r:r,c:cells,ht:ht});return r}
+  function line(text,st,ht){var x=add([sc(text,st)],ht);merges.push('A'+x+':'+colL(n-1)+x);return x}
+  var gc=Math.max(0,n-4);
+  function grif(t,b){var x=add([],null);rows[rows.length-1].c[gc]=sc(t,b?1:0);merges.push(colL(gc)+x+':'+colL(n-1)+x)}
+  grif('УТВЕРЖДАЮ',true);grif((o.headT||'Руководитель')+(o.name?' '+o.name:''));grif('_____________ / '+(o.headN||'______________')+' /');grif('«___» ____________ 20__ г.');
+  add([]);
+  line('План мероприятий по безопасности и охране труда на 2027 год',6,22);
+  line((o.name||'')+(o.city?', г. '+o.city:''),7);
+  add([]);
+  var hr=add(C.map(function(c){return sc(c[1],2)}),32);
+  var first=r+1,costCol=-1;C.forEach(function(c,x){if(c[0]==='cost')costCol=x});
+  M.forEach(function(b){
+    if(b.k!=='i'){var x=add([sc(b.t,b.k==='s'?5:8)].concat(new Array(n-1).fill(0).map(function(){return sc('',b.k==='s'?5:8)})));merges.push('A'+x+':'+colL(n-1)+x);return}
+    add(C.map(function(c){var k=c[0];if(k==='no')return sc(b.no,9);if(k==='cost')return b.i.cost?{t:'n',v:b.i.cost,s:4}:sc('',3);return sc(cell(b.i,k),3)}));
+  });
+  var last=r;
+  if(costCol>=0&&M.length){
+    var cells=[];for(var k=0;k<n;k++)cells.push(sc('',10));cells[0]=sc('Итого по плану, тг',10);
+    cells[costCol]={t:'f',f:'SUM('+colL(costCol)+first+':'+colL(costCol)+last+')',v:T.cost,s:11};
+    var x=add(cells);if(costCol>0)merges.push('A'+x+':'+colL(costCol-1)+x);
+  }
+  if(S.view.fine&&T.rFirst){add([]);line('Штраф за невыполнение обязательных мероприятий ('+SIZE_RU[o.size]+', МРП '+fmt(mrp())+' тг): первичное нарушение каждой части по одному разу — '+fmt(T.rFirst)+' тг; повторное в течение года — '+fmt(T.rRep)+' тг. Штраф не заменяет мероприятие.',7,30)}
+  add([]);
+  line('Разработан: '+(o.otT||'________________')+' (должность)   '+(o.otN||'______________')+' (Ф. И. О.)   «___» ________ 20__ г.   ____________ (подпись)',0,20);
+  line('Согласован: '+(o.coT||'________________')+' (должность)   '+(o.coN||'______________')+' (Ф. И. О.)   «___» ________ 20__ г.   ____________ (подпись)',0,20);
+  add([]);line(SOURCE,12,42);
+
+  var sd=rows.map(function(R){
+    var cs='';R.c.forEach(function(c,ci){if(!c)return;var ref=colL(ci)+R.r;
+      if(c.t==='n')cs+='<c r="'+ref+'" s="'+c.s+'"><v>'+c.v+'</v></c>';
+      else if(c.t==='f')cs+='<c r="'+ref+'" s="'+c.s+'"><f>'+c.f+'</f><v>'+c.v+'</v></c>';
+      else cs+='<c r="'+ref+'" s="'+c.s+'" t="inlineStr"><is><t xml:space="preserve">'+xe(c.v)+'</t></is></c>';});
+    return '<row r="'+R.r+'"'+(R.ht?' ht="'+R.ht+'" customHeight="1"':'')+'>'+cs+'</row>'}).join('');
+  var sheet='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">'+
+    '<sheetPr><pageSetUpPr fitToPage="1"/></sheetPr><sheetViews><sheetView workbookViewId="0" showGridLines="0"/></sheetViews><sheetFormatPr defaultRowHeight="15"/>'+
+    '<cols>'+C.map(function(c,x){return '<col min="'+(x+1)+'" max="'+(x+1)+'" width="'+c[2]+'" customWidth="1"/>'}).join('')+'</cols>'+
+    '<sheetData>'+sd+'</sheetData>'+(merges.length?'<mergeCells count="'+merges.length+'">'+merges.map(function(m){return '<mergeCell ref="'+m+'"/>'}).join('')+'</mergeCells>':'')+
+    '<pageMargins left="0.4" right="0.4" top="0.5" bottom="0.5" header="0.3" footer="0.3"/><pageSetup paperSize="9" orientation="landscape" fitToWidth="1" fitToHeight="0"/></worksheet>';
+  var B='<border><left style="thin"/><right style="thin"/><top style="thin"/><bottom style="thin"/><diagonal/></border>';
+  var styles='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">'+
+    '<numFmts count="1"><numFmt numFmtId="164" formatCode="#,##0"/></numFmts>'+
+    '<fonts count="4"><font><sz val="10"/><name val="Arial"/></font><font><b/><sz val="10"/><name val="Arial"/></font><font><b/><sz val="13"/><name val="Arial"/></font><font><i/><sz val="8"/><color rgb="FF555555"/><name val="Arial"/></font></fonts>'+
+    '<fills count="5"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FFE3ECE8"/></patternFill></fill><fill><patternFill patternType="solid"><fgColor rgb="FFD3E4DD"/></patternFill></fill><fill><patternFill patternType="solid"><fgColor rgb="FFF1F5F3"/></patternFill></fill></fills>'+
+    '<borders count="2"><border><left/><right/><top/><bottom/><diagonal/></border>'+B+'</borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>'+
+    '<cellXfs count="13">'+
+     '<xf numFmtId="0" fontId="0" fillId="0" borderId="0"/>'+                                                                         /*0*/
+     '<xf numFmtId="0" fontId="1" fillId="0" borderId="0" applyFont="1"/>'+                                                            /*1*/
+     '<xf numFmtId="0" fontId="1" fillId="2" borderId="1" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center" wrapText="1"/></xf>'+ /*2*/
+     '<xf numFmtId="0" fontId="0" fillId="0" borderId="1" applyBorder="1" applyAlignment="1"><alignment vertical="top" wrapText="1"/></xf>'+   /*3*/
+     '<xf numFmtId="164" fontId="0" fillId="0" borderId="1" applyNumberFormat="1" applyBorder="1" applyAlignment="1"><alignment horizontal="right" vertical="top"/></xf>'+ /*4*/
+     '<xf numFmtId="0" fontId="1" fillId="3" borderId="1" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment vertical="center" wrapText="1"/></xf>'+ /*5*/
+     '<xf numFmtId="0" fontId="2" fillId="0" borderId="0" applyFont="1" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf>'+ /*6*/
+     '<xf numFmtId="0" fontId="0" fillId="0" borderId="0" applyAlignment="1"><alignment horizontal="center" vertical="top" wrapText="1"/></xf>'+ /*7*/
+     '<xf numFmtId="0" fontId="1" fillId="4" borderId="1" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment vertical="center" wrapText="1"/></xf>'+ /*8*/
+     '<xf numFmtId="0" fontId="0" fillId="0" borderId="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="top"/></xf>'+ /*9*/
+     '<xf numFmtId="0" fontId="1" fillId="0" borderId="1" applyFont="1" applyBorder="1" applyAlignment="1"><alignment horizontal="right"/></xf>'+ /*10*/
+     '<xf numFmtId="164" fontId="1" fillId="0" borderId="1" applyNumberFormat="1" applyFont="1" applyBorder="1" applyAlignment="1"><alignment horizontal="right"/></xf>'+ /*11*/
+     '<xf numFmtId="0" fontId="3" fillId="0" borderId="0" applyFont="1" applyAlignment="1"><alignment vertical="top" wrapText="1"/></xf>'+ /*12*/
+    '</cellXfs></styleSheet>';
+  var files=[
+    {name:'[Content_Types].xml',data:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>'},
+    {name:'_rels/.rels',data:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>'},
+    {name:'xl/workbook.xml',data:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="План ОТ 2027" sheetId="1" r:id="rId1"/></sheets><definedNames><definedName name="_xlnm.Print_Titles" localSheetId="0">\'План ОТ 2027\'!$'+hr+':$'+hr+'</definedName></definedNames></workbook>'},
+    {name:'xl/_rels/workbook.xml.rels',data:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>'},
+    {name:'xl/styles.xml',data:styles},
+    {name:'xl/worksheets/sheet1.xml',data:sheet}
+  ];
+  save(zip(files),fname('xlsx'));
+}
+function printDoc(){
+  $('print').innerHTML=docHtml()+'<p style="font-size:8pt;color:#555;margin-top:12pt">'+esc(SOURCE)+'</p>';
+  window.print();
+}
+$('bDoc').addEventListener('click',function(){try{wordDoc()}catch(e){$('msg').textContent='Не удалось сформировать файл Word.'}});
+$('bXls').addEventListener('click',function(){try{excel()}catch(e){$('msg').textContent='Не удалось сформировать файл Excel.'}});
+$('bPrn').addEventListener('click',printDoc);
+/* ---------- расчёт рисков (приложение к служебной записке) ---------- */
+function riskDoc(){
+  var T=totals(),o=S.org,keys=Object.keys(T.risk);
+  if(!keys.length){$('msgR').textContent='В плане нет обязательных мероприятий со штрафом — рассчитывать нечего.';return}
+  var sz=o.size,rows='',n=0;
+  keys.forEach(function(k){
+    var f=FINES[k],l=T.risk[k],a=f.first?f.first[sz]:null,b=f.repeat?f.repeat[sz]:null;n++;
+    rows+='<tr><td class="c">'+n+'</td><td>'+esc(f.part)+(f.rep?'<br>(повторно — '+esc(f.rep)+')':'')+'</td><td>'+esc(f.what)+'</td>'+
+      '<td>'+l.map(function(i){return esc(i.name)}).join(';<br>')+'</td>'+
+      '<td class="r">'+(a?fmt(a*mrp())+'<br>('+a+' МРП)':'см. статью')+'</td>'+
+      '<td class="r">'+(b?fmt(b*mrp())+'<br>('+b+' МРП)':(a?fmt(a*mrp())+'<br>(повышенного размера нет)':'см. статью'))+'</td></tr>';
+  });
+  var hasNull=keys.some(function(k){return !FINES[k].first});
+  var body='<p class="ap">Приложение к служебной записке<br>от «___» ____________ 20__ г. № ______</p>'+
+    '<p class="tt">Расчёт штрафов за невыполнение обязательных мероприятий плана по безопасности и охране труда на 2027 год</p>'+
+    '<p>Организация: '+(o.name?esc(o.name):'____________________')+(o.city?', г. '+esc(o.city):'')+'<br>'+
+    'Категория для расчёта штрафа: '+esc(SIZE_RU[sz])+'<br>Месячный расчётный показатель (МРП) на 2027 год: '+fmt(mrp())+' тг</p>'+
+    '<table><thead><tr><th>№</th><th>Норма КоАП РК</th><th>Нарушение</th><th>Мероприятия плана, которые его предотвращают</th><th>Штраф при первичном нарушении, тг</th><th>Штраф при повторном нарушении в течение года, тг</th></tr></thead><tbody>'+rows+'</tbody>'+
+    '<tfoot><tr><td colspan="4" class="r">Итого, если нарушить каждую часть статьи по одному разу</td><td class="r">'+fmt(T.rFirst)+'</td><td class="r">'+fmt(T.rRep)+'</td></tr></tfoot></table>'+
+    '<p class="nt">Пояснения к расчёту:</p><ol class="nt">'+
+    '<li>Каждая часть статьи учтена один раз, даже если к ней относится несколько мероприятий. Инспектор назначает штраф по каждому выявленному нарушению, поэтому фактическая сумма может быть выше.</li>'+
+    '<li>Уплата штрафа не освобождает от выполнения мероприятия: организация несёт и штраф, и затраты на само мероприятие.</li>'+
+    '<li>Если нарушение требований охраны труда повлечёт причинение вреда здоровью или смерть работника, возможна уголовная ответственность лица, на котором лежали обязанности по обеспечению этих требований (ст. 156 УК РК).</li>'+
+    (hasNull?'<li>Размер штрафа по ст. 299 КоАП РК определите по действующей редакции статьи; в итог он не включён.</li>':'')+
+    '<li>Сумма сметы обязательных мероприятий по плану: '+fmt(mandCost())+' тг.</li></ol>'+
+    '<p class="sg">Составил: '+blank(o.otT,24)+' '+blank(o.otN,18)+' ____________ (подпись)</p>'+
+    '<p class="src">'+esc(SOURCE)+'</p>';
+  var css='@page Section1{size:595.3pt 841.9pt;margin:48pt 42pt 48pt 56pt}div.Section1{page:Section1}'+
+    'body{font-family:"Times New Roman",serif;font-size:12pt}table{border-collapse:collapse;width:100%;margin:8pt 0}th,td{border:1px solid #000;padding:3pt 4pt;vertical-align:top;font-size:10pt}'+
+    'th{background:#e8e8e8}.r{text-align:right}.c{text-align:center}tfoot td{font-weight:bold}.ap{text-align:right;font-size:11pt}.tt{text-align:center;font-weight:bold;font-size:13pt;margin:12pt 0}'+
+    '.nt{font-size:11pt}.sg{margin-top:20pt}.src{font-size:8pt;color:#555;margin-top:16pt}';
+  var html='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><style>'+css+'</style></head><body><div class="Section1">'+body+'</div></body></html>';
+  save(new Blob(['﻿',html],{type:'application/msword'}),fname('doc').replace('План_ОТ_2027','Расчёт_рисков_ОТ_2027'),'msgR');
+}
+function mandCost(){var c=0;S.items.forEach(function(i){if(active(i)&&i.mand)c+=i.cost});return c}
+$('bRisk').addEventListener('click',function(){try{riskDoc()}catch(e){$('msgR').textContent='Не удалось сформировать файл.'}});
+$('riskBox').addEventListener('toggle',function(){sendH(false)});
+
+document.querySelectorAll('details.req').forEach(function(d){d.addEventListener('toggle',function(){sendH(false)})});
+
+/* ---------- старт ---------- */
+var dl=document.createElement('datalist');dl.id='formsList';dl.innerHTML=FORMS.map(function(f){return '<option value="'+esc(f)+'">'}).join('');document.body.appendChild(dl);
+$('src').textContent=SOURCE;
+bindOrg();
+go(0);
+window.__otplan={S:S,totals:totals,excel:excel,wordDoc:wordDoc,go:go};
+})();
+</script>
+</body>
+</html>
