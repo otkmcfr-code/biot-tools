@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Окраска баллонов</title>
+<style>
+  :root{
+    --bg:#ffffff; --panel:#f4f6f8; --line:#dde2e7; --ink:#1d2329; --muted:#5d6873;
+    --accent:#0b6e8a; --accent-soft:#e3f1f5; --warn:#fff6e0; --warn-line:#f0c96b;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;font-size:15px;line-height:1.4}
+  .wrap{max-width:600px;margin:0 auto;padding:16px}
+  h1{font-size:19px;margin:0 0 4px}
+  .sub{color:var(--muted);font-size:13px;margin:0 0 14px}
+
+  /* две плашки-кнопки режимов */
+  .modes{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+  .mode{border:2px solid var(--line);background:var(--panel);border-radius:12px;padding:12px 12px;
+    text-align:left;cursor:pointer;font:inherit;color:inherit;display:flex;gap:10px;align-items:center;
+    transition:border-color .15s,background .15s}
+  .mode:hover{border-color:#b8c3cc}
+  .mode.active{border-color:var(--accent);background:var(--accent-soft)}
+  .mode .ic{flex:0 0 34px;height:34px;border-radius:50%;background:#fff;display:grid;place-items:center;
+    border:1px solid var(--line);font-size:18px}
+  .mode b{display:block;font-size:15px}
+  .mode span{display:block;font-size:12px;color:var(--muted)}
+
+  .hidden{display:none!important}
+
+  /* режим 1 */
+  .search{width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:8px;font:inherit;margin-bottom:10px}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;max-height:186px;overflow-y:auto;padding:2px 2px 4px;margin-bottom:4px;
+    border-bottom:1px dashed var(--line)}
+  .chips-hint{font-size:12px;color:var(--muted);margin:0 0 12px}
+  .chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 10px 5px 6px;cursor:pointer;
+    font:inherit;font-size:13px;display:flex;align-items:center;gap:6px;color:inherit}
+  .chip:hover{border-color:#b8c3cc}
+  .chip.active{border-color:var(--accent);background:var(--accent-soft);font-weight:600}
+  .dot{width:14px;height:14px;border-radius:50%;border:1px solid rgba(0,0,0,.25);flex:0 0 14px}
+
+  .card{display:flex;gap:16px;background:var(--panel);border-radius:12px;padding:14px;align-items:flex-start}
+  .card svg{flex:0 0 110px}
+  .card h2{font-size:18px;margin:2px 0 10px}
+  .props{width:100%;border-collapse:collapse;font-size:14px}
+  .props td{padding:5px 0;border-bottom:1px solid var(--line);vertical-align:top}
+  .props td:first-child{color:var(--muted);width:44%;padding-right:8px}
+  .sw{display:inline-block;width:12px;height:12px;border-radius:3px;border:1px solid rgba(0,0,0,.25);margin-right:6px;vertical-align:-1px}
+  .same{margin-top:10px;font-size:13px;color:var(--muted)}
+  .same a{color:var(--accent);cursor:pointer;text-decoration:underline}
+  .note{font-size:13px;margin-top:10px;color:var(--muted)}
+
+  /* режим 2 */
+  .step{margin-bottom:14px}
+  .step h3{font-size:14px;margin:0 0 8px}
+  .step h3 small{font-weight:400;color:var(--muted)}
+  .opts{display:flex;flex-wrap:wrap;gap:6px}
+  .opt{border:1px solid var(--line);background:#fff;border-radius:8px;padding:6px 10px 6px 7px;cursor:pointer;
+    font:inherit;font-size:13px;display:flex;align-items:center;gap:6px;color:inherit}
+  .opt:hover{border-color:#b8c3cc}
+  .opt.active{border-color:var(--accent);background:var(--accent-soft);font-weight:600}
+  .opt[disabled]{opacity:.35;cursor:default}
+  .res-head{font-size:14px;font-weight:600;margin:4px 0 8px}
+  .results{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;max-height:330px;overflow-y:auto}
+  .res{background:var(--panel);border:1px solid transparent;border-radius:10px;padding:8px 4px;text-align:center;cursor:pointer;font:inherit;color:inherit}
+  .res:hover{border-color:var(--accent)}
+  .res svg{width:54px;height:150px}
+  .res div{font-size:12.5px;font-weight:600;margin-top:4px}
+  .res em{display:block;font-size:11.5px;color:var(--muted);font-style:normal;font-weight:400}
+  .hint{background:var(--warn);border:1px solid var(--warn-line);border-radius:10px;padding:10px 12px;font-size:13px;margin-top:14px}
+  .empty{color:var(--muted);font-size:14px;padding:8px 0}
+  .reset{background:none;border:none;color:var(--accent);text-decoration:underline;cursor:pointer;font:inherit;font-size:13px;padding:0}
+
+  footer{margin-top:16px;font-size:12px;color:var(--muted);border-top:1px solid var(--line);padding-top:10px}
+  footer a{color:var(--accent)}
+
+  @media (max-width:460px){
+    .modes{grid-template-columns:1fr}
+    .card{flex-direction:column;align-items:center}
+    .card .info{width:100%}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Окраска и надписи на баллонах</h1>
+  <p class="sub">По приложению 31 к Правилам обеспечения промышленной безопасности при эксплуатации оборудования, работающего под давлением</p>
+
+  <div class="modes" role="tablist">
+    <button class="mode active" id="btnPick" role="tab" aria-selected="true">
+      <span class="ic">🔍</span><span><b>Выбрать газ</b><span>Как окрашен баллон с этим газом</span></span>
+    </button>
+    <button class="mode" id="btnId" role="tab" aria-selected="false">
+      <span class="ic">🎨</span><span><b>Определить газ</b><span>Какой газ по окраске баллона</span></span>
+    </button>
+  </div>
+
+  <!-- РЕЖИМ 1 -->
+  <section id="pick">
+    <input class="search" id="q" type="search" placeholder="Название газа, например: кислород, пропан, CO₂" autocomplete="off">
+    <div class="chips" id="chips"></div>
+    <p class="chips-hint">28 позиций приложения 31 — прокрутите список или введите название в поиск</p>
+    <div class="card" id="card"></div>
+  </section>
+
+  <!-- РЕЖИМ 2 -->
+  <section id="ident" class="hidden">
+    <div class="step">
+      <h3>1. Цвет баллона</h3>
+      <div class="opts" id="optBody"></div>
+    </div>
+    <div class="step">
+      <h3>2. Цвет надписи <small>— если надпись не видна, пропустите</small></h3>
+      <div class="opts" id="optText"></div>
+    </div>
+    <div class="step">
+      <h3>3. Полоса <small>— если не видно, пропустите</small></h3>
+      <div class="opts" id="optStripe"></div>
+    </div>
+    <div class="res-head" id="resHead"></div>
+    <div class="results" id="results"></div>
+    <div class="hint">
+      Определение по окраске — ориентир, а не замена надписи. Баллоны без надлежащей окраски и надписей наполнять газом не допускается (п. 383 Правил). Баллон с нечитаемой маркировкой в работу не берут: его возвращают на склад или поставщику.
+    </div>
+  </section>
+
+  <footer>
+    Источник: приложение 31 к Правилам обеспечения промышленной безопасности при эксплуатации оборудования, работающего под давлением (приказ Министра по инвестициям и развитию РК от 30.12.2014 № 358).
+    Цвета на экране передаются приблизительно.
+  </footer>
+</div>
+
+<script>
+/* Палитра (условные экранные цвета) */
+const C = {
+  "черная":      {hex:"#1f2124", label:"Чёрная"},
+  "белая":       {hex:"#f5f5f2", label:"Белая"},
+  "серая":       {hex:"#8b9197", label:"Серая"},
+  "красная":     {hex:"#c62828", label:"Красная"},
+  "голубая":     {hex:"#58a8de", label:"Голубая"},
+  "желтая":      {hex:"#f2c419", label:"Жёлтая"},
+  "темно-зеленая":{hex:"#1f4d2c", label:"Тёмно-зелёная"},
+  "коричневая":  {hex:"#6b3f20", label:"Коричневая"},
+  "оранжевая":   {hex:"#ef7a1a", label:"Оранжевая"},
+  "фиолетовая":  {hex:"#6a3e9c", label:"Фиолетовая"},
+  "алюминиевая": {hex:"#c3c8cd", label:"Алюминиевая"},
+  "защитная":    {hex:"#5d6838", label:"Защитная (хаки)"}
+};
+const T = { /* цвета надписей и полос */
+  "желтый":{hex:"#f2c419",label:"Жёлтый"}, "черный":{hex:"#1f2124",label:"Чёрный"},
+  "белый":{hex:"#f5f5f2",label:"Белый"},   "синий":{hex:"#1f4fbf",label:"Синий"},
+  "зеленый":{hex:"#2e9e44",label:"Зелёный"}, "красный":{hex:"#d32f2f",label:"Красный"},
+  "коричневый":{hex:"#7a4a26",label:"Коричневый"}
+};
+const STRIPE_LABEL = {
+  "коричневый":"Коричневая","белый":"Белая","синий":"Синяя","зеленый":"Зелёная","черный":"Чёрная",
+  "красный":"Красная","желтый":"Жёлтая","2 красные":"Две красные","2 желтые":"Две жёлтые"
+};
+
+/* Данные приложения 31; знаки «»» («то же») раскрыты */
+const G = [
+ {n:"Азот", b:"черная", t:"Азот", tc:"желтый", s:"коричневый", a:"n2"},
+ {n:"Аммиак", b:"желтая", t:"Аммиак", tc:"черный", s:null, a:"nh3"},
+ {n:"Аргон сырой", b:"черная", t:"Аргон сырой", tc:"белый", s:"белый", a:"ar"},
+ {n:"Аргон технический", b:"черная", t:"Аргон технический", tc:"синий", s:"синий", a:"ar"},
+ {n:"Аргон чистый", b:"серая", t:"Аргон чистый", tc:"зеленый", s:"зеленый", a:"ar"},
+ {n:"Ацетилен", b:"белая", t:"Ацетилен", tc:"красный", s:null, a:"c2h2"},
+ {n:"Бутилен", b:"красная", t:"Бутилен", tc:"желтый", s:"черный", a:""},
+ {n:"Нефтегаз", b:"серая", t:"Нефтегаз", tc:"красный", s:null, a:""},
+ {n:"Бутан", b:"красная", t:"Бутан", tc:"белый", s:null, a:"c4h10"},
+ {n:"Водород", b:"темно-зеленая", t:"Водород", tc:"красный", s:null, a:"h2"},
+ {n:"Воздух", b:"черная", t:"Сжатый воздух", tc:"белый", s:null, a:"сжатый воздух"},
+ {n:"Гелий", b:"коричневая", t:"Гелий", tc:"белый", s:null, a:"he"},
+ {n:"Закись азота", b:"серая", t:"Закись азота", tc:"черный", s:null, a:"n2o веселящий"},
+ {n:"Кислород", b:"голубая", t:"Кислород", tc:"черный", s:null, a:"o2"},
+ {n:"Кислород медицинский", b:"голубая", t:"Кислород медицинский", tc:"черный", s:null, a:"o2"},
+ {n:"Сероводород", b:"белая", t:"Сероводород", tc:"красный", s:"красный", a:"h2s"},
+ {n:"Сернистый ангидрид", b:"черная", t:"Сернистый ангидрид", tc:"белый", s:"желтый", a:"so2 диоксид серы"},
+ {n:"Углекислота", b:"черная", t:"Углекислота", tc:"желтый", s:null, a:"co2 со2 диоксид углерода углекислый газ"},
+ {n:"Фосген", b:"защитная", t:null, tc:null, s:"красный", a:""},
+ {n:"Фреон-11", b:"алюминиевая", t:"Фреон-11", tc:"черный", s:"синий", a:"хладон"},
+ {n:"Фреон-12", b:"алюминиевая", t:"Фреон-12", tc:"черный", s:null, a:"хладон"},
+ {n:"Фреон-13", b:"алюминиевая", t:"Фреон-13", tc:"черный", s:"2 красные", a:"хладон"},
+ {n:"Фреон-22", b:"алюминиевая", t:"Фреон-22", tc:"черный", s:"2 желтые", a:"хладон"},
+ {n:"Хлор", b:"защитная", t:null, tc:null, s:"зеленый", a:"cl2"},
+ {n:"Циклопропан", b:"оранжевая", t:"Циклопропан", tc:"черный", s:null, a:""},
+ {n:"Этилен", b:"фиолетовая", t:"Этилен", tc:"красный", s:null, a:"c2h4"},
+ {n:"Все другие горючие газы", b:"красная", t:"НАИМЕНОВАНИЕ ГАЗА", tc:"белый", s:null, generic:true,
+  a:"пропан пропан-бутан метан природный газ сжиженный углеводородный суг c3h8", note:"Сюда относится, например, пропан: отдельной строки для него в приложении 31 нет."},
+ {n:"Все другие негорючие газы", b:"черная", t:"НАИМЕНОВАНИЕ ГАЗА", tc:"желтый", s:null, generic:true, a:""}
+];
+
+/* ---------- рисунок баллона ---------- */
+function shade(hex, k){ // k<0 темнее
+  const n=parseInt(hex.slice(1),16); let r=n>>16,g=n>>8&255,b=n&255;
+  const f=v=>Math.max(0,Math.min(255,Math.round(v+(k<0?v*k:(255-v)*k))));
+  return "#"+[f(r),f(g),f(b)].map(x=>x.toString(16).padStart(2,"0")).join("");
+}
+let uid=0;
+function cyl(g, small){
+  const id="c"+(uid++);
+  const body=C[g.b].hex, light=g.b==="белая"||g.b==="алюминиевая"||g.b==="желтая";
+  const stroke=light?"#9aa1a8":shade(body,-.35);
+  let stripes="";
+  if(g.s){
+    const two=g.s.startsWith("2 ");
+    const col=T[two?(g.s.includes("красн")?"красный":"желтый"):g.s].hex;
+    const ys=two?[262,280]:[268];
+    stripes=ys.map(y=>`<rect x="20" y="${y}" width="80" height="11" fill="${col}"/>`).join("");
+  }
+  let text="";
+  if(g.t){
+    const len=g.t.length, fs=Math.max(9,Math.min(17,175/(len*0.62)));
+    text=`<text x="0" y="0" transform="translate(66 172) rotate(-90)" text-anchor="middle"
+      font-family="Arial,sans-serif" font-weight="700" font-size="${fs.toFixed(1)}"
+      fill="${T[g.tc].hex}" ${g.tc==="белый"&&light?'stroke="#999" stroke-width=".3"':''}>${g.t}</text>`;
+  }
+  const w=small?54:110, h=small?150:300;
+  return `<svg viewBox="0 0 120 340" width="${w}" height="${h}" role="img" aria-label="Баллон: ${g.n}">
+  <defs>
+    <linearGradient id="${id}" x1="0" x2="1">
+      <stop offset="0" stop-color="#000" stop-opacity=".28"/>
+      <stop offset=".3" stop-color="#fff" stop-opacity=".28"/>
+      <stop offset=".55" stop-color="#fff" stop-opacity="0"/>
+      <stop offset="1" stop-color="#000" stop-opacity=".32"/>
+    </linearGradient>
+    <clipPath id="${id}k"><path d="M20,110 Q20,62 60,62 Q100,62 100,110 L100,318 L20,318 Z"/></clipPath>
+  </defs>
+  <rect x="47" y="38" width="26" height="26" rx="3" fill="#9aa0a6"/>
+  <path d="M42,40 L42,18 Q42,8 52,8 L68,8 Q78,8 78,18 L78,40 Z" fill="${body}" stroke="${stroke}"/>
+  <path d="M42,40 L42,18 Q42,8 52,8 L68,8 Q78,8 78,18 L78,40 Z" fill="url(#${id})"/>
+  <g clip-path="url(#${id}k)">
+    <rect x="20" y="60" width="80" height="260" fill="${body}"/>
+    ${stripes}
+    ${text}
+    <rect x="20" y="60" width="80" height="260" fill="url(#${id})"/>
+  </g>
+  <path d="M20,110 Q20,62 60,62 Q100,62 100,110 L100,318 L20,318 Z" fill="none" stroke="${stroke}"/>
+  <rect x="17" y="314" width="86" height="20" rx="3" fill="#4a4f55"/>
+</svg>`;
+}
+
+/* ---------- режим 1: выбрать газ ---------- */
+const chipsEl=document.getElementById("chips"), cardEl=document.getElementById("card"), qEl=document.getElementById("q");
+let current=G.find(g=>g.n==="Кислород");
+
+function stripeText(s){ return s ? STRIPE_LABEL[s] : "нет"; }
+function swatch(hex){ return `<span class="sw" style="background:${hex}"></span>`; }
+
+function renderChips(){
+  const q=qEl.value.trim().toLowerCase();
+  const words=g=>(g.n+" "+(g.a||"")).toLowerCase().split(/[\s,]+/);
+  const score=g=>words(g).some(w=>w===q)?0:words(g).some(w=>w.startsWith(q))?1:2;
+  let list=G.filter(g=>!q || g.n.toLowerCase().includes(q) || (g.a||"").toLowerCase().includes(q));
+  if(q){ list=list.sort((x,y)=>score(x)-score(y)); if(list.length && !list.includes(current)){current=list[0];renderCard();} }
+  chipsEl.innerHTML = list.length ? list.map(g=>
+    `<button class="chip ${g===current?'active':''}" data-n="${g.n}"><span class="dot" style="background:${C[g.b].hex}"></span>${g.n}</button>`
+  ).join("") : `<div class="empty">Газ не найден. Для горючих газов, которых нет в перечне, смотрите «Все другие горючие газы», для негорючих — «Все другие негорючие газы».</div>`;
+  chipsEl.querySelectorAll(".chip").forEach(b=>b.onclick=()=>{current=G.find(g=>g.n===b.dataset.n);renderChips();renderCard();});
+  if(list.length===1 && list[0]!==current){current=list[0];renderCard();chipsEl.querySelector(".chip").classList.add("active");}
+}
+function renderCard(){
+  const g=current;
+  const same=G.filter(x=>x!==g && x.b===g.b);
+  cardEl.innerHTML = cyl(g,false) + `<div class="info" style="flex:1">
+    <h2>${g.n}</h2>
+    <table class="props">
+      <tr><td>Окраска баллона</td><td>${swatch(C[g.b].hex)}${C[g.b].label}</td></tr>
+      <tr><td>Текст надписи</td><td>${g.t ? (g.generic?"Наименование газа":"«"+g.t+"»") : "не наносится"}</td></tr>
+      <tr><td>Цвет надписи</td><td>${g.tc ? swatch(T[g.tc].hex)+T[g.tc].label : "—"}</td></tr>
+      <tr><td>Цвет полосы</td><td>${g.s ? swatch(T[g.s.startsWith("2 ")?(g.s.includes("красн")?"красный":"желтый"):g.s].hex)+stripeText(g.s) : "нет"}</td></tr>
+    </table>
+    ${g.note?`<div class="note">${g.note}</div>`:""}
+    ${g.n==="Воздух"?`<div class="note">Малолитражные баллоны (до 12 л) дыхательных аппаратов и самоспасателей со сжатым воздухом допускается окрашивать в серый или жёлтый цвет.</div>`:""}
+    ${same.length?`<div class="same">Баллон такого же цвета у газов: ${same.map(x=>`<a data-n="${x.n}">${x.n}</a>`).join(", ")}. Различайте их по надписи и полосе.</div>`:""}
+  </div>`;
+  cardEl.querySelectorAll(".same a").forEach(a=>a.onclick=()=>{current=G.find(g=>g.n===a.dataset.n);qEl.value="";renderChips();renderCard();});
+}
+qEl.addEventListener("input",renderChips);
+
+/* ---------- режим 2: определить газ ---------- */
+const sel={b:null,tc:"any",s:"any"};
+const optBody=document.getElementById("optBody"), optText=document.getElementById("optText"),
+      optStripe=document.getElementById("optStripe"), resEl=document.getElementById("results"), resHead=document.getElementById("resHead");
+
+function matchBody(){ return G.filter(g=>g.b===sel.b); }
+function filtered(){
+  return matchBody().filter(g=>
+    (sel.tc==="any" || (sel.tc==="none"? !g.tc : g.tc===sel.tc)) &&
+    (sel.s==="any" || (sel.s==="none"? !g.s : g.s===sel.s)));
+}
+function btn(val,label,hex,active,disabled,extra=""){
+  return `<button class="opt ${active?'active':''}" data-v="${val}" ${disabled?'disabled':''}>${hex?`<span class="dot" style="background:${hex}"></span>`:""}${label}${extra}</button>`;
+}
+function renderIdent(){
+  optBody.innerHTML = Object.keys(C).map(k=>btn(k,C[k].label,C[k].hex,sel.b===k,false)).join("");
+  optBody.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{sel.b=b.dataset.v;sel.tc="any";sel.s="any";renderIdent();});
+
+  if(!sel.b){
+    optText.innerHTML=`<div class="empty">Сначала выберите цвет баллона</div>`;
+    optStripe.innerHTML=`<div class="empty">Сначала выберите цвет баллона</div>`;
+    resHead.textContent=""; resEl.innerHTML=""; return;
+  }
+  const base=matchBody();
+  // доступные цвета надписи с учётом выбранной полосы
+  const forText=base.filter(g=>sel.s==="any"||(sel.s==="none"?!g.s:g.s===sel.s));
+  const tcs=[...new Set(base.filter(g=>g.tc).map(g=>g.tc))];
+  const hasNoText=base.some(g=>!g.tc);
+  optText.innerHTML = btn("any","Не видно / любой",null,sel.tc==="any",false) +
+    tcs.map(c=>btn(c,T[c].label,T[c].hex,sel.tc===c,!forText.some(g=>g.tc===c))).join("") +
+    (hasNoText?btn("none","Надписи нет по правилам",null,sel.tc==="none",!forText.some(g=>!g.tc)):"");
+  optText.querySelectorAll(".opt:not([disabled])").forEach(b=>b.onclick=()=>{sel.tc=b.dataset.v;renderIdent();});
+
+  const forStripe=base.filter(g=>sel.tc==="any"||(sel.tc==="none"?!g.tc:g.tc===sel.tc));
+  const ss=[...new Set(base.filter(g=>g.s).map(g=>g.s))];
+  const hasNoStripe=base.some(g=>!g.s);
+  optStripe.innerHTML = btn("any","Не видно / любая",null,sel.s==="any",false) +
+    (hasNoStripe?btn("none","Без полосы",null,sel.s==="none",!forStripe.some(g=>!g.s)):"") +
+    ss.map(s=>btn(s,STRIPE_LABEL[s],T[s.startsWith("2 ")?(s.includes("красн")?"красный":"желтый"):s].hex,sel.s===s,!forStripe.some(g=>g.s===s))).join("");
+  optStripe.querySelectorAll(".opt:not([disabled])").forEach(b=>b.onclick=()=>{sel.s=b.dataset.v;renderIdent();});
+
+  const list=filtered();
+  if(!list.length){
+    resHead.innerHTML=`Такого сочетания в приложении 31 нет. <button class="reset" id="rs">Сбросить надпись и полосу</button>`;
+    document.getElementById("rs").onclick=()=>{sel.tc="any";sel.s="any";renderIdent();};
+    resEl.innerHTML=""; return;
+  }
+  resHead.textContent = list.length===1 ? "Подходит 1 вариант:" : `Подходит вариантов: ${list.length}`;
+  resEl.innerHTML=list.map(g=>`<button class="res" data-n="${g.n}">${cyl(g,true)}<div>${g.n}<em>${
+    [g.tc?("надпись: "+T[g.tc].label.toLowerCase()):"без надписи", g.s?("полоса: "+STRIPE_LABEL[g.s].toLowerCase()):"без полосы"].join(", ")
+  }</em></div></button>`).join("");
+  resEl.querySelectorAll(".res").forEach(b=>b.onclick=()=>{current=G.find(g=>g.n===b.dataset.n);qEl.value="";setMode("pick");renderChips();renderCard();});
+}
+
+/* ---------- переключение режимов ---------- */
+const btnPick=document.getElementById("btnPick"), btnId=document.getElementById("btnId");
+function setMode(m){
+  const p=m==="pick";
+  document.getElementById("pick").classList.toggle("hidden",!p);
+  document.getElementById("ident").classList.toggle("hidden",p);
+  btnPick.classList.toggle("active",p); btnId.classList.toggle("active",!p);
+  btnPick.setAttribute("aria-selected",p); btnId.setAttribute("aria-selected",!p);
+}
+btnPick.onclick=()=>setMode("pick");
+btnId.onclick=()=>setMode("id");
+
+renderChips(); renderCard(); renderIdent();
+</script>
+</body>
+</html>
